@@ -33,7 +33,7 @@ type BlockMeanMethod int
 const (
 	// Direct method constructs blocks with no overlap or rotation.
 	Direct BlockMeanMethod = iota
-	// Overlap method constructs blocks by overlaping them, the degree of overlap is set to be half of a block.
+	// Overlap method constructs blocks by overlapping them, the degree of overlap is set to be half of a block.
 	Overlap
 	// Rotation method uses the same approach as Direct but also rotates blocks.
 	Rotation
