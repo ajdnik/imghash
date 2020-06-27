@@ -1,17 +1,15 @@
 package imghash_test
 
 import (
-	"bufio"
 	"fmt"
-	"image"
 	_ "image/gif"
 	_ "image/jpeg"
 	_ "image/png"
-	"os"
 	"testing"
 
 	. "github.com/ajdnik/imghash"
 	"github.com/ajdnik/imghash/hashtype"
+	"github.com/ajdnik/imghash/imgproc"
 	"github.com/ajdnik/imghash/similarity"
 )
 
@@ -20,29 +18,21 @@ var differenceCalculateTests = []struct {
 	hash       hashtype.Binary
 	width      uint
 	height     uint
-	resizeType ResizeType
+	resizeType imgproc.ResizeType
 }{
-	{"assets/lena.jpg", hashtype.Binary{110, 78, 190, 218, 157, 200, 90, 62}, 8, 8, Bilinear},
-	{"assets/baboon.jpg", hashtype.Binary{201, 101, 21, 23, 150, 20, 42, 148}, 8, 8, Bilinear},
-	{"assets/cat.jpg", hashtype.Binary{172, 168, 226, 74, 124, 172, 43, 52}, 8, 8, Bilinear},
-	{"assets/monarch.jpg", hashtype.Binary{234, 229, 240, 118, 213, 157, 54, 99}, 8, 8, Bilinear},
-	{"assets/peppers.jpg", hashtype.Binary{60, 188, 187, 234, 162, 171, 171, 192}, 8, 8, Bilinear},
-	{"assets/tulips.jpg", hashtype.Binary{22, 43, 107, 101, 105, 87, 75, 67}, 8, 8, Bilinear},
+	{"assets/lena.jpg", hashtype.Binary{46, 14, 158, 218, 220, 200, 90, 28}, 8, 8, imgproc.Bilinear},
+	{"assets/baboon.jpg", hashtype.Binary{248, 213, 23, 22, 22, 28, 96, 22}, 8, 8, imgproc.Bilinear},
+	{"assets/cat.jpg", hashtype.Binary{6, 2, 194, 64, 124, 60, 16, 16}, 8, 8, imgproc.Bilinear},
+	{"assets/monarch.jpg", hashtype.Binary{204, 204, 138, 138, 204, 77, 113, 101}, 8, 8, imgproc.Bilinear},
+	{"assets/peppers.jpg", hashtype.Binary{56, 246, 211, 211, 187, 187, 41, 225}, 8, 8, imgproc.Bilinear},
+	{"assets/tulips.jpg", hashtype.Binary{164, 51, 111, 109, 105, 31, 19, 35}, 8, 8, imgproc.Bilinear},
 }
 
 func TestDifference_Calculate(t *testing.T) {
 	for _, tt := range differenceCalculateTests {
 		t.Run(tt.filename, func(t *testing.T) {
 			hash := NewDifferenceWithParams(tt.width, tt.height, tt.resizeType)
-			file, err := os.Open(tt.filename)
-			if err != nil {
-				t.Errorf("failed to open image: %s", err)
-			}
-			defer file.Close()
-			img, _, err := image.Decode(bufio.NewReader(file))
-			if err != nil {
-				t.Errorf("failed to decode image: %s", err)
-			}
+			img, _ := imgproc.Read(tt.filename)
 			if res := hash.Calculate(img); !res.Equal(tt.hash) {
 				t.Errorf("got %v, want %v", res, tt.hash)
 			}
@@ -56,37 +46,21 @@ var differenceDistanceTests = []struct {
 	distance    similarity.Distance
 	width       uint
 	height      uint
-	resizeType  ResizeType
+	resizeType  imgproc.ResizeType
 }{
-	{"assets/lena.jpg", "assets/cat.jpg", 27, 8, 8, Bilinear},
-	{"assets/lena.jpg", "assets/monarch.jpg", 30, 8, 8, Bilinear},
-	{"assets/baboon.jpg", "assets/cat.jpg", 33, 8, 8, Bilinear},
-	{"assets/peppers.jpg", "assets/baboon.jpg", 38, 8, 8, Bilinear},
-	{"assets/tulips.jpg", "assets/monarch.jpg", 35, 8, 8, Bilinear},
+	{"assets/lena.jpg", "assets/cat.jpg", 24, 8, 8, imgproc.Bilinear},
+	{"assets/lena.jpg", "assets/monarch.jpg", 24, 8, 8, imgproc.Bilinear},
+	{"assets/baboon.jpg", "assets/cat.jpg", 32, 8, 8, imgproc.Bilinear},
+	{"assets/peppers.jpg", "assets/baboon.jpg", 32, 8, 8, imgproc.Bilinear},
+	{"assets/tulips.jpg", "assets/monarch.jpg", 35, 8, 8, imgproc.Bilinear},
 }
 
 func TestDifference_Distance(t *testing.T) {
 	for _, tt := range differenceDistanceTests {
 		t.Run(fmt.Sprintf("%v %v", tt.firstImage, tt.secondImage), func(t *testing.T) {
 			hash := NewDifferenceWithParams(tt.width, tt.height, tt.resizeType)
-			file1, err := os.Open(tt.firstImage)
-			if err != nil {
-				t.Errorf("failed to open image: %s", err)
-			}
-			defer file1.Close()
-			img1, _, err := image.Decode(bufio.NewReader(file1))
-			if err != nil {
-				t.Errorf("failed to decode image: %s", err)
-			}
-			file2, err := os.Open(tt.secondImage)
-			if err != nil {
-				t.Errorf("failed to open image: %s", err)
-			}
-			defer file2.Close()
-			img2, _, err := image.Decode(bufio.NewReader(file2))
-			if err != nil {
-				t.Errorf("failed to decode image: %s", err)
-			}
+			img1, _ := imgproc.Read(tt.firstImage)
+			img2, _ := imgproc.Read(tt.secondImage)
 			h1 := hash.Calculate(img1)
 			h2 := hash.Calculate(img2)
 			dist := similarity.Hamming(h1, h2)

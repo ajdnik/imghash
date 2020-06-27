@@ -17,7 +17,7 @@ type ColorMoment struct {
 	// Resized image height.
 	height uint
 	// Resize interpolation method.
-	interp ResizeType
+	interp imgproc.ResizeType
 	// Gaussian kernel size.
 	kernel int
 	// Gaussian kernel sigma.
@@ -29,14 +29,14 @@ func NewColorMoment() ColorMoment {
 	return ColorMoment{
 		width:  512,
 		height: 512,
-		interp: Bicubic,
+		interp: imgproc.Bicubic,
 		kernel: 3,
 		sigma:  0,
 	}
 }
 
 // NewColorMomentWithParams creates a new ColorMoment struct based on supplied parameters.
-func NewColorMomentWithParams(resizeWidth, resizeHeight uint, resizeType ResizeType, kernelSize int, sigma float64) ColorMoment {
+func NewColorMomentWithParams(resizeWidth, resizeHeight uint, resizeType imgproc.ResizeType, kernelSize int, sigma float64) ColorMoment {
 	return ColorMoment{
 		width:  resizeWidth,
 		height: resizeHeight,
@@ -48,7 +48,7 @@ func NewColorMomentWithParams(resizeWidth, resizeHeight uint, resizeType ResizeT
 
 // Calculate returns a perceptual image hash.
 func (ch *ColorMoment) Calculate(img image.Image) hashtype.Float64 {
-	r := resizeImageCV(ch.width, ch.height, img, ch.interp)
+	r := imgproc.Resize(ch.width, ch.height, img, ch.interp)
 	b := imgproc.GaussianBlur(r, ch.kernel, ch.sigma)
 	yrb, _ := imgproc.YCrCb(b)
 	hsv, _ := imgproc.HSV(b)

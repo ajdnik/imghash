@@ -17,7 +17,7 @@ type Median struct {
 	// Resized image height.
 	height uint
 	// Resize interpoletion method.
-	interp ResizeType
+	interp imgproc.ResizeType
 }
 
 // NewMedian creates a new Median struct using default values.
@@ -25,12 +25,12 @@ func NewMedian() Median {
 	return Median{
 		width:  8,
 		height: 8,
-		interp: Bilinear,
+		interp: imgproc.Bilinear,
 	}
 }
 
 // NewMedianWithParams creates a new Median struct using the supplied parameters.
-func NewMedianWithParams(resizeWidth, resizeHeight uint, resizeType ResizeType) Median {
+func NewMedianWithParams(resizeWidth, resizeHeight uint, resizeType imgproc.ResizeType) Median {
 	return Median{
 		width:  resizeWidth,
 		height: resizeHeight,
@@ -40,7 +40,7 @@ func NewMedianWithParams(resizeWidth, resizeHeight uint, resizeType ResizeType) 
 
 // Calculate returns a perceptual image hash.
 func (mh *Median) Calculate(img image.Image) hashtype.Binary {
-	r := resizeImageCV(mh.width, mh.height, img, mh.interp)
+	r := imgproc.Resize(mh.width, mh.height, img, mh.interp)
 	g, _ := imgproc.Grayscale(r)
 	med, _ := imgproc.Median(g)
 	return mh.computeHash(g, uint(math.Round(med)))

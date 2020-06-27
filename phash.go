@@ -17,7 +17,7 @@ type PHash struct {
 	// Resized image height.
 	height uint
 	// Resize interpolation method.
-	interp ResizeType
+	interp imgproc.ResizeType
 }
 
 // NewPHash creates a new PHash struct using default values.
@@ -25,12 +25,12 @@ func NewPHash() PHash {
 	return PHash{
 		width:  32,
 		height: 32,
-		interp: BilinearExact,
+		interp: imgproc.BilinearExact,
 	}
 }
 
 // NewPHashWithParams creates a new PHash struct using the supplied parameters.
-func NewPHashWithParams(resizeWidth, resizeHeight uint, resizeType ResizeType) PHash {
+func NewPHashWithParams(resizeWidth, resizeHeight uint, resizeType imgproc.ResizeType) PHash {
 	return PHash{
 		width:  resizeWidth,
 		height: resizeHeight,
@@ -40,7 +40,7 @@ func NewPHashWithParams(resizeWidth, resizeHeight uint, resizeType ResizeType) P
 
 // Calculate returns a percaptual image hash.
 func (ph *PHash) Calculate(img image.Image) hashtype.Binary {
-	r := resizeImageCV(ph.width, ph.height, img, ph.interp)
+	r := imgproc.Resize(ph.width, ph.height, img, ph.interp)
 	g, _ := imgproc.Grayscale(r)
 	fImg := imgproc.GrayToF32(g)
 	dctImg := imgproc.DCT(fImg)

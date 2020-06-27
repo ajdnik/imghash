@@ -22,7 +22,7 @@ type MarrHildreth struct {
 	// Resized image height.
 	height uint
 	// Resize interpolation method.
-	interp ResizeType
+	interp imgproc.ResizeType
 	// Gaussian kernel size.
 	kernel int
 	// Gaussian kernel sigma parameter.
@@ -36,14 +36,14 @@ func NewMarrHildreth() MarrHildreth {
 		alpha:  2,
 		width:  512,
 		height: 512,
-		interp: Bicubic,
+		interp: imgproc.Bicubic,
 		kernel: 7,
 		sigma:  0,
 	}
 }
 
 // NewMarrHildrethWithParams creates a new MarrHildreth struct using the supplied parameters.
-func NewMarrHildrethWithParams(scale, alpha float64, resizeWidth, resizeHeight uint, resizeType ResizeType, kernelSize int, sigma float64) MarrHildreth {
+func NewMarrHildrethWithParams(scale, alpha float64, resizeWidth, resizeHeight uint, resizeType imgproc.ResizeType, kernelSize int, sigma float64) MarrHildreth {
 	return MarrHildreth{
 		scale:  scale,
 		alpha:  alpha,
@@ -59,7 +59,7 @@ func NewMarrHildrethWithParams(scale, alpha float64, resizeWidth, resizeHeight u
 func (mhh *MarrHildreth) Calculate(img image.Image) hashtype.Binary {
 	g, _ := imgproc.Grayscale(img)
 	b := imgproc.GaussianBlur(g, mhh.kernel, mhh.sigma)
-	r := resizeImageCV(mhh.width, mhh.height, b, mhh.interp)
+	r := imgproc.Resize(mhh.width, mhh.height, b, mhh.interp)
 	eq := imgproc.EqualizeHist(r.(*image.Gray))
 	// Run a 2D marr hildereth filter over image
 	kernel := computeMarrHildrethKernel(mhh.alpha, mhh.scale)

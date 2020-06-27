@@ -17,7 +17,7 @@ type BlockMean struct {
 	// Resized image height.
 	rHeight uint
 	// Resize interpolation method.
-	interp ResizeType
+	interp imgproc.ResizeType
 	// Block width.
 	bWidth uint
 	// Block height.
@@ -46,7 +46,7 @@ func NewBlockMean() BlockMean {
 	return BlockMean{
 		rWidth:  256,
 		rHeight: 256,
-		interp:  BilinearExact,
+		interp:  imgproc.BilinearExact,
 		bWidth:  16,
 		bHeight: 16,
 		method:  Direct,
@@ -54,7 +54,7 @@ func NewBlockMean() BlockMean {
 }
 
 // NewBlockMeanWithParams creates a new BlockMean struct using the supplied parameters.
-func NewBlockMeanWithParams(resizeWidth, resizeHeight uint, resizeType ResizeType, blockWidth, blockHeight uint, blockMeanMethod BlockMeanMethod) BlockMean {
+func NewBlockMeanWithParams(resizeWidth, resizeHeight uint, resizeType imgproc.ResizeType, blockWidth, blockHeight uint, blockMeanMethod BlockMeanMethod) BlockMean {
 	return BlockMean{
 		rWidth:  resizeWidth,
 		rHeight: resizeHeight,
@@ -67,7 +67,7 @@ func NewBlockMeanWithParams(resizeWidth, resizeHeight uint, resizeType ResizeTyp
 
 // Calculate returns a perceptual image hash.
 func (bh *BlockMean) Calculate(img image.Image) hashtype.Binary {
-	r := resizeImageCV(bh.rWidth, bh.rHeight, img, bh.interp)
+	r := imgproc.Resize(bh.rWidth, bh.rHeight, img, bh.interp)
 	g, _ := imgproc.Grayscale(r)
 	mm := bh.computeMean(g)
 	med, _ := imgproc.Mean(g)
