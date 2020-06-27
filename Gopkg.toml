@@ -1,6 +1,6 @@
 # Gopkg.toml example
 #
-# Refer to https://github.com/golang/dep/blob/master/docs/Gopkg.toml.md
+# Refer to https://golang.github.io/dep/docs/Gopkg.toml.html
 # for detailed Gopkg.toml documentation.
 #
 # required = ["github.com/user/thing/cmd/thing"]
@@ -25,10 +25,18 @@
 #   unused-packages = true
 
 
-[prune]
-  go-tests = true
-  unused-packages = true
-
 [[constraint]]
   branch = "master"
   name = "github.com/nfnt/resize"
+
+[[constraint]]
+  name = "github.com/r9y9/gossp"
+  version = "0.0.1"
+
+[[constraint]]
+  name = "github.com/steakknife/hamming"
+  version = "0.2.5"
+
+[prune]
+  go-tests = true
+  unused-packages = true

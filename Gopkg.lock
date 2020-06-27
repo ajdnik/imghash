@@ -29,20 +29,12 @@
   version = "v0.0.1"
 
 [[projects]]
-  digest = "1:0111288c46f76c2ab2b6b4ae1cf23abecee194a810373dacb593b3229f250de0"
+  digest = "1:5ca4bdccd72e66aaba5b52f9c4a21f1021102f0919432fe138ad5d48abf06833"
   name = "github.com/steakknife/hamming"
   packages = ["."]
   pruneopts = "UT"
-  revision = "5ac3f73b8842df21423978fbbeb5166670f6f73e"
-  version = "0.2.3"
-
-[[projects]]
-  digest = "1:0c09fad0ade2b24d0aa3d8f3731321218708ca32124697752094b7ca67bf7b7d"
-  name = "gocv.io/x/gocv"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "df73d544675c731b2197d46622224839e1af07a6"
-  version = "v0.23.0"
+  revision = "003c143a81c25ea5e263d692919c611c7122ae6b"
+  version = "0.2.5"
 
 [solve-meta]
   analyzer-name = "dep"
@@ -51,7 +43,6 @@
     "github.com/nfnt/resize",
     "github.com/r9y9/gossp/dct",
     "github.com/steakknife/hamming",
-    "gocv.io/x/gocv",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1
