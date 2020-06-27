@@ -12,7 +12,7 @@ type Binary []byte
 
 // String returns binary hash formated as a hexadecimal string with zero padding.
 func (h Binary) String() string {
-	return fmt.Sprintf("%02X", []byte(h))
+	return fmt.Sprintf("%v", []byte(h))
 }
 
 // ErrOutOfBounds is reported when the bit position is out of bounds.

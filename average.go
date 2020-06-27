@@ -17,7 +17,7 @@ type Average struct {
 	// Resized image height.
 	height uint
 	// Resize interpolation method.
-	interp ResizeType
+	interp imgproc.ResizeType
 }
 
 // NewAverage creates a new Average struct using default values.
@@ -25,13 +25,13 @@ func NewAverage() Average {
 	return Average{
 		width:  8,
 		height: 8,
-		interp: Bilinear,
+		interp: imgproc.Bilinear,
 	}
 
 }
 
 // NewAverageWithParams creates a new Average struct based on supplied parameters.
-func NewAverageWithParams(resizeWidth, resizeHeight uint, resizeType ResizeType) Average {
+func NewAverageWithParams(resizeWidth, resizeHeight uint, resizeType imgproc.ResizeType) Average {
 	return Average{
 		width:  resizeWidth,
 		height: resizeHeight,
@@ -41,7 +41,7 @@ func NewAverageWithParams(resizeWidth, resizeHeight uint, resizeType ResizeType)
 
 // Calculate returns a perceptual image hash.
 func (ah *Average) Calculate(img image.Image) hashtype.Binary {
-	r := resizeImageCV(ah.width, ah.height, img, ah.interp)
+	r := imgproc.Resize(ah.width, ah.height, img, ah.interp)
 	g, _ := imgproc.Grayscale(r)
 	m, _ := imgproc.Mean(g)
 	return ah.computeHash(g, uint(math.Round(m)))

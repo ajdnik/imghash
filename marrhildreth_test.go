@@ -32,7 +32,6 @@ var marrHildrethCalculateTests = []struct {
 func TestMarrHildreth_Calculate(t *testing.T) {
 	for _, tt := range marrHildrethCalculateTests {
 		t.Run(tt.filename, func(t *testing.T) {
-			t.Parallel()
 			hash := NewMarrHildrethWithParams(tt.scale, tt.alpha, tt.width, tt.height, tt.resizeType, tt.kernelSize, tt.sigma)
 			img, _ := ReadImageCV(tt.filename)
 			if res := hash.Calculate(img); !res.Equal(tt.hash) {
@@ -64,7 +63,6 @@ var marrHildrethDistanceTests = []struct {
 func TestMarrHildreth_Distance(t *testing.T) {
 	for _, tt := range marrHildrethDistanceTests {
 		t.Run(fmt.Sprintf("%v %v", tt.firstImage, tt.secondImage), func(t *testing.T) {
-			t.Parallel()
 			hash := NewMarrHildrethWithParams(tt.scale, tt.alpha, tt.width, tt.height, tt.resizeType, tt.kernelSize, tt.sigma)
 			img1, _ := ReadImageCV(tt.firstImage)
 			img2, _ := ReadImageCV(tt.secondImage)

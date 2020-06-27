@@ -63,7 +63,7 @@ func (mhh *MarrHildreth) Calculate(img image.Image) hashtype.Binary {
 	eq := imgproc.EqualizeHist(r.(*image.Gray))
 	// Run a 2D marr hildereth filter over image
 	kernel := computeMarrHildrethKernel(mhh.alpha, mhh.scale)
-	f := filter2DCV(eq, kernel)
+	f := imgproc.Filter2DGray(eq, kernel)
 	blks := mhh.blocksSum(f)
 	return mhh.createHash(blks)
 }

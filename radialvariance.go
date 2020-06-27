@@ -1,7 +1,6 @@
 package imghash
 
 import (
-	"fmt"
 	"image"
 	"math"
 
@@ -42,11 +41,7 @@ func NewRadialVarianceWithParams(sigma float64, numOfAngleLines int) RadialVaria
 // Calculate returns a perceptual image hash.
 func (rv *RadialVariance) Calculate(img image.Image) hashtype.UInt8 {
 	g, _ := imgproc.Grayscale(img)
-	b := GaussianBlurCV(g, 0, rv.sigma)
-	s1 := ImageSum(b)
-	b2 := imgproc.GaussianBlur(g, 0, rv.sigma)
-	s2 := ImageSum(b2)
-	fmt.Printf("original=%v, custom=%v", s1, s2)
+	b := imgproc.GaussianBlur(g, 0, rv.sigma)
 	proj, ppl, dim := rv.radialProjections(b.(*image.Gray))
 	feat := rv.findFeatureVector(proj, ppl, dim)
 	return rv.computeHash(feat)

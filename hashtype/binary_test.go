@@ -11,18 +11,17 @@ var binaryStringTests = []struct {
 	hash   Binary
 	result string
 }{
-	{"zero byte", Binary{0}, "00"},
-	{"1 byte", Binary{1}, "01"},
-	{"max byte", Binary{255}, "FF"},
-	{"two zero bytes", Binary{0, 0}, "0000"},
-	{"1 two bytes", Binary{1, 0}, "0100"},
-	{"1 two bytes second", Binary{0, 1}, "0001"},
+	{"zero byte", Binary{0}, "[0]"},
+	{"1 byte", Binary{1}, "[1]"},
+	{"max byte", Binary{255}, "[255]"},
+	{"two zero bytes", Binary{0, 0}, "[0 0]"},
+	{"1 two bytes", Binary{1, 0}, "[1 0]"},
+	{"1 two bytes second", Binary{0, 1}, "[0 1]"},
 }
 
 func TestBinary_String(t *testing.T) {
 	for _, tt := range binaryStringTests {
 		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
 			if res := tt.hash.String(); res != tt.result {
 				t.Errorf("got %v, want %v", res, tt.result)
 			}
@@ -46,7 +45,6 @@ var binarySetErrorTests = []struct {
 func TestBinary_SetError(t *testing.T) {
 	for _, tt := range binarySetErrorTests {
 		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
 			if res := tt.start.Set(tt.position); res != tt.expect {
 				t.Errorf("got %v, want %v", res, tt.expect)
 			}
@@ -70,7 +68,6 @@ var binarySetTests = []struct {
 func TestBinary_Set(t *testing.T) {
 	for _, tt := range binarySetTests {
 		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
 			if tt.start.Set(tt.position); !tt.start.Equal(tt.expect) {
 				t.Errorf("got %08b, want %08b", tt.start, tt.expect)
 			}

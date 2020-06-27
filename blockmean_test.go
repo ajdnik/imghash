@@ -37,7 +37,6 @@ var blockMeanCalculateTests = []struct {
 func TestBlockMean_Calculate(t *testing.T) {
 	for _, tt := range blockMeanCalculateTests {
 		t.Run(tt.filename, func(t *testing.T) {
-			t.Parallel()
 			hash := NewBlockMeanWithParams(tt.width, tt.height, tt.resizeType, tt.blockWidth, tt.blockHeight, tt.method)
 			img, _ := ReadImageCV(tt.filename)
 			if res := hash.Calculate(img); !res.Equal(tt.hash) {
@@ -73,7 +72,6 @@ var blockMeanDistanceTests = []struct {
 func TestBlockMean_Distance(t *testing.T) {
 	for _, tt := range blockMeanDistanceTests {
 		t.Run(fmt.Sprintf("%v %v", tt.firstImage, tt.secondImage), func(t *testing.T) {
-			t.Parallel()
 			hash := NewBlockMeanWithParams(tt.width, tt.height, tt.resizeType, tt.blockWidth, tt.blockHeight, tt.method)
 			img1, _ := ReadImageCV(tt.firstImage)
 			img2, _ := ReadImageCV(tt.secondImage)

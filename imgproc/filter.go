@@ -5,6 +5,46 @@ import (
 	"image/color"
 )
 
+func Filter2DGray(img *image.Gray, kernel [][]float32) [][]float32 {
+	bounds := img.Bounds()
+	width, height := getSize(img)
+	ret := make([][]float32, height)
+	for i := 0; i < height; i++ {
+		ret[i] = make([]float32, width)
+	}
+	midY, midX := (len(kernel)-1)/2, (len(kernel[0])-1)/2
+	for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
+		for x := bounds.Min.X; x < bounds.Max.X; x++ {
+			var sum float64
+			for yo, ky := y-midY, 0; yo <= y+midY; yo, ky = yo+1, ky+1 {
+				for xo, kx := x-midX, 0; xo <= x+midX; xo, kx = xo+1, kx+1 {
+					iX, iY := borderReflect101(xo, yo, bounds)
+					sum += float64(kernel[ky][kx]) * float64(img.GrayAt(iX, iY).Y)
+				}
+			}
+			ret[y][x] = float32(sum)
+		}
+	}
+	return ret
+}
+
+func borderReflect101(x, y int, bounds image.Rectangle) (int, int) {
+	rX, rY := x, y
+	if rX < bounds.Min.X {
+		rX = bounds.Min.X + (bounds.Min.X - x)
+	}
+	if rX >= bounds.Max.X {
+		rX = bounds.Max.X - 1 - (x - bounds.Max.X + 1)
+	}
+	if rY < bounds.Min.Y {
+		rY = bounds.Min.Y + (bounds.Min.Y - y)
+	}
+	if rY >= bounds.Max.Y {
+		rY = bounds.Max.Y - 1 - (y - bounds.Max.Y + 1)
+	}
+	return rX, rY
+}
+
 func sepFilter2DGray(img *image.Gray, kernel []int) image.Image {
 	bounds := img.Bounds()
 	width, height := getSize(img)

@@ -33,7 +33,6 @@ var differenceCalculateTests = []struct {
 func TestDifference_Calculate(t *testing.T) {
 	for _, tt := range differenceCalculateTests {
 		t.Run(tt.filename, func(t *testing.T) {
-			t.Parallel()
 			hash := NewDifferenceWithParams(tt.width, tt.height, tt.resizeType)
 			file, err := os.Open(tt.filename)
 			if err != nil {
@@ -69,7 +68,6 @@ var differenceDistanceTests = []struct {
 func TestDifference_Distance(t *testing.T) {
 	for _, tt := range differenceDistanceTests {
 		t.Run(fmt.Sprintf("%v %v", tt.firstImage, tt.secondImage), func(t *testing.T) {
-			t.Parallel()
 			hash := NewDifferenceWithParams(tt.width, tt.height, tt.resizeType)
 			file1, err := os.Open(tt.firstImage)
 			if err != nil {

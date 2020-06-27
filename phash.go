@@ -43,7 +43,7 @@ func (ph *PHash) Calculate(img image.Image) hashtype.Binary {
 	r := resizeImageCV(ph.width, ph.height, img, ph.interp)
 	g, _ := imgproc.Grayscale(r)
 	fImg := imgproc.GrayToF32(g)
-	dctImg := dctCV(fImg)
+	dctImg := imgproc.DCT(fImg)
 	tLeft := ph.topLeft(dctImg)
 	// Remove the strongest frequency
 	tLeft[0][0] = 0

@@ -3,19 +3,55 @@
 
 [[projects]]
   branch = "master"
-  name = "github.com/bamiaux/rez"
-  packages = ["."]
-  revision = "29f4463c688b986c11f166b12734f69b58b5555f"
+  digest = "1:a058b48ec9fad1403482552ed04666f16a244b05b6968a2bc43a6cf6ebc350a8"
+  name = "github.com/mjibson/go-dsp"
+  packages = [
+    "dsputils",
+    "fft",
+  ]
+  pruneopts = "UT"
+  revision = "11479a337f1259210b7c8f93f7bf2b0cc87b066e"
 
 [[projects]]
+  branch = "master"
+  digest = "1:34534b73e925d20cc72cf202f8b482fdcbe3a1b113e19375f31aadabd0f0f97d"
+  name = "github.com/nfnt/resize"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "83c6a9932646f83e3267f353373d47347b6036b2"
+
+[[projects]]
+  digest = "1:f50321d0428c411f975a1d02387cb9940157ad6893bc42d510a91da4eb869f9b"
+  name = "github.com/r9y9/gossp"
+  packages = ["dct"]
+  pruneopts = "UT"
+  revision = "9bc962af48401d95d0ff09d54d71e812d85592b2"
+  version = "v0.0.1"
+
+[[projects]]
+  digest = "1:0111288c46f76c2ab2b6b4ae1cf23abecee194a810373dacb593b3229f250de0"
   name = "github.com/steakknife/hamming"
   packages = ["."]
+  pruneopts = "UT"
   revision = "5ac3f73b8842df21423978fbbeb5166670f6f73e"
   version = "0.2.3"
+
+[[projects]]
+  digest = "1:0c09fad0ade2b24d0aa3d8f3731321218708ca32124697752094b7ca67bf7b7d"
+  name = "gocv.io/x/gocv"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "df73d544675c731b2197d46622224839e1af07a6"
+  version = "v0.23.0"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "2ae38ac846d573958797740b71cea12dfa3d9b512e33746f745980400c9e5a6c"
+  input-imports = [
+    "github.com/nfnt/resize",
+    "github.com/r9y9/gossp/dct",
+    "github.com/steakknife/hamming",
+    "gocv.io/x/gocv",
+  ]
   solver-name = "gps-cdcl"
   solver-version = 1

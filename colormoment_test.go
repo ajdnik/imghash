@@ -30,7 +30,6 @@ var colorMomentCalculateTests = []struct {
 func TestColorMoment_Calculate(t *testing.T) {
 	for _, tt := range colorMomentCalculateTests {
 		t.Run(tt.filename, func(t *testing.T) {
-			t.Parallel()
 			hash := NewColorMomentWithParams(tt.width, tt.height, tt.resizeType, tt.kernel, tt.sigma)
 			img, _ := ReadImageCV(tt.filename)
 			if res := hash.Calculate(img); !res.Equal(tt.hash) {
@@ -60,7 +59,6 @@ var colorMomentDistanceTests = []struct {
 func TestColorMoment_Distance(t *testing.T) {
 	for _, tt := range colorMomentDistanceTests {
 		t.Run(fmt.Sprintf("%v %v", tt.firstImage, tt.secondImage), func(t *testing.T) {
-			t.Parallel()
 			hash := NewColorMomentWithParams(tt.width, tt.height, tt.resizeType, tt.kernel, tt.sigma)
 			img1, _ := ReadImageCV(tt.firstImage)
 			img2, _ := ReadImageCV(tt.secondImage)
