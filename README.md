@@ -27,6 +27,6 @@ The project is still a work in progress.
 - [x] Color Moments hash
 - [x] Marr-Hildreth hash
 - [x] Block Mean Value hash
-- [ ] pHash
-- [ ] Radial Variance hash
+- [x] pHash
+- [x] Radial Variance hash
 - [ ] Documentation
