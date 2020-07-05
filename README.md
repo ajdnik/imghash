@@ -31,8 +31,8 @@ package main
 import (
   "fmt"
   "image"
-	_ "image/png"
-	"os"
+  _ "image/png"
+  "os"
 
   "github.com/ajdnik/imghash"
   "github.com/ajdnik/imghash/similarity"
