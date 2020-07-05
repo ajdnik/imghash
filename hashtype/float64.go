@@ -1,3 +1,10 @@
+// Copyright 2020 Rok Ajdnik. All rights reserved.
+// Use of this source code is governed by the MIT
+// license that can be found in the LICENSE file.
+
+// Package hashtype implements data types used to represent hashes.
+// It is used by various hashing algorithm implementations to
+// represent the algorithm's results.
 package hashtype
 
 import (
@@ -8,12 +15,17 @@ import (
 // Float64 represents a hash type where the smallest hash element is a float64.
 type Float64 []float64
 
-// String returns float64 hash formated as a slice of float64 values.
+// String returns a string representation of the float64 hash.
+// Is is formated as a slice of float64 values.
 func (h Float64) String() string {
 	return fmt.Sprintf("%v", []float64(h))
 }
 
-// Equal checks if two float64 hashes are the same by using epsilon based value comparrison.
+// Equal checks if two float64 hashes are the same.
+// It uses an epsilon based value comparrison.
+// Returns true if each same index value pair
+// is within an epsilon distance of each other.
+// If the hashes aren't equal size the function returns false.
 func (h Float64) Equal(fh Float64) bool {
 	if len(h) != len(fh) {
 		return false

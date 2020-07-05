@@ -2,6 +2,7 @@
 
 [![Build Status](https://github.com/ajdnik/imghash/workflows/tests-and-coverage/badge.svg "GitHub Actions status")](https://github.com/ajdnik/imghash/actions?query=workflow%3Atests-and-coverage)
 [![Coverage Status](https://coveralls.io/repos/github/ajdnik/imghash/badge.svg?branch=master)](https://coveralls.io/github/ajdnik/imghash?branch=master)
+[![GoDoc](https://godoc.org/github.com/ajdnik/imghash?status.svg "GoDoc")](https://godoc.org/github.com/ajdnik/imghash)
 [![Go Report Card](https://goreportcard.com/badge/github.com/ajdnik/imghash)](https://goreportcard.com/report/github.com/ajdnik/imghash)
 [![License MIT](https://img.shields.io/badge/license-MIT-lightgrey.svg)](https://github.com/ajdnik/imghash/blob/master/LICENSE)
 
