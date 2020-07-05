@@ -6,29 +6,82 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/ajdnik/imghash)](https://goreportcard.com/report/github.com/ajdnik/imghash)
 [![License MIT](https://img.shields.io/badge/license-MIT-lightgrey.svg)](https://github.com/ajdnik/imghash/blob/master/LICENSE)
 
-Go implementation of multiple perceptual hash algorithms for images. The source code has been ported from [OpenCV Contrib](https://github.com/opencv/opencv_contrib).
+Go implementation of multiple perceptual hash algorithms for images. Perceptual hash functions are analogous if features are similar, whereas cryptographic hashing relies on the avalanche effect of a small change in input value creating a drastic change in output value. 
 
-### Supported algorithms
+## Installing
 
-- Average hash
-- Difference hash
-- Median hash
-- Block Mean Value hash
-- pHash
-- Marr-Hildreth hash
-- Radial Variance hash
-- Color Moments hash
+Using imghash is easy. First, use `go get` to install the latest version
+of the library. This command will install the library and its dependencies:
 
-### TODO
+    go get -u github.com/ajdnik/imghash
 
-The project is still a work in progress. 
+Next, include imghash in your application:
 
-- [x] Average hash
-- [x] Difference hash
-- [x] Median hash
-- [x] Color Moments hash
-- [x] Marr-Hildreth hash
-- [x] Block Mean Value hash
-- [x] pHash
-- [x] Radial Variance hash
-- [ ] Documentation
+```go
+import "github.com/ajdnik/imghash"
+```
+
+## Example
+
+In the example below, we read an image from the filesystem and decode it. Afterwards we use the pHash to compute its perceptual hash. Next we load another image and compute its pHash, and lastly, we compare both hashes to get a difference score.
+
+```go
+package main
+
+import (
+  "fmt"
+  "image"
+	_ "image/png"
+	"os"
+
+  "github.com/ajdnik/imghash"
+  "github.com/ajdnik/imghash/similarity"
+)
+
+func main() {
+  // Open the first image
+  fimg1, err := os.Open("image1.png")
+  if err != nil {
+    panic(err)
+  }
+  defer fimg1.Close()
+
+  // Decode the image
+  img1, _, err := image.Decode(fimg1)
+  if err != nil {
+    panic(err)
+  }
+
+  // Create pHash object
+  phash := imghash.NewPHash()
+  
+  // Compute the hash of the image
+  h1 := phash.Calculate(img1)
+  fmt.Printf("First hash: %v\n", h1)
+
+  // Open the second image
+  fimg2, err := os.Open("image2.png")
+  if err != nil {
+    panic(err)
+  }
+  defer fimg2.Close()
+
+  // Decode the second image
+  img2, _, err := image.Decode(fimg2)
+  if err != nil {
+    panic(err)
+  }
+
+  // Compute the hash of the second image
+  h2 := phash.Calculate(img2)
+  fmt.Printf("Second hash: %v\n", h2)
+
+  // Compute hash similarity score
+  d := similarity.Hamming(h1, h2)
+  fmt.Printf("Hash similarity: %v\n", d)
+}
+```
+
+## License
+
+Imghash is released under the MIT license. See [LICENSE](https://github.com/ajdnik/imghash/blob/master/LICENSE)
