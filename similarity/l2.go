@@ -6,12 +6,12 @@ import (
 	"github.com/ajdnik/imghash/hashtype"
 )
 
-// L2Float64 calculates distance between two float64 hashes.
+// L2Float64 calculates the L2 distance between two float64 hashes.
 func L2Float64(h1, h2 hashtype.Float64) Distance {
 	return l2Calculate(h1, h2)
 }
 
-// L2UInt8 calculates distance between two uint8 hashes.
+// L2UInt8 calculates the L2 distance between two uint8 hashes.
 func L2UInt8(h1, h2 hashtype.UInt8) Distance {
 	return l2Calculate(h1, h2)
 }
