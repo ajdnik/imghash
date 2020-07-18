@@ -42,6 +42,18 @@ func TestMarrHildreth_Calculate(t *testing.T) {
 	}
 }
 
+func ExampleMarrHildreth_calculate() {
+	// Read image from file
+	img, _ := imgproc.Read("assets/cat.jpg")
+	// Create new Marr-Hildreth Hash using default parameters
+	marr := NewMarrHildreth()
+	// Calculate hash
+	hash := marr.Calculate(img)
+
+	fmt.Println(hash)
+	// Output: [51 1 228 237 182 92 200 237 102 109 182 60 12 178 88 222 73 182 108 124 27 36 183 79 226 73 182 76 134 68 237 229 163 242 73 182 36 159 11 115 118 76 152 151 180 100 248 11 97 121 38 145 169 45 45 146 91 31 13 33 60 95 38 47 131 201 32 253 160 108 188 27]
+}
+
 var marrHildrethDistanceTests = []struct {
 	firstImage  string
 	secondImage string

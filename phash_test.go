@@ -38,6 +38,18 @@ func TestPHash_Calculate(t *testing.T) {
 	}
 }
 
+func ExamplePHash_Calculate() {
+	// Read image from file
+	img, _ := imgproc.Read("assets/cat.jpg")
+	// Create new PHash using default parameters
+	ph := NewPHash()
+	// Calculate hash
+	hash := ph.Calculate(img)
+
+	fmt.Println(hash)
+	// Output: [170 211 65 29 10 2 38 84]
+}
+
 var pHashDistanceTests = []struct {
 	firstImage  string
 	secondImage string

@@ -38,6 +38,18 @@ func TestAverage_Calculate(t *testing.T) {
 	}
 }
 
+func ExampleAverage_Calculate() {
+	// Read image from file
+	img, _ := imgproc.Read("assets/cat.jpg")
+	// Create new Average Hash using default parameters
+	avg := NewAverage()
+	// Calculate hash
+	hash := avg.Calculate(img)
+
+	fmt.Println(hash)
+	// Output: [255 255 15 7 1 0 0 0]
+}
+
 var averageDistanceTests = []struct {
 	firstImage  string
 	secondImage string

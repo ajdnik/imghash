@@ -40,6 +40,18 @@ func TestDifference_Calculate(t *testing.T) {
 	}
 }
 
+func ExampleDifference_Calculate() {
+	// Read image from file
+	img, _ := imgproc.Read("assets/cat.jpg")
+	// Create new Difference Hash using default parameters
+	diff := NewDifference()
+	// Calculate hash
+	hash := diff.Calculate(img)
+
+	fmt.Println(hash)
+	// Output: [6 2 194 64 124 60 16 16]
+}
+
 var differenceDistanceTests = []struct {
 	firstImage  string
 	secondImage string

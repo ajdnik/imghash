@@ -47,6 +47,18 @@ func TestBlockMean_Calculate(t *testing.T) {
 	}
 }
 
+func ExampleBlockMean_Calculate() {
+	// Read image from file
+	img, _ := imgproc.Read("assets/cat.jpg")
+	// Create new Block Mean Hash using default parameters
+	block := NewBlockMean()
+	// Calculate hash
+	hash := block.Calculate(img)
+
+	fmt.Println(hash)
+	// Output: [255 255 255 255 255 255 255 255 255 225 127 0 63 0 15 0 7 2 3 0 1 0 1 0 0 0 0 0 0 0 116 4]
+}
+
 var blockMeanDistanceTests = []struct {
 	firstImage  string
 	secondImage string

@@ -37,6 +37,18 @@ func TestRadialVariance_Calculate(t *testing.T) {
 	}
 }
 
+func ExampleRadialVariance_Calculate() {
+	// Read image from file
+	img, _ := imgproc.Read("assets/cat.jpg")
+	// Create new Radial Variance Hash using default parameters
+	rad := NewRadialVariance()
+	// Calculate hash
+	hash := rad.Calculate(img)
+
+	fmt.Println(hash)
+	// Output: [166 246 10 0 124 194 254 203 219 156 116 176 226 154 138 184 195 174 155 143 213 154 170 209 125 152 173 167 181 170 165 183 157 179 174 162 161 171 157 194]
+}
+
 var radialVarianceDistanceTests = []struct {
 	firstImage  string
 	secondImage string

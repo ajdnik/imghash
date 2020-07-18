@@ -40,6 +40,18 @@ func TestMedian_Calculate(t *testing.T) {
 	}
 }
 
+func ExampleMedian_Calculate() {
+	// Read image from file
+	img, _ := imgproc.Read("assets/cat.jpg")
+	// Create new Median Hash using default parameters
+	med := NewMedian()
+	// Calculate hash
+	hash := med.Calculate(img)
+
+	fmt.Println(hash)
+	// Output: [255 255 31 7 3 1 1 39]
+}
+
 var medianDistanceTests = []struct {
 	firstImage  string
 	secondImage string
