@@ -128,7 +128,7 @@ func computeMarrHildrethKernel(alpha, level float64) [][]float32 {
 		for j := range kernel[i] {
 			xpos := ratio * float32(j-sigma)
 			a := float64(xpos*xpos + yposPow2)
-			kernel[i][j] = float32((2 - a) * math.Exp(a/2))
+			kernel[i][j] = float32((2 - a) * math.Exp(a/-2))
 		}
 	}
 	return kernel
