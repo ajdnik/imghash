@@ -4,7 +4,6 @@ import (
 	"errors"
 	"image"
 	"image/color"
-	"math"
 )
 
 // ErrImageIsNil ...
@@ -17,11 +16,9 @@ func Grayscale(img image.Image) (*image.Gray, error) {
 	}
 	bounds := img.Bounds()
 	gray := image.NewGray(bounds)
-	for x := bounds.Min.X; x < bounds.Max.X; x++ {
-		for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
-			r, g, b, _ := img.At(x, y).RGBA()
-			lum := uint8(math.Round(0.299*float64(r/0x101) + 0.587*float64(g/0x101) + 0.114*float64(b/0x101)))
-			gray.Set(x, y, color.Gray{lum})
+	for y := img.Bounds().Min.Y; y < img.Bounds().Max.Y; y++ {
+		for x := img.Bounds().Min.X; x < img.Bounds().Max.X; x++ {
+			gray.Set(x, y, img.At(x, y))
 		}
 	}
 	return gray, nil
