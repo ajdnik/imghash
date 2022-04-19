@@ -27,6 +27,8 @@ type MarrHildreth struct {
 	kernel int
 	// Gaussian kernel sigma parameter.
 	sigma float64
+
+	kernels [][]float32
 }
 
 // NewMarrHildreth creates a new MarrHildreth struct using default values.
@@ -44,7 +46,7 @@ func NewMarrHildreth() MarrHildreth {
 
 // NewMarrHildrethWithParams creates a new MarrHildreth struct using the supplied parameters.
 func NewMarrHildrethWithParams(scale, alpha float64, resizeWidth, resizeHeight uint, resizeType imgproc.ResizeType, kernelSize int, sigma float64) MarrHildreth {
-	return MarrHildreth{
+	mh := MarrHildreth{
 		scale:  scale,
 		alpha:  alpha,
 		width:  resizeWidth,
@@ -53,6 +55,8 @@ func NewMarrHildrethWithParams(scale, alpha float64, resizeWidth, resizeHeight u
 		kernel: kernelSize,
 		sigma:  sigma,
 	}
+	mh.kernels = computeMarrHildrethKernel(alpha, scale)
+	return mh
 }
 
 // Calculate returns a perceptual image hash.
@@ -62,8 +66,7 @@ func (mhh *MarrHildreth) Calculate(img image.Image) hashtype.Binary {
 	r := imgproc.Resize(mhh.width, mhh.height, b, mhh.interp)
 	eq := imgproc.EqualizeHist(r.(*image.Gray))
 	// Run a 2D marr hildereth filter over image
-	kernel := computeMarrHildrethKernel(mhh.alpha, mhh.scale)
-	f := imgproc.Filter2DGray(eq, kernel)
+	f := imgproc.Filter2DGray(eq, mhh.kernels)
 	blks := mhh.blocksSum(f)
 	return mhh.createHash(blks)
 }

@@ -64,3 +64,27 @@ func getSize(img image.Image) (int, int) {
 func cvRound(value float64) int {
 	return int(math.Round(value))
 }
+
+// Normalize normalize images to [0,1] range
+func Normalize(img [][]float32) {
+	var max, min float32
+	max = -1 << 30
+	min = 1 << 30
+	for _, list := range img {
+		for _, v := range list {
+			if v > max {
+				max = v
+			}
+			if v < min {
+				min = v
+			}
+		}
+	}
+
+	diff := max - min
+	for x, list := range img {
+		for y, v := range list {
+			(img)[x][y] = (v - min) / diff
+		}
+	}
+}
