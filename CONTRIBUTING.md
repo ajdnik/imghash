@@ -10,6 +10,7 @@ a pull request.
 |------|----------------|---------|
 | Go | 1.16+ | [go.dev/dl](https://go.dev/dl/) |
 | golangci-lint | v2.10.1 | Installed automatically by `make lint` |
+| govulncheck | latest | Installed automatically by `make vulncheck` |
 | GNU Make | any | Pre-installed on most systems |
 
 ## Getting Started
@@ -28,9 +29,10 @@ The Makefile provides every command you need:
 make fmt        # Format code with go fmt
 make vet        # Run go vet
 make lint       # Run golangci-lint (installs it if missing)
+make vulncheck  # Run govulncheck (installs it if missing)
 make test       # Run the test suite
 make coverage   # Run tests with coverage and print a summary
-make all        # fmt + vet + lint + test (recommended before pushing)
+make all        # fmt + vet + lint + vulncheck + test (recommended before pushing)
 ```
 
 Run `make all` before opening a pull request — it mirrors the CI checks that
@@ -68,6 +70,7 @@ must pass.
 
    - **Go Vet** — `go vet ./...`
    - **Lint** — `golangci-lint run ./...`
+   - **Vulnerability Check** — `govulncheck ./...`
    - **Test & Coverage** — `go test` with an 80 % minimum coverage threshold
 
 5. A maintainer will review your PR. Please be responsive to feedback — small
