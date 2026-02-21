@@ -21,22 +21,23 @@ type Difference struct {
 
 // NewDifference creates a new Difference hash with the given options.
 // Without options, sensible defaults are used.
-func NewDifference(opts ...Option) Difference {
-	o := options{
+func NewDifference(opts ...DifferenceOption) (Difference, error) {
+	d := Difference{
 		width:  8,
 		height: 8,
 		interp: Bilinear,
 	}
-	applyOptions(&o, opts)
-	return Difference{
-		width:  o.width,
-		height: o.height,
-		interp: o.interp,
+	for _, o := range opts {
+		o.applyDifference(&d)
 	}
+	if d.width == 0 || d.height == 0 {
+		return Difference{}, ErrInvalidSize
+	}
+	return d, nil
 }
 
 // Calculate returns a perceptual image hash.
-func (dh *Difference) Calculate(img image.Image) (hashtype.Hash, error) {
+func (dh Difference) Calculate(img image.Image) (hashtype.Hash, error) {
 	r := imgproc.Resize(dh.width+1, dh.height, img, dh.interp.resizeType())
 	g, err := imgproc.Grayscale(r)
 	if err != nil {
@@ -46,7 +47,7 @@ func (dh *Difference) Calculate(img image.Image) (hashtype.Hash, error) {
 }
 
 // Computes the binary hash based on the gradients in the resized image.
-func (dh *Difference) computeHash(img *image.Gray) hashtype.Binary {
+func (dh Difference) computeHash(img *image.Gray) hashtype.Binary {
 	size := dh.width * dh.height / 8
 	hash := make(hashtype.Binary, size)
 	bnds := img.Bounds()

@@ -53,8 +53,14 @@ func ExampleHamming() {
 	hash2 := hashtype.Binary{24, 60, 126, 126, 126, 126, 60, 0}
 	hash3 := hashtype.Binary{63, 131, 192, 224, 192, 252, 255, 63}
 
-	res1, _ := Hamming(hash1, hash2)
-	res2, _ := Hamming(hash1, hash3)
+	res1, err := Hamming(hash1, hash2)
+	if err != nil {
+		panic(err)
+	}
+	res2, err := Hamming(hash1, hash3)
+	if err != nil {
+		panic(err)
+	}
 	fmt.Println(res1)
 	fmt.Println(res2)
 	// Output:

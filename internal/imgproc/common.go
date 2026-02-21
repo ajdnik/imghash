@@ -6,7 +6,7 @@ import (
 	"sort"
 )
 
-// Mean ...
+// Mean returns the arithmetic mean of all pixel values in the grayscale image.
 func Mean(img *image.Gray) (float64, error) {
 	if img == nil {
 		return 0, ErrImageIsNil
@@ -27,7 +27,7 @@ func Mean(img *image.Gray) (float64, error) {
 	return sum / totalPixels, nil
 }
 
-// Median ...
+// Median returns the median pixel value of the grayscale image.
 func Median(img *image.Gray) (float64, error) {
 	if img == nil {
 		return 0, ErrImageIsNil

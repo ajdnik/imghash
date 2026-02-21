@@ -43,28 +43,29 @@ const (
 
 // NewBlockMean creates a new BlockMean hash with the given options.
 // Without options, sensible defaults are used.
-func NewBlockMean(opts ...Option) BlockMean {
-	o := options{
-		width:       256,
-		height:      256,
-		interp:      BilinearExact,
-		blockWidth:  16,
-		blockHeight: 16,
-		blockMethod: Direct,
+func NewBlockMean(opts ...BlockMeanOption) (BlockMean, error) {
+	b := BlockMean{
+		rWidth:  256,
+		rHeight: 256,
+		interp:  BilinearExact,
+		bWidth:  16,
+		bHeight: 16,
+		method:  Direct,
 	}
-	applyOptions(&o, opts)
-	return BlockMean{
-		rWidth:  o.width,
-		rHeight: o.height,
-		interp:  o.interp,
-		bWidth:  o.blockWidth,
-		bHeight: o.blockHeight,
-		method:  o.blockMethod,
+	for _, o := range opts {
+		o.applyBlockMean(&b)
 	}
+	if b.rWidth == 0 || b.rHeight == 0 {
+		return BlockMean{}, ErrInvalidSize
+	}
+	if b.bWidth == 0 || b.bHeight == 0 {
+		return BlockMean{}, ErrInvalidBlockSize
+	}
+	return b, nil
 }
 
 // Calculate returns a perceptual image hash.
-func (bh *BlockMean) Calculate(img image.Image) (hashtype.Hash, error) {
+func (bh BlockMean) Calculate(img image.Image) (hashtype.Hash, error) {
 	r := imgproc.Resize(bh.rWidth, bh.rHeight, img, bh.interp.resizeType())
 	g, err := imgproc.Grayscale(r)
 	if err != nil {
@@ -79,7 +80,7 @@ func (bh *BlockMean) Calculate(img image.Image) (hashtype.Hash, error) {
 }
 
 // Computes mean values of constructed blocks.
-func (bh *BlockMean) computeMean(img *image.Gray) []float64 {
+func (bh BlockMean) computeMean(img *image.Gray) []float64 {
 	blksInX := int(bh.rWidth / bh.bWidth)
 	blksInY := int(bh.rHeight / bh.bHeight)
 	numB := blksInX * blksInY
@@ -111,8 +112,8 @@ func (bh *BlockMean) computeMean(img *image.Gray) []float64 {
 	return means
 }
 
-// Computest binary hash value based on block means.
-func (bh *BlockMean) computeHash(means []float64, median float64) hashtype.Binary {
+// Computes binary hash value based on block means.
+func (bh BlockMean) computeHash(means []float64, median float64) hashtype.Binary {
 	mSize := len(means)
 	hSize := mSize/8 + mSize%8
 	hash := make(hashtype.Binary, hSize)

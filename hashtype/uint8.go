@@ -12,7 +12,7 @@ import (
 type UInt8 []uint8
 
 // String returns a string representation of uint8 hash.
-// Is is formated as a uint8 slice.
+// It is formatted as a uint8 slice.
 func (h UInt8) String() string {
 	return fmt.Sprintf("%v", []uint8(h))
 }

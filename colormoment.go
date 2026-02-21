@@ -26,26 +26,31 @@ type ColorMoment struct {
 
 // NewColorMoment creates a new ColorMoment hash with the given options.
 // Without options, sensible defaults are used.
-func NewColorMoment(opts ...Option) ColorMoment {
-	o := options{
+func NewColorMoment(opts ...ColorMomentOption) (ColorMoment, error) {
+	c := ColorMoment{
 		width:  512,
 		height: 512,
 		interp: Bicubic,
 		kernel: 3,
 		sigma:  0,
 	}
-	applyOptions(&o, opts)
-	return ColorMoment{
-		width:  o.width,
-		height: o.height,
-		interp: o.interp,
-		kernel: o.kernel,
-		sigma:  o.sigma,
+	for _, o := range opts {
+		o.applyColorMoment(&c)
 	}
+	if c.width == 0 || c.height == 0 {
+		return ColorMoment{}, ErrInvalidSize
+	}
+	if c.kernel <= 0 {
+		return ColorMoment{}, ErrInvalidKernelSize
+	}
+	if c.sigma < 0 {
+		return ColorMoment{}, ErrInvalidSigma
+	}
+	return c, nil
 }
 
 // Calculate returns a perceptual image hash.
-func (ch *ColorMoment) Calculate(img image.Image) (hashtype.Hash, error) {
+func (ch ColorMoment) Calculate(img image.Image) (hashtype.Hash, error) {
 	r := imgproc.Resize(ch.width, ch.height, img, ch.interp.resizeType())
 	b := imgproc.GaussianBlur(r, ch.kernel, ch.sigma)
 	yrb, err := imgproc.YCrCb(b)

@@ -8,6 +8,13 @@ import (
 	"github.com/ajdnik/imghash/internal/imgproc"
 )
 
+const (
+	mhBlockSize = 16 // pixel block size for summation
+	mhNumBlocks = 31 // blocks per dimension (default 512/16 - 1)
+	mhSubBlock  = 3  // sub-block dimension for hash construction
+	mhStride    = 4  // step between hash sub-blocks
+)
+
 // MarrHildreth is a perceptual hash that uses the method described in
 // Implementation and Benchmarking of Perceptual Image Hash Functions; Zauner et. al.
 //
@@ -33,8 +40,8 @@ type MarrHildreth struct {
 
 // NewMarrHildreth creates a new MarrHildreth hash with the given options.
 // Without options, sensible defaults are used.
-func NewMarrHildreth(opts ...Option) MarrHildreth {
-	o := options{
+func NewMarrHildreth(opts ...MarrHildrethOption) (MarrHildreth, error) {
+	mh := MarrHildreth{
 		scale:  1,
 		alpha:  2,
 		width:  512,
@@ -43,22 +50,30 @@ func NewMarrHildreth(opts ...Option) MarrHildreth {
 		kernel: 7,
 		sigma:  0,
 	}
-	applyOptions(&o, opts)
-	mh := MarrHildreth{
-		scale:  o.scale,
-		alpha:  o.alpha,
-		width:  o.width,
-		height: o.height,
-		interp: o.interp,
-		kernel: o.kernel,
-		sigma:  o.sigma,
+	for _, o := range opts {
+		o.applyMarrHildreth(&mh)
+	}
+	if mh.width == 0 || mh.height == 0 {
+		return MarrHildreth{}, ErrInvalidSize
+	}
+	if mh.scale <= 0 {
+		return MarrHildreth{}, ErrInvalidScale
+	}
+	if mh.alpha <= 0 {
+		return MarrHildreth{}, ErrInvalidAlpha
+	}
+	if mh.kernel <= 0 {
+		return MarrHildreth{}, ErrInvalidKernelSize
+	}
+	if mh.sigma < 0 {
+		return MarrHildreth{}, ErrInvalidSigma
 	}
 	mh.kernels = computeMarrHildrethKernel(mh.alpha, mh.scale)
-	return mh
+	return mh, nil
 }
 
 // Calculate returns a perceptual image hash.
-func (mhh *MarrHildreth) Calculate(img image.Image) (hashtype.Hash, error) {
+func (mhh MarrHildreth) Calculate(img image.Image) (hashtype.Hash, error) {
 	g, err := imgproc.Grayscale(img)
 	if err != nil {
 		return nil, err
@@ -72,15 +87,14 @@ func (mhh *MarrHildreth) Calculate(img image.Image) (hashtype.Hash, error) {
 }
 
 // Compute sums of blocks.
-// TODO: Remove all magic numbers.
-func (mhh *MarrHildreth) blocksSum(img [][]float32) [][]float32 {
-	blocks := make([][]float32, 31)
-	for r := 0; r < 31; r++ {
-		blocks[r] = make([]float32, 31)
-		for c := 0; c < 31; c++ {
+func (mhh MarrHildreth) blocksSum(img [][]float32) [][]float32 {
+	blocks := make([][]float32, mhNumBlocks)
+	for r := 0; r < mhNumBlocks; r++ {
+		blocks[r] = make([]float32, mhNumBlocks)
+		for c := 0; c < mhNumBlocks; c++ {
 			var sum float32
-			for roiR := r * 16; roiR < r*16+16; roiR++ {
-				for roiC := c * 16; roiC < c*16+16; roiC++ {
+			for roiR := r * mhBlockSize; roiR < r*mhBlockSize+mhBlockSize; roiR++ {
+				for roiC := c * mhBlockSize; roiC < c*mhBlockSize+mhBlockSize; roiC++ {
 					sum += img[roiR][roiC]
 				}
 			}
@@ -91,21 +105,23 @@ func (mhh *MarrHildreth) blocksSum(img [][]float32) [][]float32 {
 }
 
 // Compute binary hash from block sums.
-// TODO: Remove all magic numbers.
-func (mhh *MarrHildreth) createHash(blocks [][]float32) hashtype.Binary {
-	hash := make(hashtype.Binary, 72)
+func (mhh MarrHildreth) createHash(blocks [][]float32) hashtype.Binary {
+	gridLimit := mhNumBlocks - mhSubBlock + 1
+	gridSteps := (gridLimit-1)/mhStride + 1
+	hashBits := gridSteps * gridSteps * mhSubBlock * mhSubBlock
+	hash := make(hashtype.Binary, hashBits/8)
 	var count uint
-	for r := 0; r < 29; r += 4 {
-		for c := 0; c < 29; c += 4 {
+	for r := 0; r < gridLimit; r += mhStride {
+		for c := 0; c < gridLimit; c += mhStride {
 			var sum float32
-			for i := r; i < r+3; i++ {
-				for j := c; j < c+3; j++ {
+			for i := r; i < r+mhSubBlock; i++ {
+				for j := c; j < c+mhSubBlock; j++ {
 					sum += blocks[j][i]
 				}
 			}
-			avg := sum / 9.0
-			for i := r; i < r+3; i++ {
-				for j := c; j < c+3; j++ {
+			avg := sum / float32(mhSubBlock*mhSubBlock)
+			for i := r; i < r+mhSubBlock; i++ {
+				for j := c; j < c+mhSubBlock; j++ {
 					if blocks[j][i] > avg {
 						_ = hash.SetReverse(count)
 					}

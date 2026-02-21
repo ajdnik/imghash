@@ -7,6 +7,10 @@ import (
 	"github.com/ajdnik/imghash/internal/imgproc"
 )
 
+// Size of the low-frequency DCT coefficient block used by PHash.
+// An 8x8 block produces a 64-bit (8-byte) binary hash.
+const dctCoefSize = 8
+
 // PHash is a perceptual hash that uses the method described in
 // Implementation and Benchmarking of Perceptual Image Hash Functions; Zauner et. al.
 //
@@ -22,22 +26,23 @@ type PHash struct {
 
 // NewPHash creates a new PHash with the given options.
 // Without options, sensible defaults are used.
-func NewPHash(opts ...Option) PHash {
-	o := options{
+func NewPHash(opts ...PHashOption) (PHash, error) {
+	p := PHash{
 		width:  32,
 		height: 32,
 		interp: BilinearExact,
 	}
-	applyOptions(&o, opts)
-	return PHash{
-		width:  o.width,
-		height: o.height,
-		interp: o.interp,
+	for _, o := range opts {
+		o.applyPHash(&p)
 	}
+	if p.width == 0 || p.height == 0 {
+		return PHash{}, ErrInvalidSize
+	}
+	return p, nil
 }
 
 // Calculate returns a perceptual image hash.
-func (ph *PHash) Calculate(img image.Image) (hashtype.Hash, error) {
+func (ph PHash) Calculate(img image.Image) (hashtype.Hash, error) {
 	r := imgproc.Resize(ph.width, ph.height, img, ph.interp.resizeType())
 	g, err := imgproc.Grayscale(r)
 	if err != nil {
@@ -54,9 +59,8 @@ func (ph *PHash) Calculate(img image.Image) (hashtype.Hash, error) {
 }
 
 // Computes the binary hash based on the binary image supplied.
-func (ph *PHash) computeHash(img [][]float32) hashtype.Binary {
-	// TODO: Remove magic numbers
-	hash := make(hashtype.Binary, 8)
+func (ph PHash) computeHash(img [][]float32) hashtype.Binary {
+	hash := make(hashtype.Binary, dctCoefSize)
 	var c uint
 	for i := range img {
 		for j := range img[i] {
@@ -70,17 +74,16 @@ func (ph *PHash) computeHash(img [][]float32) hashtype.Binary {
 }
 
 // Extract top left block from supplied image.
-func (ph *PHash) topLeft(img [][]float32) [][]float32 {
-	// TODO: Remove magic numbers
-	tL := make([][]float32, 8)
+func (ph PHash) topLeft(img [][]float32) [][]float32 {
+	tL := make([][]float32, dctCoefSize)
 	for i := range tL {
-		tL[i] = img[i][0:8]
+		tL[i] = img[i][0:dctCoefSize]
 	}
 	return tL
 }
 
 // Compute mean of the supplied image.
-func (ph *PHash) mean(img [][]float32) float32 {
+func (ph PHash) mean(img [][]float32) float32 {
 	var c int
 	var s float32
 	for i := range img {
@@ -92,8 +95,8 @@ func (ph *PHash) mean(img [][]float32) float32 {
 	return s / float32(c)
 }
 
-// Build a binary image by comparring the value to the supplied image.
-func (ph *PHash) compare(img [][]float32, val float32) [][]float32 {
+// Build a binary image by comparing the value to the supplied image.
+func (ph PHash) compare(img [][]float32, val float32) [][]float32 {
 	bit := make([][]float32, len(img))
 	for i := range img {
 		bit[i] = make([]float32, len(img[i]))

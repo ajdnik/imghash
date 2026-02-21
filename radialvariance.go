@@ -20,24 +20,29 @@ type RadialVariance struct {
 }
 
 const hashSize = 40
-const sqTwo = 1.4142135623730950488016887242097
+const sqTwo = math.Sqrt2
 
 // NewRadialVariance creates a new RadialVariance hash with the given options.
 // Without options, sensible defaults are used.
-func NewRadialVariance(opts ...Option) RadialVariance {
-	o := options{
+func NewRadialVariance(opts ...RadialVarianceOption) (RadialVariance, error) {
+	rv := RadialVariance{
 		sigma:  1,
 		angles: 180,
 	}
-	applyOptions(&o, opts)
-	return RadialVariance{
-		sigma:  o.sigma,
-		angles: o.angles,
+	for _, o := range opts {
+		o.applyRadialVariance(&rv)
 	}
+	if rv.angles <= 0 {
+		return RadialVariance{}, ErrInvalidAngles
+	}
+	if rv.sigma < 0 {
+		return RadialVariance{}, ErrInvalidSigma
+	}
+	return rv, nil
 }
 
 // Calculate returns a perceptual image hash.
-func (rv *RadialVariance) Calculate(img image.Image) (hashtype.Hash, error) {
+func (rv RadialVariance) Calculate(img image.Image) (hashtype.Hash, error) {
 	g, err := imgproc.Grayscale(img)
 	if err != nil {
 		return nil, err
@@ -46,13 +51,6 @@ func (rv *RadialVariance) Calculate(img image.Image) (hashtype.Hash, error) {
 	proj, ppl, dim := rv.radialProjections(b.(*image.Gray))
 	feat := rv.findFeatureVector(proj, ppl, dim)
 	return rv.computeHash(feat), nil
-}
-
-func getSize(img image.Image) (int, int) {
-	bounds := img.Bounds()
-	width := bounds.Max.X - bounds.Min.X
-	height := bounds.Max.Y - bounds.Min.Y
-	return width, height
 }
 
 func roundingFactor(val float32) float32 {
@@ -67,8 +65,9 @@ func createOffset(len int) int {
 	return int(math.Floor(float64(cen + roundingFactor(cen))))
 }
 
-func (rv *RadialVariance) radialProjections(img *image.Gray) ([]uint8, []int32, int) {
-	w, h := getSize(img)
+func (rv RadialVariance) radialProjections(img *image.Gray) ([]uint8, []int32, int) {
+	bounds := img.Bounds()
+	w, h := bounds.Dx(), bounds.Dy()
 	dim := h
 	if w > h {
 		dim = w
@@ -79,7 +78,7 @@ func (rv *RadialVariance) radialProjections(img *image.Gray) ([]uint8, []int32, 
 
 	// First half of projections
 	for k := 0; k < rv.angles/4+1; k++ {
-		theta := float32(k) * 3.14159 / float32(rv.angles)
+		theta := float32(k) * math.Pi / float32(rv.angles)
 		alpha := float32(math.Tan(float64(theta)))
 		for x := 0; x < dim; x++ {
 			y := alpha * float32(x-xOff)
@@ -98,7 +97,7 @@ func (rv *RadialVariance) radialProjections(img *image.Gray) ([]uint8, []int32, 
 	// Second half of projections
 	init := 3 * rv.angles / 4
 	for k, j := init, 0; k < rv.angles; k, j = k+1, j+2 {
-		theta := float32(k) * 3.14159 / float32(rv.angles)
+		theta := float32(k) * math.Pi / float32(rv.angles)
 		alpha := float32(math.Tan(float64(theta)))
 		for x := 0; x < dim; x++ {
 			y := alpha * float32(x-xOff)
@@ -116,7 +115,7 @@ func (rv *RadialVariance) radialProjections(img *image.Gray) ([]uint8, []int32, 
 	return proj, pixPerLine, dim
 }
 
-func (rv *RadialVariance) findFeatureVector(proj []uint8, ppl []int32, dim int) []float64 {
+func (rv RadialVariance) findFeatureVector(proj []uint8, ppl []int32, dim int) []float64 {
 	feat := make([]float64, rv.angles)
 	var sum, sqSum float64
 	for k := 0; k < rv.angles; k++ {
@@ -142,14 +141,14 @@ func (rv *RadialVariance) findFeatureVector(proj []uint8, ppl []int32, dim int) 
 	return feat
 }
 
-func (rv *RadialVariance) computeHash(feat []float64) hashtype.UInt8 {
+func (rv RadialVariance) computeHash(feat []float64) hashtype.UInt8 {
 	hash := make(hashtype.UInt8, hashSize)
 	temp := make([]float64, hashSize)
 	var max, min float64
 	for i := 0; i < hashSize; i++ {
 		var sum float64
 		for j := 0; j < len(feat); j++ {
-			sum += feat[j] * math.Cos((3.14159*float64(2*j+1)*float64(i))/float64(2*len(feat)))
+			sum += feat[j] * math.Cos((math.Pi*float64(2*j+1)*float64(i))/float64(2*len(feat)))
 		}
 		if i == 0 {
 			temp[i] = sum / math.Sqrt(float64(len(feat)))

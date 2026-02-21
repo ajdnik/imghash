@@ -28,7 +28,36 @@ v1 constructors with explicit parameter lists were removed.
 | `NewBlockMeanWithParams(w, h, resize, bw, bh, method)` | `NewBlockMean(WithSize(w, h), WithInterpolation(resize), WithBlockSize(bw, bh), WithBlockMeanMethod(method))` |
 | `NewRadialVarianceWithParams(sigma, angles)` | `NewRadialVariance(WithSigma(sigma), WithAngles(angles))` |
 
-## 3. Update interpolation constants and imports
+## 3. Handle `New*` constructor errors
+
+All `New*` constructors now return `(Type, error)` and validate their options.
+Invalid configurations (e.g. zero dimensions) are rejected at construction time
+instead of panicking during `Calculate`.
+
+```go
+// v1 / early v2
+avg := imghash.NewAverage(imghash.WithSize(16, 16))
+
+// current
+avg, err := imghash.NewAverage(imghash.WithSize(16, 16))
+if err != nil {
+	return err
+}
+```
+
+Sentinel errors for programmatic checking:
+
+| Error | Meaning |
+|-------|---------|
+| `ErrInvalidSize` | width or height is zero |
+| `ErrInvalidBlockSize` | block width or height is zero |
+| `ErrInvalidAngles` | angles is not positive |
+| `ErrInvalidKernelSize` | kernel size is not positive |
+| `ErrInvalidScale` | scale is not positive |
+| `ErrInvalidAlpha` | alpha is not positive |
+| `ErrInvalidSigma` | sigma is negative |
+
+## 4. Update interpolation constants and imports
 
 `imgproc` is no longer part of the public API surface.
 
@@ -44,13 +73,13 @@ Example:
 // hash := imghash.NewAverageWithParams(16, 16, imgproc.Bilinear)
 
 // v2
-hash := imghash.NewAverage(
+hash, err := imghash.NewAverage(
 	imghash.WithSize(16, 16),
 	imghash.WithInterpolation(imghash.Bilinear),
 )
 ```
 
-## 4. Handle `Calculate` errors and generic hash return type
+## 5. Handle `Calculate` errors and generic hash return type
 
 All hashers now implement:
 
@@ -88,7 +117,7 @@ Use type assertions only when you need hash-type-specific behavior:
 bin := h1.(imghash.Binary)
 ```
 
-## 5. Update similarity API usage
+## 6. Update similarity API usage
 
 `similarity` functions are now generic over `hashtype.Hash`.
 
@@ -106,7 +135,7 @@ For most callers, the new top-level helper is simpler:
 dist, err := imghash.Compare(h1, h2)
 ```
 
-## 6. Optional: adopt new convenience helpers
+## 7. Optional: adopt new convenience helpers
 
 v2 adds:
 

@@ -11,14 +11,13 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"math"
 )
 
 // Binary represents a hash type where the smallest hash element is a bit.
 type Binary []byte
 
 // String returns a string representation of the binary hash.
-// Is is formated as an array of bytes.
+// It is formatted as an array of bytes.
 func (h Binary) String() string {
 	return fmt.Sprintf("%v", []byte(h))
 }
@@ -92,6 +91,6 @@ func (h Binary) setBit(position, bit uint) error {
 	if byt >= uint(len(h)) {
 		return ErrOutOfBounds
 	}
-	h[byt] |= byte(math.Pow(2, float64(bit)))
+	h[byt] |= 1 << bit
 	return nil
 }

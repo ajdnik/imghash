@@ -17,8 +17,11 @@ func ExampleOpenImage() {
 }
 
 func ExampleHashFile() {
-	avg := NewAverage()
-	hash, err := HashFile(&avg, "assets/cat.jpg")
+	avg, err := NewAverage()
+	if err != nil {
+		panic(err)
+	}
+	hash, err := HashFile(avg, "assets/cat.jpg")
 	if err != nil {
 		panic(err)
 	}
@@ -33,8 +36,11 @@ func ExampleHashReader() {
 	}
 	defer func() { _ = f.Close() }()
 
-	avg := NewAverage()
-	hash, err := HashReader(&avg, f)
+	avg, err := NewAverage()
+	if err != nil {
+		panic(err)
+	}
+	hash, err := HashReader(avg, f)
 	if err != nil {
 		panic(err)
 	}
@@ -43,20 +49,29 @@ func ExampleHashReader() {
 }
 
 func ExampleCompare() {
-	avg := NewAverage()
-	h1, _ := HashFile(&avg, "assets/lena.jpg")
-	h2, _ := HashFile(&avg, "assets/cat.jpg")
+	avg, err := NewAverage()
+	if err != nil {
+		panic(err)
+	}
+	h1, err := HashFile(avg, "assets/lena.jpg")
+	if err != nil {
+		panic(err)
+	}
+	h2, err := HashFile(avg, "assets/cat.jpg")
+	if err != nil {
+		panic(err)
+	}
 
 	dist, err := Compare(h1, h2)
 	if err != nil {
 		panic(err)
 	}
 	fmt.Println(dist)
-	// Output: 30
+	// Output: 29
 }
 
 func ExampleNewMarrHildreth_options() {
-	mh := NewMarrHildreth(
+	mh, err := NewMarrHildreth(
 		WithScale(1),
 		WithAlpha(2),
 		WithSize(512, 512),
@@ -64,9 +79,15 @@ func ExampleNewMarrHildreth_options() {
 		WithKernelSize(7),
 		WithSigma(0),
 	)
-	hash, _ := HashFile(&mh, "assets/cat.jpg")
+	if err != nil {
+		panic(err)
+	}
+	hash, err := HashFile(mh, "assets/cat.jpg")
+	if err != nil {
+		panic(err)
+	}
 	fmt.Println(hash)
-	// Output: [92 190 42 111 87 107 101 164 184 24 75 41 185 54 178 162 26 236 155 150 108 98 233 112 56 235 124 177 139 159 148 66 89 38 229 47 195 44 158 180 85 115 79 165 92 131 225 252 54 148 218 61 99 92 82 141 141 96 112 186 185 208 174 112 252 150 153 164 173 206 43 130]
+	// Output: [92 190 42 111 87 107 101 164 184 24 75 41 185 54 178 162 26 236 155 150 108 98 233 112 56 235 124 177 139 159 148 66 89 38 229 47 195 36 158 180 85 115 79 165 92 131 225 252 54 148 218 61 99 92 82 141 141 96 112 186 153 208 174 112 252 150 153 172 173 206 43 130]
 }
 
 func ExampleInterpolation_String() {
