@@ -22,19 +22,17 @@ type RadialVariance struct {
 const hashSize = 40
 const sqTwo = 1.4142135623730950488016887242097
 
-// NewRadialVariance creates a new RadialVariance struct using default values.
-func NewRadialVariance() RadialVariance {
-	return RadialVariance{
+// NewRadialVariance creates a new RadialVariance hash with the given options.
+// Without options, sensible defaults are used.
+func NewRadialVariance(opts ...Option) RadialVariance {
+	o := options{
 		sigma:  1,
 		angles: 180,
 	}
-}
-
-// NewRadialVarianceWithParams creates a new RadialVariance struct based on supplied parameters.
-func NewRadialVarianceWithParams(sigma float64, numOfAngleLines int) RadialVariance {
+	applyOptions(&o, opts)
 	return RadialVariance{
-		sigma:  sigma,
-		angles: numOfAngleLines,
+		sigma:  o.sigma,
+		angles: o.angles,
 	}
 }
 

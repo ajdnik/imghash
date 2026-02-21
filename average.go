@@ -20,22 +20,19 @@ type Average struct {
 	interp imgproc.ResizeType
 }
 
-// NewAverage creates a new Average struct using default values.
-func NewAverage() Average {
-	return Average{
+// NewAverage creates a new Average hash with the given options.
+// Without options, sensible defaults are used.
+func NewAverage(opts ...Option) Average {
+	o := options{
 		width:  8,
 		height: 8,
 		interp: imgproc.Bilinear,
 	}
-
-}
-
-// NewAverageWithParams creates a new Average struct based on supplied parameters.
-func NewAverageWithParams(resizeWidth, resizeHeight uint, resizeType imgproc.ResizeType) Average {
+	applyOptions(&o, opts)
 	return Average{
-		width:  resizeWidth,
-		height: resizeHeight,
-		interp: resizeType,
+		width:  o.width,
+		height: o.height,
+		interp: o.interp,
 	}
 }
 

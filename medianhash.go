@@ -20,21 +20,19 @@ type Median struct {
 	interp imgproc.ResizeType
 }
 
-// NewMedian creates a new Median struct using default values.
-func NewMedian() Median {
-	return Median{
+// NewMedian creates a new Median hash with the given options.
+// Without options, sensible defaults are used.
+func NewMedian(opts ...Option) Median {
+	o := options{
 		width:  8,
 		height: 8,
 		interp: imgproc.Bilinear,
 	}
-}
-
-// NewMedianWithParams creates a new Median struct using the supplied parameters.
-func NewMedianWithParams(resizeWidth, resizeHeight uint, resizeType imgproc.ResizeType) Median {
+	applyOptions(&o, opts)
 	return Median{
-		width:  resizeWidth,
-		height: resizeHeight,
-		interp: resizeType,
+		width:  o.width,
+		height: o.height,
+		interp: o.interp,
 	}
 }
 

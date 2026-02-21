@@ -33,7 +33,7 @@ var marrHildrethCalculateTests = []struct {
 func TestMarrHildreth_Calculate(t *testing.T) {
 	for _, tt := range marrHildrethCalculateTests {
 		t.Run(tt.filename, func(t *testing.T) {
-			hash := NewMarrHildrethWithParams(tt.scale, tt.alpha, tt.width, tt.height, tt.resizeType, tt.kernelSize, tt.sigma)
+			hash := NewMarrHildreth(WithScale(tt.scale), WithAlpha(tt.alpha), WithSize(tt.width, tt.height), WithInterpolation(tt.resizeType), WithKernelSize(tt.kernelSize), WithSigma(tt.sigma))
 			img, _ := imgproc.Read(tt.filename)
 			result, err := hash.Calculate(img)
 			if err != nil {
@@ -81,7 +81,7 @@ var marrHildrethDistanceTests = []struct {
 func TestMarrHildreth_Distance(t *testing.T) {
 	for _, tt := range marrHildrethDistanceTests {
 		t.Run(fmt.Sprintf("%v %v", tt.firstImage, tt.secondImage), func(t *testing.T) {
-			hash := NewMarrHildrethWithParams(tt.scale, tt.alpha, tt.width, tt.height, tt.resizeType, tt.kernelSize, tt.sigma)
+			hash := NewMarrHildreth(WithScale(tt.scale), WithAlpha(tt.alpha), WithSize(tt.width, tt.height), WithInterpolation(tt.resizeType), WithKernelSize(tt.kernelSize), WithSigma(tt.sigma))
 			img1, _ := imgproc.Read(tt.firstImage)
 			img2, _ := imgproc.Read(tt.secondImage)
 			h1, _ := hash.Calculate(img1)

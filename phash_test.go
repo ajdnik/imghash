@@ -29,7 +29,7 @@ var pHashCalculateTests = []struct {
 func TestPHash_Calculate(t *testing.T) {
 	for _, tt := range pHashCalculateTests {
 		t.Run(tt.filename, func(t *testing.T) {
-			hash := NewPHashWithParams(tt.width, tt.height, tt.resizeType)
+			hash := NewPHash(WithSize(tt.width, tt.height), WithInterpolation(tt.resizeType))
 			img, _ := imgproc.Read(tt.filename)
 			result, err := hash.Calculate(img)
 			if err != nil {
@@ -73,7 +73,7 @@ var pHashDistanceTests = []struct {
 func TestPHash_Distance(t *testing.T) {
 	for _, tt := range pHashDistanceTests {
 		t.Run(fmt.Sprintf("%v %v", tt.firstImage, tt.secondImage), func(t *testing.T) {
-			hash := NewPHashWithParams(tt.width, tt.height, tt.resizeType)
+			hash := NewPHash(WithSize(tt.width, tt.height), WithInterpolation(tt.resizeType))
 			img1, _ := imgproc.Read(tt.firstImage)
 			img2, _ := imgproc.Read(tt.secondImage)
 			h1, _ := hash.Calculate(img1)

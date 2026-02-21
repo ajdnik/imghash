@@ -24,25 +24,23 @@ type ColorMoment struct {
 	sigma float64
 }
 
-// NewColorMoment creates a new ColorMoment struct using default values.
-func NewColorMoment() ColorMoment {
-	return ColorMoment{
+// NewColorMoment creates a new ColorMoment hash with the given options.
+// Without options, sensible defaults are used.
+func NewColorMoment(opts ...Option) ColorMoment {
+	o := options{
 		width:  512,
 		height: 512,
 		interp: imgproc.Bicubic,
 		kernel: 3,
 		sigma:  0,
 	}
-}
-
-// NewColorMomentWithParams creates a new ColorMoment struct based on supplied parameters.
-func NewColorMomentWithParams(resizeWidth, resizeHeight uint, resizeType imgproc.ResizeType, kernelSize int, sigma float64) ColorMoment {
+	applyOptions(&o, opts)
 	return ColorMoment{
-		width:  resizeWidth,
-		height: resizeHeight,
-		interp: resizeType,
-		kernel: kernelSize,
-		sigma:  sigma,
+		width:  o.width,
+		height: o.height,
+		interp: o.interp,
+		kernel: o.kernel,
+		sigma:  o.sigma,
 	}
 }
 

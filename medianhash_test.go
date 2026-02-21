@@ -31,7 +31,7 @@ var medianCalculateTests = []struct {
 func TestMedian_Calculate(t *testing.T) {
 	for _, tt := range medianCalculateTests {
 		t.Run(tt.filename, func(t *testing.T) {
-			hash := NewMedianWithParams(tt.width, tt.height, tt.resizeType)
+			hash := NewMedian(WithSize(tt.width, tt.height), WithInterpolation(tt.resizeType))
 			img, _ := imgproc.Read(tt.filename)
 			result, err := hash.Calculate(img)
 			if err != nil {
@@ -75,7 +75,7 @@ var medianDistanceTests = []struct {
 func TestMedian_Distance(t *testing.T) {
 	for _, tt := range medianDistanceTests {
 		t.Run(fmt.Sprintf("%v %v", tt.firstImage, tt.secondImage), func(t *testing.T) {
-			hash := NewMedianWithParams(tt.width, tt.height, tt.resizeType)
+			hash := NewMedian(WithSize(tt.width, tt.height), WithInterpolation(tt.resizeType))
 			img1, _ := imgproc.Read(tt.firstImage)
 			img2, _ := imgproc.Read(tt.secondImage)
 			h1, _ := hash.Calculate(img1)

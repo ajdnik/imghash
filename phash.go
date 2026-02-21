@@ -20,21 +20,19 @@ type PHash struct {
 	interp imgproc.ResizeType
 }
 
-// NewPHash creates a new PHash struct using default values.
-func NewPHash() PHash {
-	return PHash{
+// NewPHash creates a new PHash with the given options.
+// Without options, sensible defaults are used.
+func NewPHash(opts ...Option) PHash {
+	o := options{
 		width:  32,
 		height: 32,
 		interp: imgproc.BilinearExact,
 	}
-}
-
-// NewPHashWithParams creates a new PHash struct using the supplied parameters.
-func NewPHashWithParams(resizeWidth, resizeHeight uint, resizeType imgproc.ResizeType) PHash {
+	applyOptions(&o, opts)
 	return PHash{
-		width:  resizeWidth,
-		height: resizeHeight,
-		interp: resizeType,
+		width:  o.width,
+		height: o.height,
+		interp: o.interp,
 	}
 }
 

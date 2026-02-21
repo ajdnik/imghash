@@ -31,9 +31,10 @@ type MarrHildreth struct {
 	kernels [][]float32
 }
 
-// NewMarrHildreth creates a new MarrHildreth struct using default values.
-func NewMarrHildreth() MarrHildreth {
-	mh := MarrHildreth{
+// NewMarrHildreth creates a new MarrHildreth hash with the given options.
+// Without options, sensible defaults are used.
+func NewMarrHildreth(opts ...Option) MarrHildreth {
+	o := options{
 		scale:  1,
 		alpha:  2,
 		width:  512,
@@ -42,22 +43,17 @@ func NewMarrHildreth() MarrHildreth {
 		kernel: 7,
 		sigma:  0,
 	}
-	mh.kernels = computeMarrHildrethKernel(mh.alpha, mh.scale)
-	return mh
-}
-
-// NewMarrHildrethWithParams creates a new MarrHildreth struct using the supplied parameters.
-func NewMarrHildrethWithParams(scale, alpha float64, resizeWidth, resizeHeight uint, resizeType imgproc.ResizeType, kernelSize int, sigma float64) MarrHildreth {
+	applyOptions(&o, opts)
 	mh := MarrHildreth{
-		scale:  scale,
-		alpha:  alpha,
-		width:  resizeWidth,
-		height: resizeHeight,
-		interp: resizeType,
-		kernel: kernelSize,
-		sigma:  sigma,
+		scale:  o.scale,
+		alpha:  o.alpha,
+		width:  o.width,
+		height: o.height,
+		interp: o.interp,
+		kernel: o.kernel,
+		sigma:  o.sigma,
 	}
-	mh.kernels = computeMarrHildrethKernel(alpha, scale)
+	mh.kernels = computeMarrHildrethKernel(mh.alpha, mh.scale)
 	return mh
 }
 

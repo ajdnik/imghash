@@ -41,27 +41,25 @@ const (
 	RotationOverlap
 )
 
-// NewBlockMean creates a new BlockMean struct using default values.
-func NewBlockMean() BlockMean {
-	return BlockMean{
-		rWidth:  256,
-		rHeight: 256,
-		interp:  imgproc.BilinearExact,
-		bWidth:  16,
-		bHeight: 16,
-		method:  Direct,
+// NewBlockMean creates a new BlockMean hash with the given options.
+// Without options, sensible defaults are used.
+func NewBlockMean(opts ...Option) BlockMean {
+	o := options{
+		width:       256,
+		height:      256,
+		interp:      imgproc.BilinearExact,
+		blockWidth:  16,
+		blockHeight: 16,
+		blockMethod: Direct,
 	}
-}
-
-// NewBlockMeanWithParams creates a new BlockMean struct using the supplied parameters.
-func NewBlockMeanWithParams(resizeWidth, resizeHeight uint, resizeType imgproc.ResizeType, blockWidth, blockHeight uint, blockMeanMethod BlockMeanMethod) BlockMean {
+	applyOptions(&o, opts)
 	return BlockMean{
-		rWidth:  resizeWidth,
-		rHeight: resizeHeight,
-		interp:  resizeType,
-		bWidth:  blockWidth,
-		bHeight: blockHeight,
-		method:  blockMeanMethod,
+		rWidth:  o.width,
+		rHeight: o.height,
+		interp:  o.interp,
+		bWidth:  o.blockWidth,
+		bHeight: o.blockHeight,
+		method:  o.blockMethod,
 	}
 }
 

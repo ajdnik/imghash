@@ -19,21 +19,19 @@ type Difference struct {
 	interp imgproc.ResizeType
 }
 
-// NewDifference creates a new Difference struct using default values.
-func NewDifference() Difference {
-	return Difference{
+// NewDifference creates a new Difference hash with the given options.
+// Without options, sensible defaults are used.
+func NewDifference(opts ...Option) Difference {
+	o := options{
 		width:  8,
 		height: 8,
 		interp: imgproc.Bilinear,
 	}
-}
-
-// NewDifferenceWithParams creates a new Difference struct based on supplied parameters.
-func NewDifferenceWithParams(resizeWidth, resizeHeight uint, resizeType imgproc.ResizeType) Difference {
+	applyOptions(&o, opts)
 	return Difference{
-		width:  resizeWidth,
-		height: resizeHeight,
-		interp: resizeType,
+		width:  o.width,
+		height: o.height,
+		interp: o.interp,
 	}
 }
 

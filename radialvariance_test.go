@@ -42,7 +42,7 @@ func uint8ApproxEqual(a, b hashtype.UInt8, maxDiff int) bool {
 func TestRadialVariance_Calculate(t *testing.T) {
 	for _, tt := range radialVarianceCalculateTests {
 		t.Run(tt.filename, func(t *testing.T) {
-			hash := NewRadialVarianceWithParams(tt.sigma, tt.angles)
+			hash := NewRadialVariance(WithSigma(tt.sigma), WithAngles(tt.angles))
 			img, _ := imgproc.Read(tt.filename)
 			result, err := hash.Calculate(img)
 			if err != nil {
@@ -84,7 +84,7 @@ var radialVarianceDistanceTests = []struct {
 func TestRadialVariance_Distance(t *testing.T) {
 	for _, tt := range radialVarianceDistanceTests {
 		t.Run(fmt.Sprintf("%v %v", tt.firstImage, tt.secondImage), func(t *testing.T) {
-			hash := NewRadialVarianceWithParams(tt.sigma, tt.angles)
+			hash := NewRadialVariance(WithSigma(tt.sigma), WithAngles(tt.angles))
 			img1, _ := imgproc.Read(tt.firstImage)
 			img2, _ := imgproc.Read(tt.secondImage)
 			h1, _ := hash.Calculate(img1)
