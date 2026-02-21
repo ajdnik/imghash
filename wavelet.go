@@ -109,6 +109,3 @@ func (wh WHash) computeHash(ll [][]float32, median float32) hashtype.Binary {
 func (wh WHash) Compare(h1, h2 hashtype.Hash) (similarity.Distance, error) {
 	return similarity.Hamming(h1, h2)
 }
-
-// Ensure WHash satisfies the Hasher interface.
-var _ Hasher = WHash{}

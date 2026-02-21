@@ -30,6 +30,23 @@ type HasherComparer interface {
 	Comparer
 }
 
+// Compile-time assertions: every algorithm satisfies HasherComparer.
+var (
+	_ HasherComparer = Average{}
+	_ HasherComparer = Difference{}
+	_ HasherComparer = Median{}
+	_ HasherComparer = PHash{}
+	_ HasherComparer = BlockMean{}
+	_ HasherComparer = MarrHildreth{}
+	_ HasherComparer = RadialVariance{}
+	_ HasherComparer = ColorMoment{}
+	_ HasherComparer = WHash{}
+	_ HasherComparer = LBP{}
+	_ HasherComparer = HOGHash{}
+	_ HasherComparer = PDQ{}
+	_ HasherComparer = RASH{}
+)
+
 // Re-export core types so most consumers only need to import "imghash".
 
 // Hash is the common interface for all hash representations.
