@@ -16,14 +16,14 @@ var averageCalculateTests = []struct {
 	hash       hashtype.Binary
 	width      uint
 	height     uint
-	resizeType imgproc.ResizeType
+	resizeType Interpolation
 }{
-	{"assets/lena.jpg", hashtype.Binary{125, 57, 188, 144, 208, 208, 240, 112}, 8, 8, imgproc.Bilinear},
-	{"assets/baboon.jpg", hashtype.Binary{128, 192, 252, 60, 61, 25, 255, 61}, 8, 8, imgproc.Bilinear},
-	{"assets/cat.jpg", hashtype.Binary{255, 255, 15, 7, 1, 0, 0, 0}, 8, 8, imgproc.Bilinear},
-	{"assets/monarch.jpg", hashtype.Binary{1, 11, 19, 252, 191, 255, 230, 64}, 8, 8, imgproc.Bilinear},
-	{"assets/peppers.jpg", hashtype.Binary{225, 224, 206, 244, 62, 54, 2, 7}, 8, 8, imgproc.Bilinear},
-	{"assets/tulips.jpg", hashtype.Binary{15, 102, 92, 90, 254, 126, 62, 6}, 8, 8, imgproc.Bilinear},
+	{"assets/lena.jpg", hashtype.Binary{125, 57, 188, 144, 208, 208, 240, 112}, 8, 8, Bilinear},
+	{"assets/baboon.jpg", hashtype.Binary{128, 192, 252, 60, 61, 25, 255, 61}, 8, 8, Bilinear},
+	{"assets/cat.jpg", hashtype.Binary{255, 255, 15, 7, 1, 0, 0, 0}, 8, 8, Bilinear},
+	{"assets/monarch.jpg", hashtype.Binary{1, 11, 19, 252, 191, 255, 230, 64}, 8, 8, Bilinear},
+	{"assets/peppers.jpg", hashtype.Binary{225, 224, 206, 244, 62, 54, 2, 7}, 8, 8, Bilinear},
+	{"assets/tulips.jpg", hashtype.Binary{15, 102, 92, 90, 254, 126, 62, 6}, 8, 8, Bilinear},
 }
 
 func TestAverage_Calculate(t *testing.T) {
@@ -61,13 +61,13 @@ var averageDistanceTests = []struct {
 	distance    similarity.Distance
 	width       uint
 	height      uint
-	resizeType  imgproc.ResizeType
+	resizeType  Interpolation
 }{
-	{"assets/lena.jpg", "assets/cat.jpg", 30, 8, 8, imgproc.Bilinear},
-	{"assets/lena.jpg", "assets/monarch.jpg", 34, 8, 8, imgproc.Bilinear},
-	{"assets/baboon.jpg", "assets/cat.jpg", 44, 8, 8, imgproc.Bilinear},
-	{"assets/peppers.jpg", "assets/baboon.jpg", 28, 8, 8, imgproc.Bilinear},
-	{"assets/tulips.jpg", "assets/monarch.jpg", 28, 8, 8, imgproc.Bilinear},
+	{"assets/lena.jpg", "assets/cat.jpg", 30, 8, 8, Bilinear},
+	{"assets/lena.jpg", "assets/monarch.jpg", 34, 8, 8, Bilinear},
+	{"assets/baboon.jpg", "assets/cat.jpg", 44, 8, 8, Bilinear},
+	{"assets/peppers.jpg", "assets/baboon.jpg", 28, 8, 8, Bilinear},
+	{"assets/tulips.jpg", "assets/monarch.jpg", 28, 8, 8, Bilinear},
 }
 
 func TestAverage_Distance(t *testing.T) {

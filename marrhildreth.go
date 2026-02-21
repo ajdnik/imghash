@@ -22,7 +22,7 @@ type MarrHildreth struct {
 	// Resized image height.
 	height uint
 	// Resize interpolation method.
-	interp imgproc.ResizeType
+	interp Interpolation
 	// Gaussian kernel size.
 	kernel int
 	// Gaussian kernel sigma parameter.
@@ -39,7 +39,7 @@ func NewMarrHildreth(opts ...Option) MarrHildreth {
 		alpha:  2,
 		width:  512,
 		height: 512,
-		interp: imgproc.Bicubic,
+		interp: Bicubic,
 		kernel: 7,
 		sigma:  0,
 	}
@@ -64,7 +64,7 @@ func (mhh *MarrHildreth) Calculate(img image.Image) (hashtype.Hash, error) {
 		return nil, err
 	}
 	b := imgproc.GaussianBlur(g, mhh.kernel, mhh.sigma)
-	r := imgproc.Resize(mhh.width, mhh.height, b, mhh.interp)
+	r := imgproc.Resize(mhh.width, mhh.height, b, mhh.interp.resizeType())
 	eq := imgproc.EqualizeHist(r.(*image.Gray))
 	f := imgproc.Filter2DGray(eq, mhh.kernels)
 	blks := mhh.blocksSum(f)

@@ -17,7 +17,7 @@ type PHash struct {
 	// Resized image height.
 	height uint
 	// Resize interpolation method.
-	interp imgproc.ResizeType
+	interp Interpolation
 }
 
 // NewPHash creates a new PHash with the given options.
@@ -26,7 +26,7 @@ func NewPHash(opts ...Option) PHash {
 	o := options{
 		width:  32,
 		height: 32,
-		interp: imgproc.BilinearExact,
+		interp: BilinearExact,
 	}
 	applyOptions(&o, opts)
 	return PHash{
@@ -38,7 +38,7 @@ func NewPHash(opts ...Option) PHash {
 
 // Calculate returns a perceptual image hash.
 func (ph *PHash) Calculate(img image.Image) (hashtype.Hash, error) {
-	r := imgproc.Resize(ph.width, ph.height, img, ph.interp)
+	r := imgproc.Resize(ph.width, ph.height, img, ph.interp.resizeType())
 	g, err := imgproc.Grayscale(r)
 	if err != nil {
 		return nil, err

@@ -16,7 +16,7 @@ type Difference struct {
 	// Resized image height.
 	height uint
 	// Resize interpolation method.
-	interp imgproc.ResizeType
+	interp Interpolation
 }
 
 // NewDifference creates a new Difference hash with the given options.
@@ -25,7 +25,7 @@ func NewDifference(opts ...Option) Difference {
 	o := options{
 		width:  8,
 		height: 8,
-		interp: imgproc.Bilinear,
+		interp: Bilinear,
 	}
 	applyOptions(&o, opts)
 	return Difference{
@@ -37,7 +37,7 @@ func NewDifference(opts ...Option) Difference {
 
 // Calculate returns a perceptual image hash.
 func (dh *Difference) Calculate(img image.Image) (hashtype.Hash, error) {
-	r := imgproc.Resize(dh.width+1, dh.height, img, dh.interp)
+	r := imgproc.Resize(dh.width+1, dh.height, img, dh.interp.resizeType())
 	g, err := imgproc.Grayscale(r)
 	if err != nil {
 		return nil, err

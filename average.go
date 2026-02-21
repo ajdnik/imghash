@@ -17,7 +17,7 @@ type Average struct {
 	// Resized image height.
 	height uint
 	// Resize interpolation method.
-	interp imgproc.ResizeType
+	interp Interpolation
 }
 
 // NewAverage creates a new Average hash with the given options.
@@ -26,7 +26,7 @@ func NewAverage(opts ...Option) Average {
 	o := options{
 		width:  8,
 		height: 8,
-		interp: imgproc.Bilinear,
+		interp: Bilinear,
 	}
 	applyOptions(&o, opts)
 	return Average{
@@ -38,7 +38,7 @@ func NewAverage(opts ...Option) Average {
 
 // Calculate returns a perceptual image hash.
 func (ah *Average) Calculate(img image.Image) (hashtype.Hash, error) {
-	r := imgproc.Resize(ah.width, ah.height, img, ah.interp)
+	r := imgproc.Resize(ah.width, ah.height, img, ah.interp.resizeType())
 	g, err := imgproc.Grayscale(r)
 	if err != nil {
 		return nil, err

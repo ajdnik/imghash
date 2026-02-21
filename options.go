@@ -1,14 +1,12 @@
 package imghash
 
-import "github.com/ajdnik/imghash/imgproc"
-
 // Option configures hash algorithm parameters.
 type Option func(*options)
 
 type options struct {
 	width       uint
 	height      uint
-	interp      imgproc.ResizeType
+	interp      Interpolation
 	kernel      int
 	sigma       float64
 	blockWidth  uint
@@ -34,7 +32,7 @@ func WithSize(width, height uint) Option {
 }
 
 // WithInterpolation sets the resize interpolation method.
-func WithInterpolation(interp imgproc.ResizeType) Option {
+func WithInterpolation(interp Interpolation) Option {
 	return func(o *options) {
 		o.interp = interp
 	}
