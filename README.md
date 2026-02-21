@@ -81,7 +81,7 @@ You can also call `h1.Distance(h2)` directly on any hash value.
 
 ## Perceptual Hash Algorithms
 
-The library supports 9 perceptual hashing algorithms. Most are ported from [OpenCV Contrib](https://github.com/opencv/opencv_contrib) and tested against its implementations.
+The library supports 10 perceptual hashing algorithms. Most are ported from [OpenCV Contrib](https://github.com/opencv/opencv_contrib) and tested against its implementations.
 
 Every constructor accepts functional options. Call with no arguments for defaults, or pass `With*` options to customize:
 
@@ -218,6 +218,23 @@ hash, err := bm.Calculate(img)
 | `WithBlockMeanMethod(m)` | `Direct` |
 
 Block mean methods: `Direct`, `Overlap`, `Rotation`, `RotationOverlap`.
+
+#### Local Binary Pattern (LBP) Hash
+
+Computes a 3x3 Local Binary Pattern code for each pixel and builds a normalized 256-bin histogram per grid cell, producing a uint8 vector. The grid can be increased for spatially-aware hashing. See [Local binary patterns](https://en.wikipedia.org/wiki/Local_binary_patterns) for more information.
+
+```go
+lbp, err := imghash.NewLBP()
+hash, err := lbp.Calculate(img)
+```
+
+| Option | Default |
+|--------|---------|
+| `WithSize(w, h)` | 256, 256 |
+| `WithInterpolation(i)` | `Bilinear` |
+| `WithGridSize(x, y)` | 1, 1 |
+
+With the default 1x1 grid the hash is a 256-element uint8 vector. Set `WithGridSize(4, 4)` for a 4096-element spatially-aware hash.
 
 #### Radial Variance Hash
 
