@@ -81,7 +81,7 @@ You can also call `h1.Distance(h2)` directly on any hash value.
 
 ## Perceptual Hash Algorithms
 
-The library supports 11 perceptual hashing algorithms. Most are ported from [OpenCV Contrib](https://github.com/opencv/opencv_contrib) and tested against its implementations.
+The library supports 12 perceptual hashing algorithms. Most are ported from [OpenCV Contrib](https://github.com/opencv/opencv_contrib) and tested against its implementations.
 
 Every constructor accepts functional options. Call with no arguments for defaults, or pass `With*` options to customize:
 
@@ -267,6 +267,21 @@ hash, err := rv.Calculate(img)
 |--------|---------|
 | `WithSigma(s)` | 1 |
 | `WithAngles(n)` | 180 |
+
+#### PDQ Hash
+
+Produces a 256-bit binary hash designed for large-scale image deduplication. The algorithm resizes to 64×64, applies a Jarosz box filter for noise smoothing, computes a 2D DCT, and thresholds the 16×16 low-frequency coefficients against their median. Robust to JPEG compression, rescaling, and minor edits. From Facebook (Meta) [ThreatExchange PDQ](https://github.com/facebook/ThreatExchange/tree/main/pdq).
+
+```go
+pdq, err := imghash.NewPDQ()
+hash, err := pdq.Calculate(img)
+```
+
+| Option | Default |
+|--------|---------|
+| `WithInterpolation(i)` | `Bilinear` |
+
+The input size is fixed at 64×64 per the algorithm specification and is not configurable.
 
 ## Similarity Metrics
 

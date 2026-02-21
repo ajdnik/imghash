@@ -48,3 +48,5 @@ var _ HOGHashOption = WithSize(0, 0)
 var _ HOGHashOption = WithInterpolation(Bilinear)
 var _ HOGHashOption = WithCellSize(0)
 var _ HOGHashOption = WithNumBins(0)
+
+var _ PDQOption = WithInterpolation(Bilinear)
