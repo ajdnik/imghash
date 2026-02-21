@@ -20,7 +20,7 @@ type RadialVariance struct {
 }
 
 const hashSize = 40
-const sqTwo = 1.4142135623730950488016887242097
+const sqTwo = math.Sqrt2
 
 // NewRadialVariance creates a new RadialVariance hash with the given options.
 // Without options, sensible defaults are used.
@@ -79,7 +79,7 @@ func (rv *RadialVariance) radialProjections(img *image.Gray) ([]uint8, []int32, 
 
 	// First half of projections
 	for k := 0; k < rv.angles/4+1; k++ {
-		theta := float32(k) * 3.14159 / float32(rv.angles)
+		theta := float32(k) * math.Pi / float32(rv.angles)
 		alpha := float32(math.Tan(float64(theta)))
 		for x := 0; x < dim; x++ {
 			y := alpha * float32(x-xOff)
@@ -98,7 +98,7 @@ func (rv *RadialVariance) radialProjections(img *image.Gray) ([]uint8, []int32, 
 	// Second half of projections
 	init := 3 * rv.angles / 4
 	for k, j := init, 0; k < rv.angles; k, j = k+1, j+2 {
-		theta := float32(k) * 3.14159 / float32(rv.angles)
+		theta := float32(k) * math.Pi / float32(rv.angles)
 		alpha := float32(math.Tan(float64(theta)))
 		for x := 0; x < dim; x++ {
 			y := alpha * float32(x-xOff)
@@ -149,7 +149,7 @@ func (rv *RadialVariance) computeHash(feat []float64) hashtype.UInt8 {
 	for i := 0; i < hashSize; i++ {
 		var sum float64
 		for j := 0; j < len(feat); j++ {
-			sum += feat[j] * math.Cos((3.14159*float64(2*j+1)*float64(i))/float64(2*len(feat)))
+			sum += feat[j] * math.Cos((math.Pi*float64(2*j+1)*float64(i))/float64(2*len(feat)))
 		}
 		if i == 0 {
 			temp[i] = sum / math.Sqrt(float64(len(feat)))
