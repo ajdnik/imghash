@@ -43,3 +43,8 @@ var _ WHashOption = WithLevel(0)
 var _ LBPOption = WithSize(0, 0)
 var _ LBPOption = WithInterpolation(Bilinear)
 var _ LBPOption = WithGridSize(0, 0)
+
+var _ HOGHashOption = WithSize(0, 0)
+var _ HOGHashOption = WithInterpolation(Bilinear)
+var _ HOGHashOption = WithCellSize(0)
+var _ HOGHashOption = WithNumBins(0)

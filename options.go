@@ -33,6 +33,9 @@ type WHashOption interface{ applyWHash(*WHash) }
 // LBPOption configures the LBP hash algorithm.
 type LBPOption interface{ applyLBP(*LBP) }
 
+// HOGHashOption configures the HOGHash algorithm.
+type HOGHashOption interface{ applyHOGHash(*HOGHash) }
+
 // --- concrete option types ---
 
 type sizeOption struct{ width, height uint }
@@ -46,6 +49,7 @@ func (o sizeOption) applyMarrHildreth(m *MarrHildreth) { m.width, m.height = o.w
 func (o sizeOption) applyColorMoment(c *ColorMoment)   { c.width, c.height = o.width, o.height }
 func (o sizeOption) applyWHash(w *WHash)               { w.width, w.height = o.width, o.height }
 func (o sizeOption) applyLBP(l *LBP)                   { l.width, l.height = o.width, o.height }
+func (o sizeOption) applyHOGHash(h *HOGHash)           { h.width, h.height = o.width, o.height }
 
 type interpolationOption struct{ interp Interpolation }
 
@@ -58,6 +62,7 @@ func (o interpolationOption) applyMarrHildreth(m *MarrHildreth) { m.interp = o.i
 func (o interpolationOption) applyColorMoment(c *ColorMoment)   { c.interp = o.interp }
 func (o interpolationOption) applyWHash(w *WHash)               { w.interp = o.interp }
 func (o interpolationOption) applyLBP(l *LBP)                   { l.interp = o.interp }
+func (o interpolationOption) applyHOGHash(h *HOGHash)           { h.interp = o.interp }
 
 type kernelSizeOption struct{ size int }
 
@@ -98,16 +103,24 @@ type gridSizeOption struct{ x, y uint }
 
 func (o gridSizeOption) applyLBP(l *LBP) { l.gridX, l.gridY = o.x, o.y }
 
+type cellSizeOption struct{ size uint }
+
+func (o cellSizeOption) applyHOGHash(h *HOGHash) { h.cellSize = o.size }
+
+type numBinsOption struct{ bins uint }
+
+func (o numBinsOption) applyHOGHash(h *HOGHash) { h.numBins = o.bins }
+
 // --- public constructors ---
 
 // WithSize sets the resize dimensions used during hash computation.
-// Applies to Average, Difference, Median, PHash, BlockMean, MarrHildreth, ColorMoment, WHash, and LBP.
+// Applies to Average, Difference, Median, PHash, BlockMean, MarrHildreth, ColorMoment, WHash, LBP, and HOGHash.
 func WithSize(width, height uint) sizeOption {
 	return sizeOption{width, height}
 }
 
 // WithInterpolation sets the resize interpolation method.
-// Applies to Average, Difference, Median, PHash, BlockMean, MarrHildreth, ColorMoment, WHash, and LBP.
+// Applies to Average, Difference, Median, PHash, BlockMean, MarrHildreth, ColorMoment, WHash, LBP, and HOGHash.
 func WithInterpolation(interp Interpolation) interpolationOption {
 	return interpolationOption{interp}
 }
@@ -165,4 +178,16 @@ func WithLevel(level int) levelOption {
 // Applies to LBP.
 func WithGridSize(x, y uint) gridSizeOption {
 	return gridSizeOption{x, y}
+}
+
+// WithCellSize sets the cell size in pixels (square cells) for HOG computation.
+// Applies to HOGHash.
+func WithCellSize(size uint) cellSizeOption {
+	return cellSizeOption{size}
+}
+
+// WithNumBins sets the number of orientation histogram bins.
+// Applies to HOGHash.
+func WithNumBins(bins uint) numBinsOption {
+	return numBinsOption{bins}
 }
