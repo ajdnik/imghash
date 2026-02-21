@@ -39,6 +39,9 @@ type HOGHashOption interface{ applyHOGHash(*HOGHash) }
 // PDQOption configures the PDQ hash algorithm.
 type PDQOption interface{ applyPDQ(*PDQ) }
 
+// RASHOption configures the RASH hash algorithm.
+type RASHOption interface{ applyRASH(*RASH) }
+
 // --- concrete option types ---
 
 type sizeOption struct{ width, height uint }
@@ -53,6 +56,7 @@ func (o sizeOption) applyColorMoment(c *ColorMoment)   { c.width, c.height = o.w
 func (o sizeOption) applyWHash(w *WHash)               { w.width, w.height = o.width, o.height }
 func (o sizeOption) applyLBP(l *LBP)                   { l.width, l.height = o.width, o.height }
 func (o sizeOption) applyHOGHash(h *HOGHash)           { h.width, h.height = o.width, o.height }
+func (o sizeOption) applyRASH(r *RASH)                 { r.width, r.height = o.width, o.height }
 
 type interpolationOption struct{ interp Interpolation }
 
@@ -67,6 +71,7 @@ func (o interpolationOption) applyWHash(w *WHash)               { w.interp = o.i
 func (o interpolationOption) applyLBP(l *LBP)                   { l.interp = o.interp }
 func (o interpolationOption) applyHOGHash(h *HOGHash)           { h.interp = o.interp }
 func (o interpolationOption) applyPDQ(p *PDQ)                   { p.interp = o.interp }
+func (o interpolationOption) applyRASH(r *RASH)                 { r.interp = o.interp }
 
 type kernelSizeOption struct{ size int }
 
@@ -78,6 +83,7 @@ type sigmaOption struct{ sigma float64 }
 func (o sigmaOption) applyMarrHildreth(m *MarrHildreth)     { m.sigma = o.sigma }
 func (o sigmaOption) applyColorMoment(c *ColorMoment)       { c.sigma = o.sigma }
 func (o sigmaOption) applyRadialVariance(r *RadialVariance) { r.sigma = o.sigma }
+func (o sigmaOption) applyRASH(r *RASH)                     { r.sigma = o.sigma }
 
 type blockSizeOption struct{ width, height uint }
 
@@ -115,16 +121,20 @@ type numBinsOption struct{ bins uint }
 
 func (o numBinsOption) applyHOGHash(h *HOGHash) { h.numBins = o.bins }
 
+type ringsOption struct{ rings int }
+
+func (o ringsOption) applyRASH(r *RASH) { r.rings = o.rings }
+
 // --- public constructors ---
 
 // WithSize sets the resize dimensions used during hash computation.
-// Applies to Average, Difference, Median, PHash, BlockMean, MarrHildreth, ColorMoment, WHash, LBP, and HOGHash.
+// Applies to Average, Difference, Median, PHash, BlockMean, MarrHildreth, ColorMoment, WHash, LBP, HOGHash, and RASH.
 func WithSize(width, height uint) sizeOption {
 	return sizeOption{width, height}
 }
 
 // WithInterpolation sets the resize interpolation method.
-// Applies to Average, Difference, Median, PHash, BlockMean, MarrHildreth, ColorMoment, WHash, LBP, HOGHash, and PDQ.
+// Applies to Average, Difference, Median, PHash, BlockMean, MarrHildreth, ColorMoment, WHash, LBP, HOGHash, PDQ, and RASH.
 func WithInterpolation(interp Interpolation) interpolationOption {
 	return interpolationOption{interp}
 }
@@ -136,7 +146,7 @@ func WithKernelSize(size int) kernelSizeOption {
 }
 
 // WithSigma sets the Gaussian kernel standard deviation.
-// Applies to MarrHildreth, ColorMoment, and RadialVariance.
+// Applies to MarrHildreth, ColorMoment, RadialVariance, and RASH.
 func WithSigma(sigma float64) sigmaOption {
 	return sigmaOption{sigma}
 }
@@ -194,4 +204,10 @@ func WithCellSize(size uint) cellSizeOption {
 // Applies to HOGHash.
 func WithNumBins(bins uint) numBinsOption {
 	return numBinsOption{bins}
+}
+
+// WithRings sets the number of concentric rings used for spatial sampling.
+// Applies to RASH.
+func WithRings(rings int) ringsOption {
+	return ringsOption{rings}
 }

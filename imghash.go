@@ -11,7 +11,7 @@ import (
 // Hasher computes a perceptual hash from an image.
 // It is implemented by all hash algorithms in this package:
 // Average, Difference, PHash, Median, BlockMean, MarrHildreth,
-// RadialVariance, ColorMoment, WHash, LBP, HOGHash, and PDQ.
+// RadialVariance, ColorMoment, WHash, LBP, HOGHash, PDQ, and RASH.
 type Hasher interface {
 	Calculate(image.Image) (hashtype.Hash, error)
 }
@@ -61,4 +61,6 @@ var (
 	ErrInvalidCellSize = errors.New("imghash: cell size must be greater than zero")
 	// ErrInvalidNumBins is returned when the number of histogram bins is zero.
 	ErrInvalidNumBins = errors.New("imghash: number of bins must be greater than zero")
+	// ErrInvalidRings is returned when the number of concentric rings is not positive.
+	ErrInvalidRings = errors.New("imghash: rings must be greater than zero")
 )
