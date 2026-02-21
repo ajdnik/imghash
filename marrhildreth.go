@@ -40,8 +40,8 @@ type MarrHildreth struct {
 
 // NewMarrHildreth creates a new MarrHildreth hash with the given options.
 // Without options, sensible defaults are used.
-func NewMarrHildreth(opts ...Option) MarrHildreth {
-	o := options{
+func NewMarrHildreth(opts ...MarrHildrethOption) MarrHildreth {
+	mh := MarrHildreth{
 		scale:  1,
 		alpha:  2,
 		width:  512,
@@ -50,15 +50,8 @@ func NewMarrHildreth(opts ...Option) MarrHildreth {
 		kernel: 7,
 		sigma:  0,
 	}
-	applyOptions(&o, opts)
-	mh := MarrHildreth{
-		scale:  o.scale,
-		alpha:  o.alpha,
-		width:  o.width,
-		height: o.height,
-		interp: o.interp,
-		kernel: o.kernel,
-		sigma:  o.sigma,
+	for _, o := range opts {
+		o.applyMarrHildreth(&mh)
 	}
 	mh.kernels = computeMarrHildrethKernel(mh.alpha, mh.scale)
 	return mh

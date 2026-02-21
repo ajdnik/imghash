@@ -43,24 +43,19 @@ const (
 
 // NewBlockMean creates a new BlockMean hash with the given options.
 // Without options, sensible defaults are used.
-func NewBlockMean(opts ...Option) BlockMean {
-	o := options{
-		width:       256,
-		height:      256,
-		interp:      BilinearExact,
-		blockWidth:  16,
-		blockHeight: 16,
-		blockMethod: Direct,
+func NewBlockMean(opts ...BlockMeanOption) BlockMean {
+	b := BlockMean{
+		rWidth:  256,
+		rHeight: 256,
+		interp:  BilinearExact,
+		bWidth:  16,
+		bHeight: 16,
+		method:  Direct,
 	}
-	applyOptions(&o, opts)
-	return BlockMean{
-		rWidth:  o.width,
-		rHeight: o.height,
-		interp:  o.interp,
-		bWidth:  o.blockWidth,
-		bHeight: o.blockHeight,
-		method:  o.blockMethod,
+	for _, o := range opts {
+		o.applyBlockMean(&b)
 	}
+	return b
 }
 
 // Calculate returns a perceptual image hash.

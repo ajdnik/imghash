@@ -22,18 +22,16 @@ type Median struct {
 
 // NewMedian creates a new Median hash with the given options.
 // Without options, sensible defaults are used.
-func NewMedian(opts ...Option) Median {
-	o := options{
+func NewMedian(opts ...MedianOption) Median {
+	m := Median{
 		width:  8,
 		height: 8,
 		interp: Bilinear,
 	}
-	applyOptions(&o, opts)
-	return Median{
-		width:  o.width,
-		height: o.height,
-		interp: o.interp,
+	for _, o := range opts {
+		o.applyMedian(&m)
 	}
+	return m
 }
 
 // Calculate returns a perceptual image hash.

@@ -24,16 +24,15 @@ const sqTwo = math.Sqrt2
 
 // NewRadialVariance creates a new RadialVariance hash with the given options.
 // Without options, sensible defaults are used.
-func NewRadialVariance(opts ...Option) RadialVariance {
-	o := options{
+func NewRadialVariance(opts ...RadialVarianceOption) RadialVariance {
+	rv := RadialVariance{
 		sigma:  1,
 		angles: 180,
 	}
-	applyOptions(&o, opts)
-	return RadialVariance{
-		sigma:  o.sigma,
-		angles: o.angles,
+	for _, o := range opts {
+		o.applyRadialVariance(&rv)
 	}
+	return rv
 }
 
 // Calculate returns a perceptual image hash.

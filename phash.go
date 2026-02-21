@@ -26,18 +26,16 @@ type PHash struct {
 
 // NewPHash creates a new PHash with the given options.
 // Without options, sensible defaults are used.
-func NewPHash(opts ...Option) PHash {
-	o := options{
+func NewPHash(opts ...PHashOption) PHash {
+	p := PHash{
 		width:  32,
 		height: 32,
 		interp: BilinearExact,
 	}
-	applyOptions(&o, opts)
-	return PHash{
-		width:  o.width,
-		height: o.height,
-		interp: o.interp,
+	for _, o := range opts {
+		o.applyPHash(&p)
 	}
+	return p
 }
 
 // Calculate returns a perceptual image hash.

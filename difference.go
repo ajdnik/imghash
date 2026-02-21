@@ -21,18 +21,16 @@ type Difference struct {
 
 // NewDifference creates a new Difference hash with the given options.
 // Without options, sensible defaults are used.
-func NewDifference(opts ...Option) Difference {
-	o := options{
+func NewDifference(opts ...DifferenceOption) Difference {
+	d := Difference{
 		width:  8,
 		height: 8,
 		interp: Bilinear,
 	}
-	applyOptions(&o, opts)
-	return Difference{
-		width:  o.width,
-		height: o.height,
-		interp: o.interp,
+	for _, o := range opts {
+		o.applyDifference(&d)
 	}
+	return d
 }
 
 // Calculate returns a perceptual image hash.
