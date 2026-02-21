@@ -11,7 +11,7 @@ import (
 // Hasher computes a perceptual hash from an image.
 // It is implemented by all hash algorithms in this package:
 // Average, Difference, PHash, Median, BlockMean, MarrHildreth,
-// RadialVariance, ColorMoment, WHash, LBP, and HOGHash.
+// RadialVariance, ColorMoment, WHash, LBP, HOGHash, and PDQ.
 type Hasher interface {
 	Calculate(image.Image) (hashtype.Hash, error)
 }

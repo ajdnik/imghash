@@ -36,6 +36,9 @@ type LBPOption interface{ applyLBP(*LBP) }
 // HOGHashOption configures the HOGHash algorithm.
 type HOGHashOption interface{ applyHOGHash(*HOGHash) }
 
+// PDQOption configures the PDQ hash algorithm.
+type PDQOption interface{ applyPDQ(*PDQ) }
+
 // --- concrete option types ---
 
 type sizeOption struct{ width, height uint }
@@ -63,6 +66,7 @@ func (o interpolationOption) applyColorMoment(c *ColorMoment)   { c.interp = o.i
 func (o interpolationOption) applyWHash(w *WHash)               { w.interp = o.interp }
 func (o interpolationOption) applyLBP(l *LBP)                   { l.interp = o.interp }
 func (o interpolationOption) applyHOGHash(h *HOGHash)           { h.interp = o.interp }
+func (o interpolationOption) applyPDQ(p *PDQ)                   { p.interp = o.interp }
 
 type kernelSizeOption struct{ size int }
 
@@ -120,7 +124,7 @@ func WithSize(width, height uint) sizeOption {
 }
 
 // WithInterpolation sets the resize interpolation method.
-// Applies to Average, Difference, Median, PHash, BlockMean, MarrHildreth, ColorMoment, WHash, LBP, and HOGHash.
+// Applies to Average, Difference, Median, PHash, BlockMean, MarrHildreth, ColorMoment, WHash, LBP, HOGHash, and PDQ.
 func WithInterpolation(interp Interpolation) interpolationOption {
 	return interpolationOption{interp}
 }
