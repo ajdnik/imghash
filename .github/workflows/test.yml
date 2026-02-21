@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - "release-please--branches--**"
   pull_request:
     branches:
       - main
@@ -202,7 +203,7 @@ jobs:
           fi
 
       - name: Upload Coverage Artifact
-        if: github.event_name == 'push' && success()
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && success()
         uses: actions/upload-artifact@v4
         with:
           name: coverage
@@ -211,7 +212,7 @@ jobs:
   coveralls:
     name: Publish Coverage Report
     runs-on: ubuntu-latest
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: test
     steps:
       - name: Checkout Code
