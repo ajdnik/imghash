@@ -30,6 +30,9 @@ type ColorMomentOption interface{ applyColorMoment(*ColorMoment) }
 // WHashOption configures the WHash algorithm.
 type WHashOption interface{ applyWHash(*WHash) }
 
+// LBPOption configures the LBP hash algorithm.
+type LBPOption interface{ applyLBP(*LBP) }
+
 // --- concrete option types ---
 
 type sizeOption struct{ width, height uint }
@@ -42,6 +45,7 @@ func (o sizeOption) applyBlockMean(b *BlockMean)       { b.rWidth, b.rHeight = o
 func (o sizeOption) applyMarrHildreth(m *MarrHildreth) { m.width, m.height = o.width, o.height }
 func (o sizeOption) applyColorMoment(c *ColorMoment)   { c.width, c.height = o.width, o.height }
 func (o sizeOption) applyWHash(w *WHash)               { w.width, w.height = o.width, o.height }
+func (o sizeOption) applyLBP(l *LBP)                   { l.width, l.height = o.width, o.height }
 
 type interpolationOption struct{ interp Interpolation }
 
@@ -53,6 +57,7 @@ func (o interpolationOption) applyBlockMean(b *BlockMean)       { b.interp = o.i
 func (o interpolationOption) applyMarrHildreth(m *MarrHildreth) { m.interp = o.interp }
 func (o interpolationOption) applyColorMoment(c *ColorMoment)   { c.interp = o.interp }
 func (o interpolationOption) applyWHash(w *WHash)               { w.interp = o.interp }
+func (o interpolationOption) applyLBP(l *LBP)                   { l.interp = o.interp }
 
 type kernelSizeOption struct{ size int }
 
@@ -89,16 +94,20 @@ type levelOption struct{ level int }
 
 func (o levelOption) applyWHash(w *WHash) { w.level = o.level }
 
+type gridSizeOption struct{ x, y uint }
+
+func (o gridSizeOption) applyLBP(l *LBP) { l.gridX, l.gridY = o.x, o.y }
+
 // --- public constructors ---
 
 // WithSize sets the resize dimensions used during hash computation.
-// Applies to Average, Difference, Median, PHash, BlockMean, MarrHildreth, ColorMoment, and WHash.
+// Applies to Average, Difference, Median, PHash, BlockMean, MarrHildreth, ColorMoment, WHash, and LBP.
 func WithSize(width, height uint) sizeOption {
 	return sizeOption{width, height}
 }
 
 // WithInterpolation sets the resize interpolation method.
-// Applies to Average, Difference, Median, PHash, BlockMean, MarrHildreth, ColorMoment, and WHash.
+// Applies to Average, Difference, Median, PHash, BlockMean, MarrHildreth, ColorMoment, WHash, and LBP.
 func WithInterpolation(interp Interpolation) interpolationOption {
 	return interpolationOption{interp}
 }
@@ -149,4 +158,11 @@ func WithAngles(angles int) anglesOption {
 // Applies to WHash.
 func WithLevel(level int) levelOption {
 	return levelOption{level}
+}
+
+// WithGridSize sets the number of grid cells used to divide the image for
+// spatial histogram computation.
+// Applies to LBP.
+func WithGridSize(x, y uint) gridSizeOption {
+	return gridSizeOption{x, y}
 }
