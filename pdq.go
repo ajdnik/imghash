@@ -32,7 +32,8 @@ const pdqJaroszReps = 2
 // See https://github.com/facebook/ThreatExchange/tree/main/pdq for more information.
 type PDQ struct {
 	// Resize interpolation method.
-	interp Interpolation
+	interp   Interpolation
+	distFunc DistanceFunc
 }
 
 // NewPDQ creates a new PDQ hasher with the given options.
@@ -94,5 +95,8 @@ func (p PDQ) computeHash(block [][]float32, median float32) hashtype.Binary {
 
 // Compare computes the Hamming distance between two PDQ hashes.
 func (p PDQ) Compare(h1, h2 hashtype.Hash) (similarity.Distance, error) {
+	if p.distFunc != nil {
+		return p.distFunc(h1, h2)
+	}
 	return similarity.Hamming(h1, h2)
 }

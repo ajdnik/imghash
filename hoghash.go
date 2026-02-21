@@ -23,7 +23,8 @@ type HOGHash struct {
 	// Cell size in pixels (square cells).
 	cellSize uint
 	// Number of orientation bins (unsigned gradients, 0–180°).
-	numBins uint
+	numBins  uint
+	distFunc DistanceFunc
 }
 
 // NewHOGHash creates a new HOGHash with the given options.
@@ -162,5 +163,8 @@ func (hh HOGHash) computeHash(mag, orient []float64, w, h int) hashtype.UInt8 {
 
 // Compare computes the cosine distance between two HOGHash hashes.
 func (hh HOGHash) Compare(h1, h2 hashtype.Hash) (similarity.Distance, error) {
+	if hh.distFunc != nil {
+		return hh.distFunc(h1, h2)
+	}
 	return similarity.Cosine(h1, h2)
 }

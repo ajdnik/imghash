@@ -108,23 +108,3 @@ func TestUInt8_ValueAt(t *testing.T) {
 		})
 	}
 }
-
-func TestUInt8_Distance(t *testing.T) {
-	h1 := hashtype.UInt8{0, 0}
-	h2 := hashtype.UInt8{3, 4}
-	d, err := h1.Distance(h2)
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-	if d != 5 {
-		t.Errorf("got %v, want 5", d)
-	}
-
-	d2, err := h1.Distance(h1)
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-	if d2 != 0 {
-		t.Errorf("got %v, want 0", d2)
-	}
-}

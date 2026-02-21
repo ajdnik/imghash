@@ -49,11 +49,18 @@ func HashReader(hasher Hasher, r io.Reader) (hashtype.Hash, error) {
 	return hasher.Calculate(img)
 }
 
-// Compare computes the distance between two hashes using the natural
-// similarity metric for their type: Hamming distance for Binary hashes,
-// L2 (Euclidean) distance for UInt8 and Float64 hashes.
-// For finer control (e.g. PCC), use the similarity package directly.
-func Compare(h1, h2 hashtype.Hash) (similarity.Distance, error) {
-	d, err := h1.Distance(h2)
-	return similarity.Distance(d), err
+// Compare computes the distance between two hashes.
+// By default it uses the natural metric for their type: Hamming distance
+// for Binary hashes, L2 (Euclidean) distance for UInt8 and Float64 hashes.
+// Pass an optional DistanceFunc to override the metric, e.g.:
+//
+//	Compare(h1, h2, similarity.Cosine)
+func Compare(h1, h2 hashtype.Hash, fn ...DistanceFunc) (similarity.Distance, error) {
+	if len(fn) > 0 && fn[0] != nil {
+		return fn[0](h1, h2)
+	}
+	if _, ok := h1.(hashtype.Binary); ok {
+		return similarity.Hamming(h1, h2)
+	}
+	return similarity.L2(h1, h2)
 }

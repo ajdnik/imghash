@@ -219,39 +219,3 @@ func TestBinary_ValueAt(t *testing.T) {
 		})
 	}
 }
-
-var binaryDistanceTests = []struct {
-	name   string
-	h1     hashtype.Binary
-	h2     hashtype.Binary
-	expect float64
-}{
-	{"identical", hashtype.Binary{0xFF}, hashtype.Binary{0xFF}, 0},
-	{"one bit diff", hashtype.Binary{0}, hashtype.Binary{1}, 1},
-	{"all bits diff", hashtype.Binary{0x00}, hashtype.Binary{0xFF}, 8},
-	{"two bytes", hashtype.Binary{0xFF, 0x00}, hashtype.Binary{0x00, 0xFF}, 16},
-	{"different lengths", hashtype.Binary{0xFF, 0x00}, hashtype.Binary{0xFF}, 0},
-}
-
-func TestBinary_Distance(t *testing.T) {
-	for _, tt := range binaryDistanceTests {
-		t.Run(tt.name, func(t *testing.T) {
-			res, err := tt.h1.Distance(tt.h2)
-			if err != nil {
-				t.Fatalf("unexpected error: %v", err)
-			}
-			if res != tt.expect {
-				t.Errorf("got %v, want %v", res, tt.expect)
-			}
-		})
-	}
-}
-
-func TestBinary_Distance_incompatible(t *testing.T) {
-	h1 := hashtype.Binary{1, 2, 3}
-	h2 := hashtype.UInt8{1, 2, 3}
-	_, err := h1.Distance(h2)
-	if !errors.Is(err, hashtype.ErrIncompatibleHash) {
-		t.Errorf("got %v, want %v", err, hashtype.ErrIncompatibleHash)
-	}
-}

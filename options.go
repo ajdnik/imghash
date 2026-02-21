@@ -50,6 +50,23 @@ type PDQOption interface{ applyPDQ(*PDQ) }
 // RASHOption configures the RASH hash algorithm.
 type RASHOption interface{ applyRASH(*RASH) }
 
+// DistanceOption overrides the comparison function used by Compare.
+type DistanceOption struct{ fn DistanceFunc }
+
+func (o DistanceOption) applyAverage(a *Average)               { a.distFunc = o.fn }
+func (o DistanceOption) applyDifference(d *Difference)         { d.distFunc = o.fn }
+func (o DistanceOption) applyMedian(m *Median)                 { m.distFunc = o.fn }
+func (o DistanceOption) applyPHash(p *PHash)                   { p.distFunc = o.fn }
+func (o DistanceOption) applyBlockMean(b *BlockMean)           { b.distFunc = o.fn }
+func (o DistanceOption) applyMarrHildreth(m *MarrHildreth)     { m.distFunc = o.fn }
+func (o DistanceOption) applyRadialVariance(r *RadialVariance) { r.distFunc = o.fn }
+func (o DistanceOption) applyColorMoment(c *ColorMoment)       { c.distFunc = o.fn }
+func (o DistanceOption) applyWHash(w *WHash)                   { w.distFunc = o.fn }
+func (o DistanceOption) applyLBP(l *LBP)                       { l.distFunc = o.fn }
+func (o DistanceOption) applyHOGHash(h *HOGHash)               { h.distFunc = o.fn }
+func (o DistanceOption) applyPDQ(p *PDQ)                       { p.distFunc = o.fn }
+func (o DistanceOption) applyRASH(r *RASH)                     { r.distFunc = o.fn }
+
 // --- concrete option types ---
 
 // SizeOption sets width and height for hash computation.
@@ -246,4 +263,12 @@ func WithRings(rings int) RingsOption {
 // Applies to PHash.
 func WithWeights(weights []float64) WeightsOption {
 	return WeightsOption{weights}
+}
+
+// WithDistance overrides the default distance function used by Compare.
+// All functions in the similarity package (Hamming, L1, L2, Cosine,
+// ChiSquare, PCC) satisfy DistanceFunc and can be passed directly.
+// Applies to all algorithms.
+func WithDistance(fn DistanceFunc) DistanceOption {
+	return DistanceOption{fn}
 }

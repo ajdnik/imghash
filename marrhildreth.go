@@ -25,7 +25,8 @@ type MarrHildreth struct {
 	// Scale parameter, used to compute Marr-Hildreth kernel.
 	scale float64
 	// Alpha parameter, used to compute Marr-Hildreth kernel.
-	alpha float64
+	alpha    float64
+	distFunc DistanceFunc
 	// Gaussian kernel size.
 	kernel int
 	// Gaussian kernel sigma parameter.
@@ -149,5 +150,8 @@ func computeMarrHildrethKernel(alpha, level float64) [][]float32 {
 
 // Compare computes the Hamming distance between two MarrHildreth hashes.
 func (mhh MarrHildreth) Compare(h1, h2 hashtype.Hash) (similarity.Distance, error) {
+	if mhh.distFunc != nil {
+		return mhh.distFunc(h1, h2)
+	}
 	return similarity.Hamming(h1, h2)
 }

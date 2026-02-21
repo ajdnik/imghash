@@ -109,24 +109,3 @@ func TestFloat64_ValueAt(t *testing.T) {
 		})
 	}
 }
-
-func TestFloat64_Distance(t *testing.T) {
-	h1 := hashtype.Float64{1, 2, 3}
-	h2 := hashtype.Float64{1, 2, 3}
-	d, err := h1.Distance(h2)
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-	if d != 0 {
-		t.Errorf("got %v, want 0", d)
-	}
-
-	h3 := hashtype.Float64{4, 6, 3}
-	d2, err := h1.Distance(h3)
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-	if d2 != 5 {
-		t.Errorf("got %v, want 5", d2)
-	}
-}

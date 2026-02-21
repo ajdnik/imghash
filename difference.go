@@ -13,6 +13,7 @@ import (
 // See https://www.hackerfactor.com/blog/index.php?/archives/529-Kind-of-Like-That.html for more information.
 type Difference struct {
 	baseConfig
+	distFunc DistanceFunc
 }
 
 // NewDifference creates a new Difference hash with the given options.
@@ -61,5 +62,8 @@ func (dh Difference) computeHash(img *image.Gray) hashtype.Binary {
 
 // Compare computes the Hamming distance between two Difference hashes.
 func (dh Difference) Compare(h1, h2 hashtype.Hash) (similarity.Distance, error) {
+	if dh.distFunc != nil {
+		return dh.distFunc(h1, h2)
+	}
 	return similarity.Hamming(h1, h2)
 }

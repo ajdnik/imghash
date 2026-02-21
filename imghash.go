@@ -8,6 +8,12 @@ import (
 	"github.com/ajdnik/imghash/v2/similarity"
 )
 
+// DistanceFunc computes a distance between two hashes.
+// All functions in the similarity package (Hamming, L1, L2, Cosine,
+// ChiSquare, PCC) satisfy this signature and can be passed directly
+// to WithDistance.
+type DistanceFunc func(hashtype.Hash, hashtype.Hash) (similarity.Distance, error)
+
 // Hasher computes a perceptual hash from an image.
 // It is implemented by all hash algorithms in this package:
 // Average, Difference, PHash, Median, BlockMean, MarrHildreth,
@@ -64,8 +70,8 @@ type Float64 = hashtype.Float64
 // Distance represents a similarity measure between two hashes.
 type Distance = similarity.Distance
 
-// ErrIncompatibleHash is reported when Distance is called with an incompatible hash type
-// (e.g. comparing a Binary hash with a non-Binary hash using Hamming distance).
+// ErrIncompatibleHash is reported when a binary-only metric (Hamming or weighted Hamming)
+// is used with incompatible hash types.
 var ErrIncompatibleHash = hashtype.ErrIncompatibleHash
 
 // Constructor validation errors.

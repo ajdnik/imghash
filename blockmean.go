@@ -17,7 +17,8 @@ type BlockMean struct {
 	// Block width.
 	bWidth uint
 	// Block height.
-	bHeight uint
+	bHeight  uint
+	distFunc DistanceFunc
 	// Block mean computation method.
 	method BlockMeanMethod
 }
@@ -121,5 +122,8 @@ func (bh BlockMean) computeHash(means []float64, median float64) hashtype.Binary
 
 // Compare computes the Hamming distance between two BlockMean hashes.
 func (bh BlockMean) Compare(h1, h2 hashtype.Hash) (similarity.Distance, error) {
+	if bh.distFunc != nil {
+		return bh.distFunc(h1, h2)
+	}
 	return similarity.Hamming(h1, h2)
 }

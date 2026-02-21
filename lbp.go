@@ -22,7 +22,8 @@ type LBP struct {
 	// Number of horizontal grid cells.
 	gridX uint
 	// Number of vertical grid cells.
-	gridY uint
+	gridY    uint
+	distFunc DistanceFunc
 }
 
 // NewLBP creates a new LBP hash with the given options.
@@ -133,5 +134,8 @@ func (lh LBP) computeHash(lbpImg []uint8, w, h int) hashtype.UInt8 {
 
 // Compare computes the chi-square distance between two LBP hashes.
 func (lh LBP) Compare(h1, h2 hashtype.Hash) (similarity.Distance, error) {
+	if lh.distFunc != nil {
+		return lh.distFunc(h1, h2)
+	}
 	return similarity.ChiSquare(h1, h2)
 }

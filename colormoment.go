@@ -17,7 +17,8 @@ type ColorMoment struct {
 	// Gaussian kernel size.
 	kernel int
 	// Gaussian kernel sigma.
-	sigma float64
+	sigma    float64
+	distFunc DistanceFunc
 }
 
 // NewColorMoment creates a new ColorMoment hash with the given options.
@@ -74,5 +75,8 @@ func (ch ColorMoment) Calculate(img image.Image) (hashtype.Hash, error) {
 
 // Compare computes the L2 (Euclidean) distance between two ColorMoment hashes.
 func (ch ColorMoment) Compare(h1, h2 hashtype.Hash) (similarity.Distance, error) {
+	if ch.distFunc != nil {
+		return ch.distFunc(h1, h2)
+	}
 	return similarity.L2(h1, h2)
 }

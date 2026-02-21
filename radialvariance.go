@@ -17,7 +17,8 @@ type RadialVariance struct {
 	// Gaussian kernel standard deviation.
 	sigma float64
 	// Number of angles to consider.
-	angles int
+	angles   int
+	distFunc DistanceFunc
 }
 
 const hashSize = 40
@@ -174,5 +175,8 @@ func (rv RadialVariance) computeHash(feat []float64) hashtype.UInt8 {
 
 // Compare computes the L1 (Manhattan) distance between two RadialVariance hashes.
 func (rv RadialVariance) Compare(h1, h2 hashtype.Hash) (similarity.Distance, error) {
+	if rv.distFunc != nil {
+		return rv.distFunc(h1, h2)
+	}
 	return similarity.L1(h1, h2)
 }

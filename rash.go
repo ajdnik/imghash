@@ -24,8 +24,9 @@ import (
 //   - De Roover et al., "Robust image hashing based on radial variance of pixels" (2005)
 type RASH struct {
 	baseConfig
-	sigma float64
-	rings int
+	sigma    float64
+	rings    int
+	distFunc DistanceFunc
 }
 
 const rashHashBits = 64
@@ -144,5 +145,8 @@ func (r RASH) computeHash(means []float64) hashtype.Binary {
 
 // Compare computes the Hamming distance between two RASH hashes.
 func (r RASH) Compare(h1, h2 hashtype.Hash) (similarity.Distance, error) {
+	if r.distFunc != nil {
+		return r.distFunc(h1, h2)
+	}
 	return similarity.Hamming(h1, h2)
 }

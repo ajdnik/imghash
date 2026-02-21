@@ -16,7 +16,8 @@ import (
 type WHash struct {
 	baseConfig
 	// Number of Haar DWT decomposition levels.
-	level int
+	level    int
+	distFunc DistanceFunc
 }
 
 // NewWHash creates a new WHash with the given options.
@@ -88,5 +89,8 @@ func (wh WHash) computeHash(ll [][]float32, median float32) hashtype.Binary {
 
 // Compare computes the Hamming distance between two WHash hashes.
 func (wh WHash) Compare(h1, h2 hashtype.Hash) (similarity.Distance, error) {
+	if wh.distFunc != nil {
+		return wh.distFunc(h1, h2)
+	}
 	return similarity.Hamming(h1, h2)
 }
