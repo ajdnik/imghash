@@ -31,23 +31,23 @@ type ColorMomentOption interface{ applyColorMoment(*ColorMoment) }
 
 type sizeOption struct{ width, height uint }
 
-func (o sizeOption) applyAverage(a *Average)          { a.width, a.height = o.width, o.height }
-func (o sizeOption) applyDifference(d *Difference)    { d.width, d.height = o.width, o.height }
-func (o sizeOption) applyMedian(m *Median)            { m.width, m.height = o.width, o.height }
-func (o sizeOption) applyPHash(p *PHash)              { p.width, p.height = o.width, o.height }
-func (o sizeOption) applyBlockMean(b *BlockMean)      { b.rWidth, b.rHeight = o.width, o.height }
+func (o sizeOption) applyAverage(a *Average)           { a.width, a.height = o.width, o.height }
+func (o sizeOption) applyDifference(d *Difference)     { d.width, d.height = o.width, o.height }
+func (o sizeOption) applyMedian(m *Median)             { m.width, m.height = o.width, o.height }
+func (o sizeOption) applyPHash(p *PHash)               { p.width, p.height = o.width, o.height }
+func (o sizeOption) applyBlockMean(b *BlockMean)       { b.rWidth, b.rHeight = o.width, o.height }
 func (o sizeOption) applyMarrHildreth(m *MarrHildreth) { m.width, m.height = o.width, o.height }
-func (o sizeOption) applyColorMoment(c *ColorMoment)  { c.width, c.height = o.width, o.height }
+func (o sizeOption) applyColorMoment(c *ColorMoment)   { c.width, c.height = o.width, o.height }
 
 type interpolationOption struct{ interp Interpolation }
 
-func (o interpolationOption) applyAverage(a *Average)          { a.interp = o.interp }
-func (o interpolationOption) applyDifference(d *Difference)    { d.interp = o.interp }
-func (o interpolationOption) applyMedian(m *Median)            { m.interp = o.interp }
-func (o interpolationOption) applyPHash(p *PHash)              { p.interp = o.interp }
-func (o interpolationOption) applyBlockMean(b *BlockMean)      { b.interp = o.interp }
+func (o interpolationOption) applyAverage(a *Average)           { a.interp = o.interp }
+func (o interpolationOption) applyDifference(d *Difference)     { d.interp = o.interp }
+func (o interpolationOption) applyMedian(m *Median)             { m.interp = o.interp }
+func (o interpolationOption) applyPHash(p *PHash)               { p.interp = o.interp }
+func (o interpolationOption) applyBlockMean(b *BlockMean)       { b.interp = o.interp }
 func (o interpolationOption) applyMarrHildreth(m *MarrHildreth) { m.interp = o.interp }
-func (o interpolationOption) applyColorMoment(c *ColorMoment)  { c.interp = o.interp }
+func (o interpolationOption) applyColorMoment(c *ColorMoment)   { c.interp = o.interp }
 
 type kernelSizeOption struct{ size int }
 
@@ -56,8 +56,8 @@ func (o kernelSizeOption) applyColorMoment(c *ColorMoment)   { c.kernel = o.size
 
 type sigmaOption struct{ sigma float64 }
 
-func (o sigmaOption) applyMarrHildreth(m *MarrHildreth)    { m.sigma = o.sigma }
-func (o sigmaOption) applyColorMoment(c *ColorMoment)      { c.sigma = o.sigma }
+func (o sigmaOption) applyMarrHildreth(m *MarrHildreth)     { m.sigma = o.sigma }
+func (o sigmaOption) applyColorMoment(c *ColorMoment)       { c.sigma = o.sigma }
 func (o sigmaOption) applyRadialVariance(r *RadialVariance) { r.sigma = o.sigma }
 
 type blockSizeOption struct{ width, height uint }
