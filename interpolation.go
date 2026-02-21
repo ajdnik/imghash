@@ -15,6 +15,24 @@ const (
 	BilinearExact     Interpolation = Interpolation(imgproc.BilinearExact)
 )
 
+var interpolationNames = [...]string{
+	NearestNeighbor:   "NearestNeighbor",
+	Bilinear:          "Bilinear",
+	Bicubic:           "Bicubic",
+	MitchellNetravali: "MitchellNetravali",
+	Lanczos2:          "Lanczos2",
+	Lanczos3:          "Lanczos3",
+	BilinearExact:     "BilinearExact",
+}
+
+// String returns the name of the interpolation method.
+func (i Interpolation) String() string {
+	if int(i) >= 0 && int(i) < len(interpolationNames) {
+		return interpolationNames[i]
+	}
+	return "Unknown"
+}
+
 func (i Interpolation) resizeType() imgproc.ResizeType {
 	return imgproc.ResizeType(i)
 }
