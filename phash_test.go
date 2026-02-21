@@ -7,7 +7,6 @@ import (
 
 	. "github.com/ajdnik/imghash"
 	"github.com/ajdnik/imghash/hashtype"
-	"github.com/ajdnik/imghash/imgproc"
 	"github.com/ajdnik/imghash/similarity"
 )
 
@@ -30,7 +29,7 @@ func TestPHash_Calculate(t *testing.T) {
 	for _, tt := range pHashCalculateTests {
 		t.Run(tt.filename, func(t *testing.T) {
 			hash := NewPHash(WithSize(tt.width, tt.height), WithInterpolation(tt.resizeType))
-			img, _ := imgproc.Read(tt.filename)
+			img, _ := OpenImage(tt.filename)
 			result, err := hash.Calculate(img)
 			if err != nil {
 				t.Fatalf("unexpected error: %v", err)
@@ -45,7 +44,7 @@ func TestPHash_Calculate(t *testing.T) {
 
 func ExamplePHash_Calculate() {
 	// Read image from file
-	img, _ := imgproc.Read("assets/cat.jpg")
+	img, _ := OpenImage("assets/cat.jpg")
 	// Create new PHash using default parameters
 	ph := NewPHash()
 	// Calculate hash
@@ -74,8 +73,8 @@ func TestPHash_Distance(t *testing.T) {
 	for _, tt := range pHashDistanceTests {
 		t.Run(fmt.Sprintf("%v %v", tt.firstImage, tt.secondImage), func(t *testing.T) {
 			hash := NewPHash(WithSize(tt.width, tt.height), WithInterpolation(tt.resizeType))
-			img1, _ := imgproc.Read(tt.firstImage)
-			img2, _ := imgproc.Read(tt.secondImage)
+			img1, _ := OpenImage(tt.firstImage)
+			img2, _ := OpenImage(tt.secondImage)
 			h1, _ := hash.Calculate(img1)
 			h2, _ := hash.Calculate(img2)
 			dist, _ := similarity.Hamming(h1, h2)

@@ -7,7 +7,6 @@ import (
 
 	. "github.com/ajdnik/imghash"
 	"github.com/ajdnik/imghash/hashtype"
-	"github.com/ajdnik/imghash/imgproc"
 	"github.com/ajdnik/imghash/similarity"
 )
 
@@ -34,7 +33,7 @@ func TestMarrHildreth_Calculate(t *testing.T) {
 	for _, tt := range marrHildrethCalculateTests {
 		t.Run(tt.filename, func(t *testing.T) {
 			hash := NewMarrHildreth(WithScale(tt.scale), WithAlpha(tt.alpha), WithSize(tt.width, tt.height), WithInterpolation(tt.resizeType), WithKernelSize(tt.kernelSize), WithSigma(tt.sigma))
-			img, _ := imgproc.Read(tt.filename)
+			img, _ := OpenImage(tt.filename)
 			result, err := hash.Calculate(img)
 			if err != nil {
 				t.Fatalf("unexpected error: %v", err)
@@ -49,7 +48,7 @@ func TestMarrHildreth_Calculate(t *testing.T) {
 
 func ExampleMarrHildreth_calculate() {
 	// Read image from file
-	img, _ := imgproc.Read("assets/cat.jpg")
+	img, _ := OpenImage("assets/cat.jpg")
 	// Create new Marr-Hildreth Hash using default parameters
 	marr := NewMarrHildreth()
 	// Calculate hash
@@ -82,8 +81,8 @@ func TestMarrHildreth_Distance(t *testing.T) {
 	for _, tt := range marrHildrethDistanceTests {
 		t.Run(fmt.Sprintf("%v %v", tt.firstImage, tt.secondImage), func(t *testing.T) {
 			hash := NewMarrHildreth(WithScale(tt.scale), WithAlpha(tt.alpha), WithSize(tt.width, tt.height), WithInterpolation(tt.resizeType), WithKernelSize(tt.kernelSize), WithSigma(tt.sigma))
-			img1, _ := imgproc.Read(tt.firstImage)
-			img2, _ := imgproc.Read(tt.secondImage)
+			img1, _ := OpenImage(tt.firstImage)
+			img2, _ := OpenImage(tt.secondImage)
 			h1, _ := hash.Calculate(img1)
 			h2, _ := hash.Calculate(img2)
 			dist, _ := similarity.Hamming(h1, h2)

@@ -7,7 +7,6 @@ import (
 
 	. "github.com/ajdnik/imghash"
 	"github.com/ajdnik/imghash/hashtype"
-	"github.com/ajdnik/imghash/imgproc"
 	"github.com/ajdnik/imghash/similarity"
 )
 
@@ -32,7 +31,7 @@ func TestColorMoment_Calculate(t *testing.T) {
 	for _, tt := range colorMomentCalculateTests {
 		t.Run(tt.filename, func(t *testing.T) {
 			hash := NewColorMoment(WithSize(tt.width, tt.height), WithInterpolation(tt.resizeType), WithKernelSize(tt.kernel), WithSigma(tt.sigma))
-			img, _ := imgproc.Read(tt.filename)
+			img, _ := OpenImage(tt.filename)
 			result, err := hash.Calculate(img)
 			if err != nil {
 				t.Fatalf("unexpected error: %v", err)
@@ -47,7 +46,7 @@ func TestColorMoment_Calculate(t *testing.T) {
 
 func ExampleColorMoment_Calculate() {
 	// Read image from file
-	img, _ := imgproc.Read("assets/cat.jpg")
+	img, _ := OpenImage("assets/cat.jpg")
 	// Create new Color Moment Hash using default parameters
 	color := NewColorMoment()
 	// Calculate hash
@@ -77,8 +76,8 @@ func TestColorMoment_Distance(t *testing.T) {
 	for _, tt := range colorMomentDistanceTests {
 		t.Run(fmt.Sprintf("%v %v", tt.firstImage, tt.secondImage), func(t *testing.T) {
 			hash := NewColorMoment(WithSize(tt.width, tt.height), WithInterpolation(tt.resizeType), WithKernelSize(tt.kernel), WithSigma(tt.sigma))
-			img1, _ := imgproc.Read(tt.firstImage)
-			img2, _ := imgproc.Read(tt.secondImage)
+			img1, _ := OpenImage(tt.firstImage)
+			img2, _ := OpenImage(tt.secondImage)
 			h1, _ := hash.Calculate(img1)
 			h2, _ := hash.Calculate(img2)
 			dist := similarity.L2(h1, h2)

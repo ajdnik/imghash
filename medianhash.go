@@ -5,7 +5,7 @@ import (
 	"math"
 
 	"github.com/ajdnik/imghash/hashtype"
-	"github.com/ajdnik/imghash/imgproc"
+	"github.com/ajdnik/imghash/internal/imgproc"
 )
 
 // Median is a perceptual hash that uses a similar approach as Average hash.

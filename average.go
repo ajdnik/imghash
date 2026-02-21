@@ -5,7 +5,7 @@ import (
 	"math"
 
 	"github.com/ajdnik/imghash/hashtype"
-	"github.com/ajdnik/imghash/imgproc"
+	"github.com/ajdnik/imghash/internal/imgproc"
 )
 
 // Average is a perceptual hash that uses the method described in Looks Like It by Dr. Neal Krawetz.
