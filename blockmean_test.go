@@ -38,7 +38,10 @@ func TestBlockMean_Calculate(t *testing.T) {
 	for _, tt := range blockMeanCalculateTests {
 		t.Run(tt.filename, func(t *testing.T) {
 			hash := NewBlockMean(WithSize(tt.width, tt.height), WithInterpolation(tt.resizeType), WithBlockSize(tt.blockWidth, tt.blockHeight), WithBlockMeanMethod(tt.method))
-			img, _ := OpenImage(tt.filename)
+			img, err := OpenImage(tt.filename)
+			if err != nil {
+				t.Fatalf("failed to open %s: %v", tt.filename, err)
+			}
 			result, err := hash.Calculate(img)
 			if err != nil {
 				t.Fatalf("unexpected error: %v", err)
@@ -53,11 +56,17 @@ func TestBlockMean_Calculate(t *testing.T) {
 
 func ExampleBlockMean_Calculate() {
 	// Read image from file
-	img, _ := OpenImage("assets/cat.jpg")
+	img, err := OpenImage("assets/cat.jpg")
+	if err != nil {
+		panic(err)
+	}
 	// Create new Block Mean Hash using default parameters
 	block := NewBlockMean()
 	// Calculate hash
-	hash, _ := block.Calculate(img)
+	hash, err := block.Calculate(img)
+	if err != nil {
+		panic(err)
+	}
 
 	fmt.Println(hash)
 	// Output: [255 255 255 255 255 255 255 255 255 225 127 0 63 0 15 0 7 2 3 0 1 0 1 0 0 0 0 0 0 0 116 4]
@@ -90,11 +99,26 @@ func TestBlockMean_Distance(t *testing.T) {
 	for _, tt := range blockMeanDistanceTests {
 		t.Run(fmt.Sprintf("%v %v", tt.firstImage, tt.secondImage), func(t *testing.T) {
 			hash := NewBlockMean(WithSize(tt.width, tt.height), WithInterpolation(tt.resizeType), WithBlockSize(tt.blockWidth, tt.blockHeight), WithBlockMeanMethod(tt.method))
-			img1, _ := OpenImage(tt.firstImage)
-			img2, _ := OpenImage(tt.secondImage)
-			h1, _ := hash.Calculate(img1)
-			h2, _ := hash.Calculate(img2)
-			dist, _ := similarity.Hamming(h1, h2)
+			img1, err := OpenImage(tt.firstImage)
+			if err != nil {
+				t.Fatalf("failed to open %s: %v", tt.firstImage, err)
+			}
+			img2, err := OpenImage(tt.secondImage)
+			if err != nil {
+				t.Fatalf("failed to open %s: %v", tt.secondImage, err)
+			}
+			h1, err := hash.Calculate(img1)
+			if err != nil {
+				t.Fatalf("failed to calculate hash for %s: %v", tt.firstImage, err)
+			}
+			h2, err := hash.Calculate(img2)
+			if err != nil {
+				t.Fatalf("failed to calculate hash for %s: %v", tt.secondImage, err)
+			}
+			dist, err := similarity.Hamming(h1, h2)
+			if err != nil {
+				t.Fatalf("failed to compute distance: %v", err)
+			}
 			if !dist.Equal(tt.distance) {
 				t.Errorf("got %v, want %v", dist, tt.distance)
 			}

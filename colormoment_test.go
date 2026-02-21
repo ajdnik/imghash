@@ -31,7 +31,10 @@ func TestColorMoment_Calculate(t *testing.T) {
 	for _, tt := range colorMomentCalculateTests {
 		t.Run(tt.filename, func(t *testing.T) {
 			hash := NewColorMoment(WithSize(tt.width, tt.height), WithInterpolation(tt.resizeType), WithKernelSize(tt.kernel), WithSigma(tt.sigma))
-			img, _ := OpenImage(tt.filename)
+			img, err := OpenImage(tt.filename)
+			if err != nil {
+				t.Fatalf("failed to open %s: %v", tt.filename, err)
+			}
 			result, err := hash.Calculate(img)
 			if err != nil {
 				t.Fatalf("unexpected error: %v", err)
@@ -46,11 +49,17 @@ func TestColorMoment_Calculate(t *testing.T) {
 
 func ExampleColorMoment_Calculate() {
 	// Read image from file
-	img, _ := OpenImage("assets/cat.jpg")
+	img, err := OpenImage("assets/cat.jpg")
+	if err != nil {
+		panic(err)
+	}
 	// Create new Color Moment Hash using default parameters
 	color := NewColorMoment()
 	// Calculate hash
-	hash, _ := color.Calculate(img)
+	hash, err := color.Calculate(img)
+	if err != nil {
+		panic(err)
+	}
 
 	fmt.Println(hash)
 }
@@ -76,10 +85,22 @@ func TestColorMoment_Distance(t *testing.T) {
 	for _, tt := range colorMomentDistanceTests {
 		t.Run(fmt.Sprintf("%v %v", tt.firstImage, tt.secondImage), func(t *testing.T) {
 			hash := NewColorMoment(WithSize(tt.width, tt.height), WithInterpolation(tt.resizeType), WithKernelSize(tt.kernel), WithSigma(tt.sigma))
-			img1, _ := OpenImage(tt.firstImage)
-			img2, _ := OpenImage(tt.secondImage)
-			h1, _ := hash.Calculate(img1)
-			h2, _ := hash.Calculate(img2)
+			img1, err := OpenImage(tt.firstImage)
+			if err != nil {
+				t.Fatalf("failed to open %s: %v", tt.firstImage, err)
+			}
+			img2, err := OpenImage(tt.secondImage)
+			if err != nil {
+				t.Fatalf("failed to open %s: %v", tt.secondImage, err)
+			}
+			h1, err := hash.Calculate(img1)
+			if err != nil {
+				t.Fatalf("failed to calculate hash for %s: %v", tt.firstImage, err)
+			}
+			h2, err := hash.Calculate(img2)
+			if err != nil {
+				t.Fatalf("failed to calculate hash for %s: %v", tt.secondImage, err)
+			}
 			dist := similarity.L2(h1, h2)
 			if !dist.Equal(tt.distance) {
 				t.Errorf("got %v, want %v", dist, tt.distance)

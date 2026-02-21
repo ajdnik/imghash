@@ -42,8 +42,14 @@ func ExamplePCC() {
 	hash2 := hashtype.UInt8{140, 153, 121, 106, 129, 93, 134, 157}
 	hash3 := hashtype.UInt8{179, 87, 159, 70, 0, 106, 39, 66}
 
-	res1, _ := PCC(hash1, hash2)
-	res2, _ := PCC(hash1, hash3)
+	res1, err := PCC(hash1, hash2)
+	if err != nil {
+		panic(err)
+	}
+	res2, err := PCC(hash1, hash3)
+	if err != nil {
+		panic(err)
+	}
 	fmt.Println(res1)
 	fmt.Println(res2)
 	// Output:
@@ -81,8 +87,14 @@ func ExamplePCC_float64() {
 	hash2 := hashtype.Float64{-4.865894404868708e-23, 0.0012375374902843692, 1.6038385709207788e-10}
 	hash3 := hashtype.Float64{6.743101958369291e-09, 4.991671383226105e-12, 4.0181156557344116e-12}
 
-	res1, _ := PCC(hash1, hash2)
-	res2, _ := PCC(hash1, hash3)
+	res1, err := PCC(hash1, hash2)
+	if err != nil {
+		panic(err)
+	}
+	res2, err := PCC(hash1, hash3)
+	if err != nil {
+		panic(err)
+	}
 	fmt.Println(res1)
 	fmt.Println(res2)
 }

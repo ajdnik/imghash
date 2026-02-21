@@ -33,7 +33,10 @@ func TestMarrHildreth_Calculate(t *testing.T) {
 	for _, tt := range marrHildrethCalculateTests {
 		t.Run(tt.filename, func(t *testing.T) {
 			hash := NewMarrHildreth(WithScale(tt.scale), WithAlpha(tt.alpha), WithSize(tt.width, tt.height), WithInterpolation(tt.resizeType), WithKernelSize(tt.kernelSize), WithSigma(tt.sigma))
-			img, _ := OpenImage(tt.filename)
+			img, err := OpenImage(tt.filename)
+			if err != nil {
+				t.Fatalf("failed to open %s: %v", tt.filename, err)
+			}
 			result, err := hash.Calculate(img)
 			if err != nil {
 				t.Fatalf("unexpected error: %v", err)
@@ -48,11 +51,17 @@ func TestMarrHildreth_Calculate(t *testing.T) {
 
 func ExampleMarrHildreth_calculate() {
 	// Read image from file
-	img, _ := OpenImage("assets/cat.jpg")
+	img, err := OpenImage("assets/cat.jpg")
+	if err != nil {
+		panic(err)
+	}
 	// Create new Marr-Hildreth Hash using default parameters
 	marr := NewMarrHildreth()
 	// Calculate hash
-	hash, _ := marr.Calculate(img)
+	hash, err := marr.Calculate(img)
+	if err != nil {
+		panic(err)
+	}
 
 	fmt.Println(hash)
 	// Output: [92 190 42 111 87 107 101 164 184 24 75 41 185 54 178 162 26 236 155 150 108 98 233 112 56 235 124 177 139 159 148 66 89 38 229 47 195 36 158 180 85 115 79 165 92 131 225 252 54 148 218 61 99 92 82 141 141 96 112 186 153 208 174 112 252 150 153 172 173 206 43 130]
@@ -81,11 +90,26 @@ func TestMarrHildreth_Distance(t *testing.T) {
 	for _, tt := range marrHildrethDistanceTests {
 		t.Run(fmt.Sprintf("%v %v", tt.firstImage, tt.secondImage), func(t *testing.T) {
 			hash := NewMarrHildreth(WithScale(tt.scale), WithAlpha(tt.alpha), WithSize(tt.width, tt.height), WithInterpolation(tt.resizeType), WithKernelSize(tt.kernelSize), WithSigma(tt.sigma))
-			img1, _ := OpenImage(tt.firstImage)
-			img2, _ := OpenImage(tt.secondImage)
-			h1, _ := hash.Calculate(img1)
-			h2, _ := hash.Calculate(img2)
-			dist, _ := similarity.Hamming(h1, h2)
+			img1, err := OpenImage(tt.firstImage)
+			if err != nil {
+				t.Fatalf("failed to open %s: %v", tt.firstImage, err)
+			}
+			img2, err := OpenImage(tt.secondImage)
+			if err != nil {
+				t.Fatalf("failed to open %s: %v", tt.secondImage, err)
+			}
+			h1, err := hash.Calculate(img1)
+			if err != nil {
+				t.Fatalf("failed to calculate hash for %s: %v", tt.firstImage, err)
+			}
+			h2, err := hash.Calculate(img2)
+			if err != nil {
+				t.Fatalf("failed to calculate hash for %s: %v", tt.secondImage, err)
+			}
+			dist, err := similarity.Hamming(h1, h2)
+			if err != nil {
+				t.Fatalf("failed to compute distance: %v", err)
+			}
 			if !dist.Equal(tt.distance) {
 				t.Errorf("got %v, want %v", dist, tt.distance)
 			}

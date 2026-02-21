@@ -42,7 +42,10 @@ func TestRadialVariance_Calculate(t *testing.T) {
 	for _, tt := range radialVarianceCalculateTests {
 		t.Run(tt.filename, func(t *testing.T) {
 			hash := NewRadialVariance(WithSigma(tt.sigma), WithAngles(tt.angles))
-			img, _ := OpenImage(tt.filename)
+			img, err := OpenImage(tt.filename)
+			if err != nil {
+				t.Fatalf("failed to open %s: %v", tt.filename, err)
+			}
 			result, err := hash.Calculate(img)
 			if err != nil {
 				t.Fatalf("unexpected error: %v", err)
@@ -57,11 +60,17 @@ func TestRadialVariance_Calculate(t *testing.T) {
 
 func ExampleRadialVariance_Calculate() {
 	// Read image from file
-	img, _ := OpenImage("assets/cat.jpg")
+	img, err := OpenImage("assets/cat.jpg")
+	if err != nil {
+		panic(err)
+	}
 	// Create new Radial Variance Hash using default parameters
 	rad := NewRadialVariance()
 	// Calculate hash
-	hash, _ := rad.Calculate(img)
+	hash, err := rad.Calculate(img)
+	if err != nil {
+		panic(err)
+	}
 
 	fmt.Println(hash)
 }
@@ -84,11 +93,26 @@ func TestRadialVariance_Distance(t *testing.T) {
 	for _, tt := range radialVarianceDistanceTests {
 		t.Run(fmt.Sprintf("%v %v", tt.firstImage, tt.secondImage), func(t *testing.T) {
 			hash := NewRadialVariance(WithSigma(tt.sigma), WithAngles(tt.angles))
-			img1, _ := OpenImage(tt.firstImage)
-			img2, _ := OpenImage(tt.secondImage)
-			h1, _ := hash.Calculate(img1)
-			h2, _ := hash.Calculate(img2)
-			dist, _ := similarity.PCC(h1, h2)
+			img1, err := OpenImage(tt.firstImage)
+			if err != nil {
+				t.Fatalf("failed to open %s: %v", tt.firstImage, err)
+			}
+			img2, err := OpenImage(tt.secondImage)
+			if err != nil {
+				t.Fatalf("failed to open %s: %v", tt.secondImage, err)
+			}
+			h1, err := hash.Calculate(img1)
+			if err != nil {
+				t.Fatalf("failed to calculate hash for %s: %v", tt.firstImage, err)
+			}
+			h2, err := hash.Calculate(img2)
+			if err != nil {
+				t.Fatalf("failed to calculate hash for %s: %v", tt.secondImage, err)
+			}
+			dist, err := similarity.PCC(h1, h2)
+			if err != nil {
+				t.Fatalf("failed to compute distance: %v", err)
+			}
 			if math.Abs(float64(dist)-float64(tt.distance)) > 0.01 {
 				t.Errorf("got %v, want %v", dist, tt.distance)
 			}
