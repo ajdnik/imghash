@@ -13,6 +13,7 @@ Go implementation of multiple perceptual hash algorithms for images. Perceptual 
 - [Code of Conduct](CODE_OF_CONDUCT.md)
 - [Contributing Guide](CONTRIBUTING.md)
 - [Security Policy](SECURITY.md)
+- [Migration Guide](MIGRATION.md)
 
 ## Installing
 
