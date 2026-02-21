@@ -2,7 +2,6 @@ package similarity
 
 import (
 	"errors"
-	"math/bits"
 
 	"github.com/ajdnik/imghash/v2/hashtype"
 )
@@ -16,17 +15,9 @@ func Hamming(h1, h2 hashtype.Hash) (Distance, error) {
 	if !ok {
 		return 0, ErrNotBinaryHash
 	}
-	b2, ok := h2.(hashtype.Binary)
-	if !ok {
+	if _, ok := h2.(hashtype.Binary); !ok {
 		return 0, ErrNotBinaryHash
 	}
-	l := len(b1)
-	if len(b2) < l {
-		l = len(b2)
-	}
-	var dist int
-	for i := 0; i < l; i++ {
-		dist += bits.OnesCount8(b1[i] ^ b2[i])
-	}
-	return Distance(dist), nil
+	d, _ := b1.Distance(h2)
+	return Distance(d), nil
 }

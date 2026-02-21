@@ -11,6 +11,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"math/bits"
 )
 
 // Binary represents a hash type where the smallest hash element is a bit.
@@ -41,11 +42,7 @@ func (h Binary) Distance(other Hash) (float64, error) {
 	}
 	var dist int
 	for i := 0; i < l; i++ {
-		xor := h[i] ^ b[i]
-		for xor != 0 {
-			xor &= xor - 1
-			dist++
-		}
+		dist += bits.OnesCount8(h[i] ^ b[i])
 	}
 	return float64(dist), nil
 }
