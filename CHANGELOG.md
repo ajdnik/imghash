@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0](https://github.com/ajdnik/imghash/compare/imghash-v2.0.0...imghash-v2.1.0) (2026-02-21)
+
+
+### Features
+
+* Refactor Library For Maintainability ([#10](https://github.com/ajdnik/imghash/issues/10)) ([a840336](https://github.com/ajdnik/imghash/commit/a84033638eae436ae7eba5bb5685e15f5f5371b3))
+
 ## [2.0.0](https://github.com/ajdnik/imghash/compare/imghash-v1.1.0...imghash-v2.0.0) (2026-02-21)
 
 
