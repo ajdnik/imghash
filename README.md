@@ -8,6 +8,13 @@
 
 Go implementation of multiple perceptual hash algorithms for images. Perceptual hash functions are analogous if features are similar, whereas cryptographic hashing relies on the avalanche effect of a small change in input value creating a drastic change in output value.
 
+## Community
+
+- [Code of Conduct](CODE_OF_CONDUCT.md)
+- [Contributing Guide](CONTRIBUTING.md)
+- [Security Policy](SECURITY.md)
+- [Migration Guide](MIGRATION.md)
+
 ## Installing
 
 Using imghash is easy. First, use `go get` to install the latest version

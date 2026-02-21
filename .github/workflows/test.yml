@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - "release-please--branches--**"
   pull_request:
     branches:
       - main
@@ -70,6 +71,42 @@ jobs:
               echo "No lint issues found."
             else
               echo "**Issues found:**"
+              echo ""
+              echo '```'
+              echo "$OUTPUT"
+              echo '```'
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          exit $EXIT_CODE
+
+  vulncheck:
+    name: Vulnerability Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.25"
+      - name: Install govulncheck
+        run: go install golang.org/x/vuln/cmd/govulncheck@latest
+      - name: Run govulncheck
+        shell: bash
+        run: |
+          set +e
+          OUTPUT=$(govulncheck ./... 2>&1)
+          EXIT_CODE=$?
+          set -e
+
+          {
+            echo "## Vulnerability Check"
+            echo ""
+            if [ $EXIT_CODE -eq 0 ]; then
+              echo "No known vulnerabilities found."
+            else
+              echo "**Vulnerabilities found:**"
               echo ""
               echo '```'
               echo "$OUTPUT"
@@ -202,7 +239,7 @@ jobs:
           fi
 
       - name: Upload Coverage Artifact
-        if: github.event_name == 'push' && success()
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && success()
         uses: actions/upload-artifact@v4
         with:
           name: coverage
@@ -211,7 +248,7 @@ jobs:
   coveralls:
     name: Publish Coverage Report
     runs-on: ubuntu-latest
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: test
     steps:
       - name: Checkout Code
