@@ -1,7 +1,7 @@
 # imghash
 
 [![CI](https://github.com/ajdnik/imghash/workflows/ci/badge.svg "CI status")](https://github.com/ajdnik/imghash/actions?query=workflow%3Aci)
-[![Coverage Status](https://coveralls.io/repos/github/ajdnik/imghash/badge.svg?branch=main)](https://coveralls.io/github/ajdnik/imghash?branch=main)
+[![Coverage Status](https://badge.coveralls.io/repos/github/ajdnik/imghash/badge.svg?branch=main)](https://coveralls.io/github/ajdnik/imghash?branch=main)
 [![Go Reference](https://pkg.go.dev/badge/github.com/ajdnik/imghash/v2.svg)](https://pkg.go.dev/github.com/ajdnik/imghash/v2)
 [![Go Report Card](https://goreportcard.com/badge/github.com/ajdnik/imghash/v2)](https://goreportcard.com/report/github.com/ajdnik/imghash/v2)
 [![License MIT](https://img.shields.io/badge/license-MIT-lightgrey.svg)](https://github.com/ajdnik/imghash/blob/main/LICENSE)

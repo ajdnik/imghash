@@ -1,0 +1,60 @@
+name: Bug report
+description: Report a reproducible problem in imghash.
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: What happened?
+      description: A clear and concise description of the problem.
+      placeholder: Describe the observed behavior and why it is incorrect.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Minimal steps, sample input, and expected vs actual behavior.
+      placeholder: |
+        1. Run ...
+        2. Compare ...
+        3. See error ...
+    validations:
+      required: true
+  - type: textarea
+    id: code
+    attributes:
+      label: Minimal code sample
+      description: Optional but strongly recommended.
+      render: go
+  - type: textarea
+    id: logs
+    attributes:
+      label: Error output
+      description: Paste relevant logs, stack traces, or panic output.
+      render: text
+  - type: input
+    id: version
+    attributes:
+      label: imghash version
+      description: Tag, commit SHA, or module version (for example `v2.x.y`).
+      placeholder: v2.x.y
+    validations:
+      required: true
+  - type: input
+    id: go_version
+    attributes:
+      label: Go version
+      placeholder: go version go1.25.0 darwin/arm64
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, architecture, and any other relevant runtime details.
+      placeholder: macOS 15 arm64, Linux amd64, etc.
+    validations:
+      required: true

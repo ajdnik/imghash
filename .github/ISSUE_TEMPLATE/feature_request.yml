@@ -1,0 +1,43 @@
+name: Feature request
+description: Propose an improvement or new capability for imghash.
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem to solve
+      description: What limitation or pain point are you trying to address?
+      placeholder: Explain the use case and why current behavior is insufficient.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: Describe the API, behavior, or design you want.
+      placeholder: Describe your preferred implementation and expected behavior.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Other approaches or workarounds you considered.
+  - type: textarea
+    id: examples
+    attributes:
+      label: Examples and references
+      description: Links, prior art, pseudocode, benchmarks, or sample inputs.
+  - type: dropdown
+    id: breaking
+    attributes:
+      label: Breaking change?
+      description: Would this require a breaking API or behavior change?
+      options:
+        - "No"
+        - "Yes"
+        - "Unsure"
+    validations:
+      required: true
