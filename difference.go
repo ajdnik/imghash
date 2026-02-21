@@ -12,21 +12,14 @@ import (
 //
 // See https://www.hackerfactor.com/blog/index.php?/archives/529-Kind-of-Like-That.html for more information.
 type Difference struct {
-	// Resized image width.
-	width uint
-	// Resized image height.
-	height uint
-	// Resize interpolation method.
-	interp Interpolation
+	baseConfig
 }
 
 // NewDifference creates a new Difference hash with the given options.
 // Without options, sensible defaults are used.
 func NewDifference(opts ...DifferenceOption) (Difference, error) {
 	d := Difference{
-		width:  8,
-		height: 8,
-		interp: Bilinear,
+		baseConfig: baseConfig{width: 8, height: 8, interp: Bilinear},
 	}
 	for _, o := range opts {
 		o.applyDifference(&d)

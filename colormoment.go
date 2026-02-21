@@ -13,12 +13,7 @@ import (
 //
 // See https://www.researchgate.net/publication/286870507_Perceptual_hashing_for_color_images_using_invariant_moments for more information.
 type ColorMoment struct {
-	// Resized image width.
-	width uint
-	// Resized image height.
-	height uint
-	// Resize interpolation method.
-	interp Interpolation
+	baseConfig
 	// Gaussian kernel size.
 	kernel int
 	// Gaussian kernel sigma.
@@ -29,11 +24,9 @@ type ColorMoment struct {
 // Without options, sensible defaults are used.
 func NewColorMoment(opts ...ColorMomentOption) (ColorMoment, error) {
 	c := ColorMoment{
-		width:  512,
-		height: 512,
-		interp: Bicubic,
-		kernel: 3,
-		sigma:  0,
+		baseConfig: baseConfig{width: 512, height: 512, interp: Bicubic},
+		kernel:     3,
+		sigma:      0,
 	}
 	for _, o := range opts {
 		o.applyColorMoment(&c)

@@ -1,5 +1,13 @@
 package imghash
 
+// baseConfig holds the resize dimensions and interpolation method shared by
+// most hash algorithms. Algorithms embed this struct so that WithSize and
+// WithInterpolation options can target a single applyBase method.
+type baseConfig struct {
+	width, height uint
+	interp        Interpolation
+}
+
 // Algorithm-specific option interfaces. Each uses an unexported method
 // so that only option types in this package can implement them.
 
@@ -46,32 +54,34 @@ type RASHOption interface{ applyRASH(*RASH) }
 
 type sizeOption struct{ width, height uint }
 
-func (o sizeOption) applyAverage(a *Average)           { a.width, a.height = o.width, o.height }
-func (o sizeOption) applyDifference(d *Difference)     { d.width, d.height = o.width, o.height }
-func (o sizeOption) applyMedian(m *Median)             { m.width, m.height = o.width, o.height }
-func (o sizeOption) applyPHash(p *PHash)               { p.width, p.height = o.width, o.height }
-func (o sizeOption) applyBlockMean(b *BlockMean)       { b.rWidth, b.rHeight = o.width, o.height }
-func (o sizeOption) applyMarrHildreth(m *MarrHildreth) { m.width, m.height = o.width, o.height }
-func (o sizeOption) applyColorMoment(c *ColorMoment)   { c.width, c.height = o.width, o.height }
-func (o sizeOption) applyWHash(w *WHash)               { w.width, w.height = o.width, o.height }
-func (o sizeOption) applyLBP(l *LBP)                   { l.width, l.height = o.width, o.height }
-func (o sizeOption) applyHOGHash(h *HOGHash)           { h.width, h.height = o.width, o.height }
-func (o sizeOption) applyRASH(r *RASH)                 { r.width, r.height = o.width, o.height }
+func (o sizeOption) applyBase(b *baseConfig)           { b.width, b.height = o.width, o.height }
+func (o sizeOption) applyAverage(a *Average)            { o.applyBase(&a.baseConfig) }
+func (o sizeOption) applyDifference(d *Difference)      { o.applyBase(&d.baseConfig) }
+func (o sizeOption) applyMedian(m *Median)              { o.applyBase(&m.baseConfig) }
+func (o sizeOption) applyPHash(p *PHash)                { o.applyBase(&p.baseConfig) }
+func (o sizeOption) applyBlockMean(b *BlockMean)        { o.applyBase(&b.baseConfig) }
+func (o sizeOption) applyMarrHildreth(m *MarrHildreth)  { o.applyBase(&m.baseConfig) }
+func (o sizeOption) applyColorMoment(c *ColorMoment)    { o.applyBase(&c.baseConfig) }
+func (o sizeOption) applyWHash(w *WHash)                { o.applyBase(&w.baseConfig) }
+func (o sizeOption) applyLBP(l *LBP)                    { o.applyBase(&l.baseConfig) }
+func (o sizeOption) applyHOGHash(h *HOGHash)            { o.applyBase(&h.baseConfig) }
+func (o sizeOption) applyRASH(r *RASH)                  { o.applyBase(&r.baseConfig) }
 
 type interpolationOption struct{ interp Interpolation }
 
-func (o interpolationOption) applyAverage(a *Average)           { a.interp = o.interp }
-func (o interpolationOption) applyDifference(d *Difference)     { d.interp = o.interp }
-func (o interpolationOption) applyMedian(m *Median)             { m.interp = o.interp }
-func (o interpolationOption) applyPHash(p *PHash)               { p.interp = o.interp }
-func (o interpolationOption) applyBlockMean(b *BlockMean)       { b.interp = o.interp }
-func (o interpolationOption) applyMarrHildreth(m *MarrHildreth) { m.interp = o.interp }
-func (o interpolationOption) applyColorMoment(c *ColorMoment)   { c.interp = o.interp }
-func (o interpolationOption) applyWHash(w *WHash)               { w.interp = o.interp }
-func (o interpolationOption) applyLBP(l *LBP)                   { l.interp = o.interp }
-func (o interpolationOption) applyHOGHash(h *HOGHash)           { h.interp = o.interp }
-func (o interpolationOption) applyPDQ(p *PDQ)                   { p.interp = o.interp }
-func (o interpolationOption) applyRASH(r *RASH)                 { r.interp = o.interp }
+func (o interpolationOption) applyBase(b *baseConfig)           { b.interp = o.interp }
+func (o interpolationOption) applyAverage(a *Average)            { o.applyBase(&a.baseConfig) }
+func (o interpolationOption) applyDifference(d *Difference)      { o.applyBase(&d.baseConfig) }
+func (o interpolationOption) applyMedian(m *Median)              { o.applyBase(&m.baseConfig) }
+func (o interpolationOption) applyPHash(p *PHash)                { o.applyBase(&p.baseConfig) }
+func (o interpolationOption) applyBlockMean(b *BlockMean)        { o.applyBase(&b.baseConfig) }
+func (o interpolationOption) applyMarrHildreth(m *MarrHildreth)  { o.applyBase(&m.baseConfig) }
+func (o interpolationOption) applyColorMoment(c *ColorMoment)    { o.applyBase(&c.baseConfig) }
+func (o interpolationOption) applyWHash(w *WHash)                { o.applyBase(&w.baseConfig) }
+func (o interpolationOption) applyLBP(l *LBP)                    { o.applyBase(&l.baseConfig) }
+func (o interpolationOption) applyHOGHash(h *HOGHash)            { o.applyBase(&h.baseConfig) }
+func (o interpolationOption) applyPDQ(p *PDQ)                    { p.interp = o.interp }
+func (o interpolationOption) applyRASH(r *RASH)                  { o.applyBase(&r.baseConfig) }
 
 type kernelSizeOption struct{ size int }
 

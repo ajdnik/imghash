@@ -13,21 +13,14 @@ import (
 // But instead of using mean it uses median to compute the average value.
 // See https://github.com/Quickshot/DupImageLib/blob/3e914588958c4c1871d750de86b30446b9c07a3e/DupImageLib/ImageHashes.cs#L99 for more information.
 type Median struct {
-	// Resized image width.
-	width uint
-	// Resized image height.
-	height uint
-	// Resize interpolation method.
-	interp Interpolation
+	baseConfig
 }
 
 // NewMedian creates a new Median hash with the given options.
 // Without options, sensible defaults are used.
 func NewMedian(opts ...MedianOption) (Median, error) {
 	m := Median{
-		width:  8,
-		height: 8,
-		interp: Bilinear,
+		baseConfig: baseConfig{width: 8, height: 8, interp: Bilinear},
 	}
 	for _, o := range opts {
 		o.applyMedian(&m)

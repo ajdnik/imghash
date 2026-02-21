@@ -13,12 +13,7 @@ import (
 //
 // See https://ieeexplore.ieee.org/document/4041692 for more information.
 type BlockMean struct {
-	// Resized image width.
-	rWidth uint
-	// Resized image height.
-	rHeight uint
-	// Resize interpolation method.
-	interp Interpolation
+	baseConfig
 	// Block width.
 	bWidth uint
 	// Block height.
@@ -46,17 +41,15 @@ const (
 // Without options, sensible defaults are used.
 func NewBlockMean(opts ...BlockMeanOption) (BlockMean, error) {
 	b := BlockMean{
-		rWidth:  256,
-		rHeight: 256,
-		interp:  BilinearExact,
-		bWidth:  16,
-		bHeight: 16,
-		method:  Direct,
+		baseConfig: baseConfig{width: 256, height: 256, interp: BilinearExact},
+		bWidth:     16,
+		bHeight:    16,
+		method:     Direct,
 	}
 	for _, o := range opts {
 		o.applyBlockMean(&b)
 	}
-	if b.rWidth == 0 || b.rHeight == 0 {
+	if b.width == 0 || b.height == 0 {
 		return BlockMean{}, ErrInvalidSize
 	}
 	if b.bWidth == 0 || b.bHeight == 0 {
@@ -67,7 +60,7 @@ func NewBlockMean(opts ...BlockMeanOption) (BlockMean, error) {
 
 // Calculate returns a perceptual image hash.
 func (bh BlockMean) Calculate(img image.Image) (hashtype.Hash, error) {
-	r := imgproc.Resize(bh.rWidth, bh.rHeight, img, bh.interp.resizeType())
+	r := imgproc.Resize(bh.width, bh.height, img, bh.interp.resizeType())
 	g, err := imgproc.Grayscale(r)
 	if err != nil {
 		return nil, err
@@ -82,14 +75,14 @@ func (bh BlockMean) Calculate(img image.Image) (hashtype.Hash, error) {
 
 // Computes mean values of constructed blocks.
 func (bh BlockMean) computeMean(img *image.Gray) []float64 {
-	blksInX := int(bh.rWidth / bh.bWidth)
-	blksInY := int(bh.rHeight / bh.bHeight)
+	blksInX := int(bh.width / bh.bWidth)
+	blksInY := int(bh.height / bh.bHeight)
 	numB := blksInX * blksInY
 	xS := int(bh.bWidth)
 	yS := int(bh.bHeight)
 	if bh.method == Overlap || bh.method == RotationOverlap {
-		blksInX = int(bh.rWidth/bh.bWidth)*2 - 1
-		blksInY = int(bh.rHeight/bh.bHeight)*2 - 1
+		blksInX = int(bh.width/bh.bWidth)*2 - 1
+		blksInY = int(bh.height/bh.bHeight)*2 - 1
 		numB = blksInX * blksInY
 		xS /= 2
 		yS /= 2

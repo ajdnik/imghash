@@ -15,24 +15,17 @@ import (
 //
 // See https://fullstackml.com/wavelet-image-hash-in-python-3504571f3b08 for more information.
 type WHash struct {
-	// Hash output width (columns in the LL subband).
-	width uint
-	// Hash output height (rows in the LL subband).
-	height uint
+	baseConfig
 	// Number of Haar DWT decomposition levels.
 	level int
-	// Resize interpolation method.
-	interp Interpolation
 }
 
 // NewWHash creates a new WHash with the given options.
 // Without options, sensible defaults are used (8×8 hash, 3 levels, Bilinear).
 func NewWHash(opts ...WHashOption) (WHash, error) {
 	w := WHash{
-		width:  8,
-		height: 8,
-		level:  3,
-		interp: Bilinear,
+		baseConfig: baseConfig{width: 8, height: 8, interp: Bilinear},
+		level:      3,
 	}
 	for _, o := range opts {
 		o.applyWHash(&w)

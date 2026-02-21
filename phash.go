@@ -17,12 +17,7 @@ const dctCoefSize = 8
 //
 // See https://www.researchgate.net/publication/252340846_Rihamark_Perceptual_image_hash_benchmarking for more information.
 type PHash struct {
-	// Resized image width.
-	width uint
-	// Resized image height.
-	height uint
-	// Resize interpolation method.
-	interp Interpolation
+	baseConfig
 	// Per-byte weights for weighted Hamming distance.
 	weights []float64
 }
@@ -31,9 +26,7 @@ type PHash struct {
 // Without options, sensible defaults are used.
 func NewPHash(opts ...PHashOption) (PHash, error) {
 	p := PHash{
-		width:  32,
-		height: 32,
-		interp: BilinearExact,
+		baseConfig: baseConfig{width: 32, height: 32, interp: BilinearExact},
 	}
 	for _, o := range opts {
 		o.applyPHash(&p)

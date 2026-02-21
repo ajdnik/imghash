@@ -18,12 +18,7 @@ import (
 //
 // See https://ieeexplore.ieee.org/document/1017623 for more information.
 type LBP struct {
-	// Resized image width.
-	width uint
-	// Resized image height.
-	height uint
-	// Resize interpolation method.
-	interp Interpolation
+	baseConfig
 	// Number of horizontal grid cells.
 	gridX uint
 	// Number of vertical grid cells.
@@ -34,11 +29,9 @@ type LBP struct {
 // Without options, sensible defaults are used.
 func NewLBP(opts ...LBPOption) (LBP, error) {
 	l := LBP{
-		width:  256,
-		height: 256,
-		interp: Bilinear,
-		gridX:  1,
-		gridY:  1,
+		baseConfig: baseConfig{width: 256, height: 256, interp: Bilinear},
+		gridX:      1,
+		gridY:      1,
 	}
 	for _, o := range opts {
 		o.applyLBP(&l)

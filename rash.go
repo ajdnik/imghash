@@ -23,11 +23,9 @@ import (
 //   - Tang et al., "Robust Image Hashing with Ring Partition and Invariant Vector Distance" (2016)
 //   - De Roover et al., "Robust image hashing based on radial variance of pixels" (2005)
 type RASH struct {
-	width  uint
-	height uint
-	interp Interpolation
-	sigma  float64
-	rings  int
+	baseConfig
+	sigma float64
+	rings int
 }
 
 const rashHashBits = 64
@@ -36,11 +34,9 @@ const rashHashBits = 64
 // Without options, sensible defaults are used.
 func NewRASH(opts ...RASHOption) (RASH, error) {
 	r := RASH{
-		width:  256,
-		height: 256,
-		interp: Bilinear,
-		sigma:  1,
-		rings:  180,
+		baseConfig: baseConfig{width: 256, height: 256, interp: Bilinear},
+		sigma:      1,
+		rings:      180,
 	}
 	for _, o := range opts {
 		o.applyRASH(&r)

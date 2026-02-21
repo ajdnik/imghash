@@ -19,12 +19,7 @@ import (
 //
 // See https://ieeexplore.ieee.org/document/1467360 for more information.
 type HOGHash struct {
-	// Resized image width.
-	width uint
-	// Resized image height.
-	height uint
-	// Resize interpolation method.
-	interp Interpolation
+	baseConfig
 	// Cell size in pixels (square cells).
 	cellSize uint
 	// Number of orientation bins (unsigned gradients, 0–180°).
@@ -35,11 +30,9 @@ type HOGHash struct {
 // Without options, sensible defaults are used.
 func NewHOGHash(opts ...HOGHashOption) (HOGHash, error) {
 	h := HOGHash{
-		width:    256,
-		height:   256,
-		interp:   Bilinear,
-		cellSize: 8,
-		numBins:  9,
+		baseConfig: baseConfig{width: 256, height: 256, interp: Bilinear},
+		cellSize:   8,
+		numBins:    9,
 	}
 	for _, o := range opts {
 		o.applyHOGHash(&h)

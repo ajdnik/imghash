@@ -13,21 +13,14 @@ import (
 //
 // See https://www.hackerfactor.com/blog/index.php?/archives/432-Looks-Like-It.html for more information.
 type Average struct {
-	// Resized image width.
-	width uint
-	// Resized image height.
-	height uint
-	// Resize interpolation method.
-	interp Interpolation
+	baseConfig
 }
 
 // NewAverage creates a new Average hash with the given options.
 // Without options, sensible defaults are used.
 func NewAverage(opts ...AverageOption) (Average, error) {
 	a := Average{
-		width:  8,
-		height: 8,
-		interp: Bilinear,
+		baseConfig: baseConfig{width: 8, height: 8, interp: Bilinear},
 	}
 	for _, o := range opts {
 		o.applyAverage(&a)
