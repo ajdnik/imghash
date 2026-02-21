@@ -39,3 +39,7 @@ var _ ColorMomentOption = WithSigma(0)
 var _ WHashOption = WithSize(0, 0)
 var _ WHashOption = WithInterpolation(Bilinear)
 var _ WHashOption = WithLevel(0)
+
+var _ LBPOption = WithSize(0, 0)
+var _ LBPOption = WithInterpolation(Bilinear)
+var _ LBPOption = WithGridSize(0, 0)
