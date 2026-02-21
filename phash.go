@@ -92,7 +92,7 @@ func (ph PHash) mean(img [][]float32) float32 {
 	return s / float32(c)
 }
 
-// Build a binary image by comparring the value to the supplied image.
+// Build a binary image by comparing the value to the supplied image.
 func (ph PHash) compare(img [][]float32, val float32) [][]float32 {
 	bit := make([][]float32, len(img))
 	for i := range img {

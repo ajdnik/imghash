@@ -16,7 +16,7 @@ type Median struct {
 	width uint
 	// Resized image height.
 	height uint
-	// Resize interpoletion method.
+	// Resize interpolation method.
 	interp Interpolation
 }
 

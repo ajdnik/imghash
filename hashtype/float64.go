@@ -13,7 +13,7 @@ import (
 type Float64 []float64
 
 // String returns a string representation of the float64 hash.
-// Is is formated as a slice of float64 values.
+// It is formatted as a slice of float64 values.
 func (h Float64) String() string {
 	return fmt.Sprintf("%v", []float64(h))
 }

@@ -17,7 +17,7 @@ import (
 type Binary []byte
 
 // String returns a string representation of the binary hash.
-// Is is formated as an array of bytes.
+// It is formatted as an array of bytes.
 func (h Binary) String() string {
 	return fmt.Sprintf("%v", []byte(h))
 }

@@ -106,7 +106,7 @@ func (bh BlockMean) computeMean(img *image.Gray) []float64 {
 	return means
 }
 
-// Computest binary hash value based on block means.
+// Computes binary hash value based on block means.
 func (bh BlockMean) computeHash(means []float64, median float64) hashtype.Binary {
 	mSize := len(means)
 	hSize := mSize/8 + mSize%8
