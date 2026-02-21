@@ -12,7 +12,10 @@ import (
 // a grid of cells, builds a 256-bin histogram per cell, and concatenates
 // them into a single hash vector.
 //
-// See https://en.wikipedia.org/wiki/Local_binary_patterns for more information.
+// Based on Multiresolution Gray-Scale and Rotation Invariant Texture
+// Classification with Local Binary Patterns; Ojala et. al.
+//
+// See https://ieeexplore.ieee.org/document/1017623 for more information.
 type LBP struct {
 	// Resized image width.
 	width uint

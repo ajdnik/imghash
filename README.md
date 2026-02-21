@@ -221,7 +221,7 @@ Block mean methods: `Direct`, `Overlap`, `Rotation`, `RotationOverlap`.
 
 #### Local Binary Pattern (LBP) Hash
 
-Computes a 3x3 Local Binary Pattern code for each pixel and builds a normalized 256-bin histogram per grid cell, producing a uint8 vector. The grid can be increased for spatially-aware hashing. See [Local binary patterns](https://en.wikipedia.org/wiki/Local_binary_patterns) for more information.
+Computes a 3x3 Local Binary Pattern code for each pixel and builds a normalized 256-bin histogram per grid cell, producing a uint8 vector. The grid can be increased for spatially-aware hashing. Based on [Multiresolution Gray-Scale and Rotation Invariant Texture Classification with Local Binary Patterns](https://ieeexplore.ieee.org/document/1017623) by Ojala et al.
 
 ```go
 lbp, err := imghash.NewLBP()
@@ -238,7 +238,7 @@ With the default 1x1 grid the hash is a 256-element uint8 vector. Set `WithGridS
 
 #### HOG Hash (Histogram of Oriented Gradients)
 
-Computes gradient magnitudes and orientations at each pixel, divides the image into square cells, and builds a magnitude-weighted orientation histogram per cell. The histograms are normalized and concatenated into a uint8 vector. See [Histogram of oriented gradients](https://en.wikipedia.org/wiki/Histogram_of_oriented_gradients) for more information.
+Computes gradient magnitudes and orientations at each pixel, divides the image into square cells, and builds a magnitude-weighted orientation histogram per cell. The histograms are normalized and concatenated into a uint8 vector. Based on [Histograms of Oriented Gradients for Human Detection](https://ieeexplore.ieee.org/document/1467360) by Dalal and Triggs.
 
 ```go
 hog, err := imghash.NewHOGHash()

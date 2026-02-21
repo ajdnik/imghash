@@ -13,7 +13,10 @@ import (
 // the image into cells, builds an orientation histogram per cell weighted
 // by gradient magnitude, and concatenates them into a single hash vector.
 //
-// See https://en.wikipedia.org/wiki/Histogram_of_oriented_gradients for more information.
+// Based on Histograms of Oriented Gradients for Human Detection;
+// Dalal and Triggs.
+//
+// See https://ieeexplore.ieee.org/document/1467360 for more information.
 type HOGHash struct {
 	// Resized image width.
 	width uint
