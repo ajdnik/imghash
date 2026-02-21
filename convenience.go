@@ -9,6 +9,7 @@ import (
 	"os"
 
 	"github.com/ajdnik/imghash/hashtype"
+	"github.com/ajdnik/imghash/similarity"
 )
 
 // OpenImage reads and decodes an image from the given file path.
@@ -46,4 +47,13 @@ func HashReader(hasher Hasher, r io.Reader) (hashtype.Hash, error) {
 		return nil, err
 	}
 	return hasher.Calculate(img)
+}
+
+// Compare computes the distance between two hashes using the natural
+// similarity metric for their type: Hamming distance for Binary hashes,
+// L2 (Euclidean) distance for UInt8 and Float64 hashes.
+// For finer control (e.g. PCC), use the similarity package directly.
+func Compare(h1, h2 hashtype.Hash) (similarity.Distance, error) {
+	d, err := h1.Distance(h2)
+	return similarity.Distance(d), err
 }

@@ -27,6 +27,11 @@ func (h UInt8) ValueAt(idx int) float64 {
 	return float64(h[idx])
 }
 
+// Distance returns the L2 (Euclidean) distance to another hash.
+func (h UInt8) Distance(other Hash) (float64, error) {
+	return l2(h, other), nil
+}
+
 // Equal checks if two uint8 hashes are the same.
 // It checks each same index value pair.
 // Returns true if all elements match.
