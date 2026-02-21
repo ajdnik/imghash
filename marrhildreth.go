@@ -4,8 +4,8 @@ import (
 	"image"
 	"math"
 
-	"github.com/ajdnik/imghash/hashtype"
-	"github.com/ajdnik/imghash/internal/imgproc"
+	"github.com/ajdnik/imghash/v2/hashtype"
+	"github.com/ajdnik/imghash/v2/internal/imgproc"
 )
 
 const (

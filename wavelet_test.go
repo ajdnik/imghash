@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"testing"
 
-	. "github.com/ajdnik/imghash"
-	"github.com/ajdnik/imghash/hashtype"
-	"github.com/ajdnik/imghash/similarity"
+	. "github.com/ajdnik/imghash/v2"
+	"github.com/ajdnik/imghash/v2/hashtype"
+	"github.com/ajdnik/imghash/v2/similarity"
 )
 
 var wHashCalculateTests = []struct {

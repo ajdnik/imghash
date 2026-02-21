@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/ajdnik/imghash/hashtype"
-	. "github.com/ajdnik/imghash/similarity"
+	"github.com/ajdnik/imghash/v2/hashtype"
+	. "github.com/ajdnik/imghash/v2/similarity"
 )
 
 var hammingTests = []struct {

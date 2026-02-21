@@ -2,8 +2,8 @@
 
 [![CI](https://github.com/ajdnik/imghash/workflows/ci/badge.svg "CI status")](https://github.com/ajdnik/imghash/actions?query=workflow%3Aci)
 [![Coverage Status](https://coveralls.io/repos/github/ajdnik/imghash/badge.svg?branch=main)](https://coveralls.io/github/ajdnik/imghash?branch=main)
-[![GoDoc](https://godoc.org/github.com/ajdnik/imghash?status.svg "GoDoc")](https://godoc.org/github.com/ajdnik/imghash)
-[![Go Report Card](https://goreportcard.com/badge/github.com/ajdnik/imghash)](https://goreportcard.com/report/github.com/ajdnik/imghash)
+[![Go Reference](https://pkg.go.dev/badge/github.com/ajdnik/imghash/v2.svg)](https://pkg.go.dev/github.com/ajdnik/imghash/v2)
+[![Go Report Card](https://goreportcard.com/badge/github.com/ajdnik/imghash/v2)](https://goreportcard.com/report/github.com/ajdnik/imghash/v2)
 [![License MIT](https://img.shields.io/badge/license-MIT-lightgrey.svg)](https://github.com/ajdnik/imghash/blob/main/LICENSE)
 
 Go implementation of multiple perceptual hash algorithms for images. Perceptual hash functions are analogous if features are similar, whereas cryptographic hashing relies on the avalanche effect of a small change in input value creating a drastic change in output value.
@@ -20,12 +20,12 @@ Go implementation of multiple perceptual hash algorithms for images. Perceptual 
 Using imghash is easy. First, use `go get` to install the latest version
 of the library. This command will install the library and its dependencies:
 
-    go get -u github.com/ajdnik/imghash
+    go get -u github.com/ajdnik/imghash/v2
 
 Next, include imghash in your application:
 
 ```go
-import "github.com/ajdnik/imghash"
+import "github.com/ajdnik/imghash/v2"
 ```
 
 Most consumers only need the top-level `imghash` package. The core types (`Hash`, `Binary`, `UInt8`, `Float64`, `Distance`) are re-exported there. The `similarity` sub-package is available when you need a specific metric like PCC.
@@ -38,7 +38,7 @@ package main
 import (
   "fmt"
 
-  "github.com/ajdnik/imghash"
+  "github.com/ajdnik/imghash/v2"
 )
 
 func main() {
@@ -81,7 +81,7 @@ You can also call `h1.Distance(h2)` directly on any hash value.
 
 ## Perceptual Hash Algorithms
 
-The library supports 10 perceptual hashing algorithms. Most are ported from [OpenCV Contrib](https://github.com/opencv/opencv_contrib) and tested against its implementations.
+The library supports 11 perceptual hashing algorithms. Most are ported from [OpenCV Contrib](https://github.com/opencv/opencv_contrib) and tested against its implementations.
 
 Every constructor accepts functional options. Call with no arguments for defaults, or pass `With*` options to customize:
 
@@ -221,7 +221,7 @@ Block mean methods: `Direct`, `Overlap`, `Rotation`, `RotationOverlap`.
 
 #### Local Binary Pattern (LBP) Hash
 
-Computes a 3x3 Local Binary Pattern code for each pixel and builds a normalized 256-bin histogram per grid cell, producing a uint8 vector. The grid can be increased for spatially-aware hashing. See [Local binary patterns](https://en.wikipedia.org/wiki/Local_binary_patterns) for more information.
+Computes a 3x3 Local Binary Pattern code for each pixel and builds a normalized 256-bin histogram per grid cell, producing a uint8 vector. The grid can be increased for spatially-aware hashing. Based on [Multiresolution Gray-Scale and Rotation Invariant Texture Classification with Local Binary Patterns](https://ieeexplore.ieee.org/document/1017623) by Ojala et al.
 
 ```go
 lbp, err := imghash.NewLBP()
@@ -235,6 +235,24 @@ hash, err := lbp.Calculate(img)
 | `WithGridSize(x, y)` | 1, 1 |
 
 With the default 1x1 grid the hash is a 256-element uint8 vector. Set `WithGridSize(4, 4)` for a 4096-element spatially-aware hash.
+
+#### HOG Hash (Histogram of Oriented Gradients)
+
+Computes gradient magnitudes and orientations at each pixel, divides the image into square cells, and builds a magnitude-weighted orientation histogram per cell. The histograms are normalized and concatenated into a uint8 vector. Based on [Histograms of Oriented Gradients for Human Detection](https://ieeexplore.ieee.org/document/1467360) by Dalal and Triggs.
+
+```go
+hog, err := imghash.NewHOGHash()
+hash, err := hog.Calculate(img)
+```
+
+| Option | Default |
+|--------|---------|
+| `WithSize(w, h)` | 256, 256 |
+| `WithInterpolation(i)` | `Bilinear` |
+| `WithCellSize(s)` | 8 |
+| `WithNumBins(n)` | 9 |
+
+With default settings the hash is a 9216-element uint8 vector (32×32 cells × 9 bins). Use `WithSize(32, 32)` for a compact 144-element hash (4×4 cells × 9 bins).
 
 #### Radial Variance Hash
 
@@ -275,7 +293,7 @@ dist, err := imghash.Compare(h1, h2)
 For advanced use cases (e.g. Pearson Correlation), use the `similarity` sub-package:
 
 ```go
-import "github.com/ajdnik/imghash/similarity"
+import "github.com/ajdnik/imghash/v2/similarity"
 
 dist := similarity.L2(h1, h2)
 dist, err := similarity.PCC(h1, h2)

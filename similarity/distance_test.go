@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	. "github.com/ajdnik/imghash/similarity"
+	. "github.com/ajdnik/imghash/v2/similarity"
 )
 
 var distanceEqualTests = []struct {

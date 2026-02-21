@@ -4,14 +4,14 @@ import (
 	"errors"
 	"image"
 
-	"github.com/ajdnik/imghash/hashtype"
-	"github.com/ajdnik/imghash/similarity"
+	"github.com/ajdnik/imghash/v2/hashtype"
+	"github.com/ajdnik/imghash/v2/similarity"
 )
 
 // Hasher computes a perceptual hash from an image.
 // It is implemented by all hash algorithms in this package:
 // Average, Difference, PHash, Median, BlockMean, MarrHildreth,
-// RadialVariance, ColorMoment, WHash, and LBP.
+// RadialVariance, ColorMoment, WHash, LBP, and HOGHash.
 type Hasher interface {
 	Calculate(image.Image) (hashtype.Hash, error)
 }
@@ -57,4 +57,8 @@ var (
 	ErrInvalidLevel = errors.New("imghash: level must be greater than zero")
 	// ErrInvalidGridSize is returned when grid width or height is zero.
 	ErrInvalidGridSize = errors.New("imghash: grid size dimensions must be greater than zero")
+	// ErrInvalidCellSize is returned when the cell size is zero.
+	ErrInvalidCellSize = errors.New("imghash: cell size must be greater than zero")
+	// ErrInvalidNumBins is returned when the number of histogram bins is zero.
+	ErrInvalidNumBins = errors.New("imghash: number of bins must be greater than zero")
 )

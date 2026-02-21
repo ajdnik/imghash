@@ -6,12 +6,9 @@ change in your code when migrating from v1.
 ## 1. Update the dependency
 
 ```bash
-go get github.com/ajdnik/imghash@latest
+go get github.com/ajdnik/imghash/v2@latest
 go mod tidy
 ```
-
-If you consume a tagged major-version module path, use the corresponding import
-path for that major version (for example `.../v2`).
 
 ## 2. Replace `New*WithParams` constructors with functional options
 

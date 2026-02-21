@@ -8,8 +8,8 @@ import (
 	"io"
 	"os"
 
-	"github.com/ajdnik/imghash/hashtype"
-	"github.com/ajdnik/imghash/similarity"
+	"github.com/ajdnik/imghash/v2/hashtype"
+	"github.com/ajdnik/imghash/v2/similarity"
 )
 
 // OpenImage reads and decodes an image from the given file path.
