@@ -140,5 +140,5 @@ func (lh LBP) computeHash(lbpImg []uint8, w, h int) hashtype.UInt8 {
 
 // Compare computes the chi-square distance between two LBP hashes.
 func (lh LBP) Compare(h1, h2 hashtype.Hash) (similarity.Distance, error) {
-	return similarity.ChiSquare(h1, h2), nil
+	return similarity.ChiSquare(h1, h2)
 }

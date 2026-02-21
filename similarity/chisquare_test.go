@@ -23,7 +23,10 @@ var chiSquareUint8Tests = []struct {
 func TestChiSquareUint8(t *testing.T) {
 	for _, tt := range chiSquareUint8Tests {
 		t.Run(tt.name, func(t *testing.T) {
-			res := ChiSquare(tt.hash1, tt.hash2)
+			res, err := ChiSquare(tt.hash1, tt.hash2)
+			if err != nil {
+				t.Fatalf("unexpected error: %v", err)
+			}
 			if !res.Equal(tt.out) {
 				t.Errorf("got %v, want %v", res, tt.out)
 			}
@@ -45,7 +48,10 @@ var chiSquareFloat64Tests = []struct {
 func TestChiSquareFloat64(t *testing.T) {
 	for _, tt := range chiSquareFloat64Tests {
 		t.Run(tt.name, func(t *testing.T) {
-			res := ChiSquare(tt.hash1, tt.hash2)
+			res, err := ChiSquare(tt.hash1, tt.hash2)
+			if err != nil {
+				t.Fatalf("unexpected error: %v", err)
+			}
 			if !res.Equal(tt.out) {
 				t.Errorf("got %v, want %v", res, tt.out)
 			}
@@ -57,7 +63,8 @@ func ExampleChiSquare() {
 	hash1 := hashtype.UInt8{10, 20, 30, 40}
 	hash2 := hashtype.UInt8{15, 25, 35, 45}
 
-	fmt.Println(ChiSquare(hash1, hash2))
+	dist, _ := ChiSquare(hash1, hash2)
+	fmt.Println(dist)
 	// Output:
 	// 2.2342885872297638
 }

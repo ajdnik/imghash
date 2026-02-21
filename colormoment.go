@@ -81,5 +81,5 @@ func (ch ColorMoment) Calculate(img image.Image) (hashtype.Hash, error) {
 
 // Compare computes the L2 (Euclidean) distance between two ColorMoment hashes.
 func (ch ColorMoment) Compare(h1, h2 hashtype.Hash) (similarity.Distance, error) {
-	return similarity.L2(h1, h2), nil
+	return similarity.L2(h1, h2)
 }

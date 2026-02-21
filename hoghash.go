@@ -169,5 +169,5 @@ func (hh HOGHash) computeHash(mag, orient []float64, w, h int) hashtype.UInt8 {
 
 // Compare computes the cosine distance between two HOGHash hashes.
 func (hh HOGHash) Compare(h1, h2 hashtype.Hash) (similarity.Distance, error) {
-	return similarity.Cosine(h1, h2), nil
+	return similarity.Cosine(h1, h2)
 }

@@ -23,7 +23,10 @@ var cosineUint8Tests = []struct {
 func TestCosineUint8(t *testing.T) {
 	for _, tt := range cosineUint8Tests {
 		t.Run(tt.name, func(t *testing.T) {
-			res := Cosine(tt.hash1, tt.hash2)
+			res, err := Cosine(tt.hash1, tt.hash2)
+			if err != nil {
+				t.Fatalf("unexpected error: %v", err)
+			}
 			if !res.Equal(tt.out) {
 				t.Errorf("got %v, want %v", res, tt.out)
 			}
@@ -46,7 +49,10 @@ var cosineFloat64Tests = []struct {
 func TestCosineFloat64(t *testing.T) {
 	for _, tt := range cosineFloat64Tests {
 		t.Run(tt.name, func(t *testing.T) {
-			res := Cosine(tt.hash1, tt.hash2)
+			res, err := Cosine(tt.hash1, tt.hash2)
+			if err != nil {
+				t.Fatalf("unexpected error: %v", err)
+			}
 			if !res.Equal(tt.out) {
 				t.Errorf("got %v, want %v", res, tt.out)
 			}
@@ -58,7 +64,8 @@ func ExampleCosine() {
 	hash1 := hashtype.UInt8{60, 67, 86, 64, 58, 72, 68, 75}
 	hash2 := hashtype.UInt8{143, 213, 154, 170, 209, 125, 152, 173}
 
-	fmt.Println(Cosine(hash1, hash2))
+	dist, _ := Cosine(hash1, hash2)
+	fmt.Println(dist)
 	// Output:
 	// 0.028706372204543307
 }
