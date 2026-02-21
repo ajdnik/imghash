@@ -19,12 +19,12 @@ var medianCalculateTests = []struct {
 	height     uint
 	resizeType Interpolation
 }{
-	{"assets/lena.jpg", hashtype.Binary{125, 57, 188, 144, 208, 208, 240, 112}, 8, 8, Bilinear},
-	{"assets/baboon.jpg", hashtype.Binary{128, 192, 252, 60, 61, 25, 95, 29}, 8, 8, Bilinear},
-	{"assets/cat.jpg", hashtype.Binary{255, 255, 31, 7, 1, 1, 1, 39}, 8, 8, Bilinear},
-	{"assets/monarch.jpg", hashtype.Binary{1, 3, 17, 252, 191, 255, 198, 0}, 8, 8, Bilinear},
-	{"assets/peppers.jpg", hashtype.Binary{225, 224, 206, 244, 62, 54, 2, 7}, 8, 8, Bilinear},
-	{"assets/tulips.jpg", hashtype.Binary{13, 38, 76, 90, 122, 62, 62, 6}, 8, 8, Bilinear},
+	{"assets/lena.jpg", hashtype.Binary{125, 56, 188, 144, 208, 208, 240, 48}, 8, 8, Bilinear},
+	{"assets/baboon.jpg", hashtype.Binary{128, 128, 252, 60, 60, 25, 79, 63}, 8, 8, Bilinear},
+	{"assets/cat.jpg", hashtype.Binary{255, 255, 31, 7, 1, 1, 1, 7}, 8, 8, Bilinear},
+	{"assets/monarch.jpg", hashtype.Binary{1, 3, 17, 252, 191, 255, 194, 64}, 8, 8, Bilinear},
+	{"assets/peppers.jpg", hashtype.Binary{241, 225, 206, 244, 62, 54, 2, 7}, 8, 8, Bilinear},
+	{"assets/tulips.jpg", hashtype.Binary{13, 38, 76, 90, 250, 62, 62, 6}, 8, 8, Bilinear},
 }
 
 func TestMedian_Calculate(t *testing.T) {
@@ -53,7 +53,7 @@ func ExampleMedian_Calculate() {
 	hash, _ := med.Calculate(img)
 
 	fmt.Println(hash)
-	// Output: [255 255 31 7 1 1 1 39]
+	// Output: [255 255 31 7 1 1 1 7]
 }
 
 var medianDistanceTests = []struct {
@@ -64,11 +64,11 @@ var medianDistanceTests = []struct {
 	height      uint
 	resizeType  Interpolation
 }{
-	{"assets/lena.jpg", "assets/cat.jpg", 33, 8, 8, Bilinear},
+	{"assets/lena.jpg", "assets/cat.jpg", 34, 8, 8, Bilinear},
 	{"assets/lena.jpg", "assets/monarch.jpg", 36, 8, 8, Bilinear},
 	{"assets/baboon.jpg", "assets/cat.jpg", 38, 8, 8, Bilinear},
-	{"assets/peppers.jpg", "assets/baboon.jpg", 25, 8, 8, Bilinear},
-	{"assets/tulips.jpg", "assets/monarch.jpg", 28, 8, 8, Bilinear},
+	{"assets/peppers.jpg", "assets/baboon.jpg", 26, 8, 8, Bilinear},
+	{"assets/tulips.jpg", "assets/monarch.jpg", 29, 8, 8, Bilinear},
 }
 
 func TestMedian_Distance(t *testing.T) {
