@@ -66,7 +66,7 @@ func NewBlockMeanWithParams(resizeWidth, resizeHeight uint, resizeType imgproc.R
 }
 
 // Calculate returns a perceptual image hash.
-func (bh *BlockMean) Calculate(img image.Image) hashtype.Binary {
+func (bh *BlockMean) Calculate(img image.Image) hashtype.Hash {
 	r := imgproc.Resize(bh.rWidth, bh.rHeight, img, bh.interp)
 	g, _ := imgproc.Grayscale(r)
 	mm := bh.computeMean(g)

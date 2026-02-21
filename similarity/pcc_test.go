@@ -26,7 +26,7 @@ var pccUInt8Tests = []struct {
 func TestPCCUInt8(t *testing.T) {
 	for _, tt := range pccUInt8Tests {
 		t.Run(fmt.Sprintf("%v", tt.res), func(t *testing.T) {
-			res, err := PCCUInt8(tt.hash1, tt.hash2)
+			res, err := PCC(tt.hash1, tt.hash2)
 			if !res.Equal(tt.res) {
 				t.Errorf("got %v, want %v", res, tt.res)
 			}
@@ -37,13 +37,13 @@ func TestPCCUInt8(t *testing.T) {
 	}
 }
 
-func ExamplePCCUInt8() {
+func ExamplePCC() {
 	hash1 := hashtype.UInt8{93, 134, 157, 144, 131, 89, 122, 148}
 	hash2 := hashtype.UInt8{140, 153, 121, 106, 129, 93, 134, 157}
 	hash3 := hashtype.UInt8{179, 87, 159, 70, 0, 106, 39, 66}
 
-	res1, _ := PCCUInt8(hash1, hash2)
-	res2, _ := PCCUInt8(hash1, hash3)
+	res1, _ := PCC(hash1, hash2)
+	res2, _ := PCC(hash1, hash3)
 	fmt.Println(res1)
 	fmt.Println(res2)
 	// Output:
@@ -65,7 +65,7 @@ var pccFloat64Tests = []struct {
 func TestPCCFloat64(t *testing.T) {
 	for _, tt := range pccFloat64Tests {
 		t.Run(fmt.Sprintf("%v", tt.res), func(t *testing.T) {
-			res, err := PCCFloat64(tt.hash1, tt.hash2)
+			res, err := PCC(tt.hash1, tt.hash2)
 			if !res.Equal(tt.res) {
 				t.Errorf("got %v, want %v", res, tt.res)
 			}
@@ -76,13 +76,13 @@ func TestPCCFloat64(t *testing.T) {
 	}
 }
 
-func ExamplePCCFloat64() {
+func ExamplePCC_float64() {
 	hash1 := hashtype.Float64{5.188434119386236e-09, 4.112809393169052e-11, 2.4301287246914963e-12}
 	hash2 := hashtype.Float64{-4.865894404868708e-23, 0.0012375374902843692, 1.6038385709207788e-10}
 	hash3 := hashtype.Float64{6.743101958369291e-09, 4.991671383226105e-12, 4.0181156557344116e-12}
 
-	res1, _ := PCCFloat64(hash1, hash2)
-	res2, _ := PCCFloat64(hash1, hash3)
+	res1, _ := PCC(hash1, hash2)
+	res2, _ := PCC(hash1, hash3)
 	fmt.Println(res1)
 	fmt.Println(res2)
 }

@@ -40,7 +40,8 @@ func TestBlockMean_Calculate(t *testing.T) {
 		t.Run(tt.filename, func(t *testing.T) {
 			hash := NewBlockMeanWithParams(tt.width, tt.height, tt.resizeType, tt.blockWidth, tt.blockHeight, tt.method)
 			img, _ := imgproc.Read(tt.filename)
-			if res := hash.Calculate(img); !res.Equal(tt.hash) {
+			res := hash.Calculate(img).(hashtype.Binary)
+			if !res.Equal(tt.hash) {
 				t.Errorf("got %v, want %v", res, tt.hash)
 			}
 		})
@@ -90,7 +91,7 @@ func TestBlockMean_Distance(t *testing.T) {
 			img2, _ := imgproc.Read(tt.secondImage)
 			h1 := hash.Calculate(img1)
 			h2 := hash.Calculate(img2)
-			dist := similarity.Hamming(h1, h2)
+			dist, _ := similarity.Hamming(h1, h2)
 			if !dist.Equal(tt.distance) {
 				t.Errorf("got %v, want %v", dist, tt.distance)
 			}

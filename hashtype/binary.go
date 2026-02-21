@@ -43,6 +43,16 @@ func (h Binary) SetReverse(position uint) error {
 	return h.setBit(position, bit)
 }
 
+// Len returns the number of bytes in the binary hash.
+func (h Binary) Len() int {
+	return len(h)
+}
+
+// ValueAt returns the byte at the given index as a float64.
+func (h Binary) ValueAt(idx int) float64 {
+	return float64(h[idx])
+}
+
 // Equal checks if two binary hashes are the same.
 // Returns true if the hashes match.
 func (h Binary) Equal(bh Binary) bool {

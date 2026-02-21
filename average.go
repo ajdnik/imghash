@@ -40,7 +40,7 @@ func NewAverageWithParams(resizeWidth, resizeHeight uint, resizeType imgproc.Res
 }
 
 // Calculate returns a perceptual image hash.
-func (ah *Average) Calculate(img image.Image) hashtype.Binary {
+func (ah *Average) Calculate(img image.Image) hashtype.Hash {
 	r := imgproc.Resize(ah.width, ah.height, img, ah.interp)
 	g, _ := imgproc.Grayscale(r)
 	m, _ := imgproc.Mean(g)

@@ -39,7 +39,7 @@ func NewPHashWithParams(resizeWidth, resizeHeight uint, resizeType imgproc.Resiz
 }
 
 // Calculate returns a percaptual image hash.
-func (ph *PHash) Calculate(img image.Image) hashtype.Binary {
+func (ph *PHash) Calculate(img image.Image) hashtype.Hash {
 	r := imgproc.Resize(ph.width, ph.height, img, ph.interp)
 	g, _ := imgproc.Grayscale(r)
 	fImg := imgproc.GrayToF32(g)

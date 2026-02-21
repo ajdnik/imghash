@@ -44,7 +44,7 @@ func TestRadialVariance_Calculate(t *testing.T) {
 		t.Run(tt.filename, func(t *testing.T) {
 			hash := NewRadialVarianceWithParams(tt.sigma, tt.angles)
 			img, _ := imgproc.Read(tt.filename)
-			res := hash.Calculate(img)
+			res := hash.Calculate(img).(hashtype.UInt8)
 			if !uint8ApproxEqual(res, tt.hash, 1) {
 				t.Errorf("got %v, want %v", res, tt.hash)
 			}
@@ -85,7 +85,7 @@ func TestRadialVariance_Distance(t *testing.T) {
 			img2, _ := imgproc.Read(tt.secondImage)
 			h1 := hash.Calculate(img1)
 			h2 := hash.Calculate(img2)
-			dist, _ := similarity.PCCUInt8(h1, h2)
+			dist, _ := similarity.PCC(h1, h2)
 			if math.Abs(float64(dist)-float64(tt.distance)) > 0.01 {
 				t.Errorf("got %v, want %v", dist, tt.distance)
 			}

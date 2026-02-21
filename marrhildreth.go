@@ -62,7 +62,7 @@ func NewMarrHildrethWithParams(scale, alpha float64, resizeWidth, resizeHeight u
 }
 
 // Calculate returns a perceptual image hash.
-func (mhh *MarrHildreth) Calculate(img image.Image) hashtype.Binary {
+func (mhh *MarrHildreth) Calculate(img image.Image) hashtype.Hash {
 	g, _ := imgproc.Grayscale(img)
 	b := imgproc.GaussianBlur(g, mhh.kernel, mhh.sigma)
 	r := imgproc.Resize(mhh.width, mhh.height, b, mhh.interp)

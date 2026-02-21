@@ -7,26 +7,16 @@ import (
 	"github.com/ajdnik/imghash/hashtype"
 )
 
-// PCCFloat64 calculates PCC distance for two float64 hashes.
-func PCCFloat64(h1, h2 hashtype.Float64) (Distance, error) {
-	return pccCalculate(h1, h2)
-}
-
-// PCCUInt8 calculates PCC distance for two uint8 hashes.
-func PCCUInt8(h1, h2 hashtype.UInt8) (Distance, error) {
-	return pccCalculate(h1, h2)
-}
-
 // ErrNotSameLength is reported when the length of hashes doesn't match.
 var ErrNotSameLength = errors.New("hashes aren't the same length")
 
-// Calculates peak correlation coefficient for a generic slice.
-func pccCalculate(h1, h2 interface{}) (Distance, error) {
-	len1, len2 := genLen(h1), genLen(h2)
-	if len1 != len2 {
+// PCC calculates the peak cross-correlation between two hashes.
+func PCC(h1, h2 hashtype.Hash) (Distance, error) {
+	if h1.Len() != h2.Len() {
 		return 0, ErrNotSameLength
 	}
-	hf1, hf2 := convert(h1), convert(h2)
+	hf1 := hashToFloat32(h1)
+	hf2 := hashToFloat32(h2)
 	mn1, std1 := meanStdDev(hf1)
 	mn2, std2 := meanStdDev(hf2)
 	for i := range hf1 {
@@ -44,25 +34,14 @@ func pccCalculate(h1, h2 interface{}) (Distance, error) {
 	return Distance(max), nil
 }
 
-// Convert generic slice to float32 slice.
-func convert(slice interface{}) []float32 {
-	var s []float32
-	switch ss := slice.(type) {
-	case hashtype.Float64:
-		s = make([]float32, len(ss))
-		for i := range ss {
-			s[i] = float32(ss[i])
-		}
-	case hashtype.UInt8:
-		s = make([]float32, len(ss))
-		for i := range ss {
-			s[i] = float32(ss[i])
-		}
+func hashToFloat32(h hashtype.Hash) []float32 {
+	s := make([]float32, h.Len())
+	for i := range s {
+		s[i] = float32(h.ValueAt(i))
 	}
 	return s
 }
 
-// Compute slice mean ans standard deviation.
 func meanStdDev(slice []float32) (float64, float64) {
 	var sum, sqSum float64
 	for i := range slice {
@@ -75,7 +54,6 @@ func meanStdDev(slice []float32) (float64, float64) {
 	return mean, stdDev
 }
 
-// Compute dot product of two slices.
 func dotProd(s1 []float32, s2 []float32) (float64, error) {
 	if len(s1) != len(s2) {
 		return 0, ErrNotSameLength
@@ -87,7 +65,6 @@ func dotProd(s1 []float32, s2 []float32) (float64, error) {
 	return sum, nil
 }
 
-// Rotate slice by distance k.
 func rotate(slice []float32, k int) []float32 {
 	if k < 0 || len(slice) == 0 {
 		return slice

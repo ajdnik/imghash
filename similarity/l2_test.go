@@ -23,7 +23,7 @@ var l2Float64Tests = []struct {
 func TestL2Float64(t *testing.T) {
 	for _, tt := range l2Float64Tests {
 		t.Run(tt.name, func(t *testing.T) {
-			res := L2Float64(tt.hash1, tt.hash2)
+			res := L2(tt.hash1, tt.hash2)
 			if !res.Equal(tt.out) {
 				t.Errorf("got %v, want %v", res, tt.out)
 			}
@@ -36,11 +36,11 @@ func TestL2Float64Example(t *testing.T) {
 	hash2 := hashtype.Float64{7.006891104009164e-24, 2.9211456863128017e-16, 2.376195809939422e-22, 0.0011816509074528167, 2.9408079432297224e-09}
 	hash3 := hashtype.Float64{-1.983273625570263e-26, 6.064435932101452e-19, -6.695730840743158e-27, 0.0013973374569736076, 1.915611857766067e-09, 3.205292709962961e-13}
 
-	res1 := L2Float64(hash1, hash2)
+	res1 := L2(hash1, hash2)
 	if !res1.Equal(2.0502389642936448e-16) {
 		t.Errorf("got %v, want ~2.0502389642936448e-16", res1)
 	}
-	res2 := L2Float64(hash1, hash3)
+	res2 := L2(hash1, hash3)
 	if !res2.Equal(8.648422860884239e-17) {
 		t.Errorf("got %v, want ~8.648422860884239e-17", res2)
 	}
@@ -59,7 +59,7 @@ var l2Uint8Tests = []struct {
 func TestL2Uint8(t *testing.T) {
 	for _, tt := range l2Uint8Tests {
 		t.Run(tt.name, func(t *testing.T) {
-			res := L2UInt8(tt.hash1, tt.hash2)
+			res := L2(tt.hash1, tt.hash2)
 			if !res.Equal(tt.out) {
 				t.Errorf("got %v, want %v", res, tt.out)
 			}
@@ -67,13 +67,13 @@ func TestL2Uint8(t *testing.T) {
 	}
 }
 
-func ExampleL2UInt8() {
+func ExampleL2() {
 	hash1 := hashtype.UInt8{60, 67, 86, 64, 58, 72, 68, 75}
 	hash2 := hashtype.UInt8{143, 213, 154, 170, 209, 125, 152, 173, 167, 181}
 	hash3 := hashtype.UInt8{0, 255, 247, 54, 127}
 
-	fmt.Println(L2UInt8(hash1, hash2))
-	fmt.Println(L2UInt8(hash1, hash3))
+	fmt.Println(L2(hash1, hash2))
+	fmt.Println(L2(hash1, hash3))
 	// Output:
 	// 293.82818108547724
 	// 264.05681206891825

@@ -38,7 +38,7 @@ func NewDifferenceWithParams(resizeWidth, resizeHeight uint, resizeType imgproc.
 }
 
 // Calculate returns a perceptual image hash.
-func (dh *Difference) Calculate(img image.Image) hashtype.Binary {
+func (dh *Difference) Calculate(img image.Image) hashtype.Hash {
 	r := imgproc.Resize(dh.width+1, dh.height, img, dh.interp)
 	g, _ := imgproc.Grayscale(r)
 	return dh.computeHash(g)

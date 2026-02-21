@@ -17,6 +17,16 @@ func (h UInt8) String() string {
 	return fmt.Sprintf("%v", []uint8(h))
 }
 
+// Len returns the number of elements in the hash.
+func (h UInt8) Len() int {
+	return len(h)
+}
+
+// ValueAt returns the element at the given index as a float64.
+func (h UInt8) ValueAt(idx int) float64 {
+	return float64(h[idx])
+}
+
 // Equal checks if two uint8 hashes are the same.
 // It checks each same index value pair.
 // Returns true if all elements match.
