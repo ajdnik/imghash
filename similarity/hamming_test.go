@@ -25,6 +25,7 @@ var hammingTests = []struct {
 
 func TestHamming(t *testing.T) {
 	for _, tt := range hammingTests {
+		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			if res := Hamming(tt.hash1, tt.hash2); !res.Equal(tt.distance) {
