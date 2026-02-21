@@ -81,7 +81,7 @@ You can also call `h1.Distance(h2)` directly on any hash value.
 
 ## Perceptual Hash Algorithms
 
-The library supports 8 perceptual hashing algorithms ported from [OpenCV Contrib](https://github.com/opencv/opencv_contrib) and tested against its implementations.
+The library supports 9 perceptual hashing algorithms. Most are ported from [OpenCV Contrib](https://github.com/opencv/opencv_contrib) and tested against its implementations.
 
 Every constructor accepts functional options. Call with no arguments for defaults, or pass `With*` options to customize:
 
@@ -151,6 +151,21 @@ hash, err := ph.Calculate(img)
 |--------|---------|
 | `WithSize(w, h)` | 32, 32 |
 | `WithInterpolation(i)` | `BilinearExact` |
+
+#### Wavelet Hash (wHash)
+
+Uses a multi-level Haar discrete wavelet transform to produce a 64-bit binary hash. The image is resized to `(width * 2^level) x (height * 2^level)`, converted to grayscale, and decomposed via the Haar DWT. The low-frequency (LL) subband coefficients are thresholded against their median. See [Wavelet image hash](https://fullstackml.com/wavelet-image-hash-in-python-3504571f3b08) for more information.
+
+```go
+wh, err := imghash.NewWHash()
+hash, err := wh.Calculate(img)
+```
+
+| Option | Default |
+|--------|---------|
+| `WithSize(w, h)` | 8, 8 |
+| `WithInterpolation(i)` | `Bilinear` |
+| `WithLevel(l)` | 3 |
 
 #### Color Moments Hash
 
