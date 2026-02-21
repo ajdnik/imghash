@@ -82,6 +82,11 @@ Open an [issue](https://github.com/ajdnik/imghash/issues) with a clear title
 and as much context as possible. For bugs, include the Go version, OS, a
 minimal reproducer, and the expected vs. actual behavior.
 
+## Code of Conduct
+
+This project follows a [Code of Conduct](CODE_OF_CONDUCT.md). By participating,
+you agree to uphold these standards.
+
 ## Code Guidelines
 
 - **No CGo.** The library is pure Go by design.
