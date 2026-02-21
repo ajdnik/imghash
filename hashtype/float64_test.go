@@ -69,3 +69,64 @@ func ExampleFloat64_Equal() {
 	// false
 	// true
 }
+
+var float64LenTests = []struct {
+	name   string
+	hash   Float64
+	expect int
+}{
+	{"empty", Float64{}, 0},
+	{"one element", Float64{1.5}, 1},
+	{"four elements", Float64{1.1, 2.2, 3.3, 4.4}, 4},
+}
+
+func TestFloat64_Len(t *testing.T) {
+	for _, tt := range float64LenTests {
+		t.Run(tt.name, func(t *testing.T) {
+			if res := tt.hash.Len(); res != tt.expect {
+				t.Errorf("got %v, want %v", res, tt.expect)
+			}
+		})
+	}
+}
+
+var float64ValueAtTests = []struct {
+	name   string
+	hash   Float64
+	idx    int
+	expect float64
+}{
+	{"first element", Float64{3.14, 2.71}, 0, 3.14},
+	{"second element", Float64{3.14, 2.71}, 1, 2.71},
+}
+
+func TestFloat64_ValueAt(t *testing.T) {
+	for _, tt := range float64ValueAtTests {
+		t.Run(tt.name, func(t *testing.T) {
+			if res := tt.hash.ValueAt(tt.idx); res != tt.expect {
+				t.Errorf("got %v, want %v", res, tt.expect)
+			}
+		})
+	}
+}
+
+func TestFloat64_Distance(t *testing.T) {
+	h1 := Float64{1, 2, 3}
+	h2 := Float64{1, 2, 3}
+	d, err := h1.Distance(h2)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if d != 0 {
+		t.Errorf("got %v, want 0", d)
+	}
+
+	h3 := Float64{4, 6, 3}
+	d2, err := h1.Distance(h3)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if d2 != 5 {
+		t.Errorf("got %v, want 5", d2)
+	}
+}

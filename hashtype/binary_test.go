@@ -177,3 +177,80 @@ func ExampleBinary_Equal() {
 	// false
 	// true
 }
+
+var binaryLenTests = []struct {
+	name   string
+	hash   Binary
+	expect int
+}{
+	{"empty", Binary{}, 0},
+	{"one byte", Binary{0}, 1},
+	{"three bytes", Binary{1, 2, 3}, 3},
+}
+
+func TestBinary_Len(t *testing.T) {
+	for _, tt := range binaryLenTests {
+		t.Run(tt.name, func(t *testing.T) {
+			if res := tt.hash.Len(); res != tt.expect {
+				t.Errorf("got %v, want %v", res, tt.expect)
+			}
+		})
+	}
+}
+
+var binaryValueAtTests = []struct {
+	name   string
+	hash   Binary
+	idx    int
+	expect float64
+}{
+	{"first byte zero", Binary{0, 128}, 0, 0},
+	{"second byte 128", Binary{0, 128}, 1, 128},
+	{"byte 255", Binary{255}, 0, 255},
+}
+
+func TestBinary_ValueAt(t *testing.T) {
+	for _, tt := range binaryValueAtTests {
+		t.Run(tt.name, func(t *testing.T) {
+			if res := tt.hash.ValueAt(tt.idx); res != tt.expect {
+				t.Errorf("got %v, want %v", res, tt.expect)
+			}
+		})
+	}
+}
+
+var binaryDistanceTests = []struct {
+	name   string
+	h1     Binary
+	h2     Binary
+	expect float64
+}{
+	{"identical", Binary{0xFF}, Binary{0xFF}, 0},
+	{"one bit diff", Binary{0}, Binary{1}, 1},
+	{"all bits diff", Binary{0x00}, Binary{0xFF}, 8},
+	{"two bytes", Binary{0xFF, 0x00}, Binary{0x00, 0xFF}, 16},
+	{"different lengths", Binary{0xFF, 0x00}, Binary{0xFF}, 0},
+}
+
+func TestBinary_Distance(t *testing.T) {
+	for _, tt := range binaryDistanceTests {
+		t.Run(tt.name, func(t *testing.T) {
+			res, err := tt.h1.Distance(tt.h2)
+			if err != nil {
+				t.Fatalf("unexpected error: %v", err)
+			}
+			if res != tt.expect {
+				t.Errorf("got %v, want %v", res, tt.expect)
+			}
+		})
+	}
+}
+
+func TestBinary_Distance_incompatible(t *testing.T) {
+	h1 := Binary{1, 2, 3}
+	h2 := UInt8{1, 2, 3}
+	_, err := h1.Distance(h2)
+	if err != ErrIncompatibleHash {
+		t.Errorf("got %v, want %v", err, ErrIncompatibleHash)
+	}
+}

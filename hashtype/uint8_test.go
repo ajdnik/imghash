@@ -67,3 +67,64 @@ func ExampleUInt8_Equal() {
 	// false
 	// true
 }
+
+var uint8LenTests = []struct {
+	name   string
+	hash   UInt8
+	expect int
+}{
+	{"empty", UInt8{}, 0},
+	{"one element", UInt8{42}, 1},
+	{"five elements", UInt8{1, 2, 3, 4, 5}, 5},
+}
+
+func TestUInt8_Len(t *testing.T) {
+	for _, tt := range uint8LenTests {
+		t.Run(tt.name, func(t *testing.T) {
+			if res := tt.hash.Len(); res != tt.expect {
+				t.Errorf("got %v, want %v", res, tt.expect)
+			}
+		})
+	}
+}
+
+var uint8ValueAtTests = []struct {
+	name   string
+	hash   UInt8
+	idx    int
+	expect float64
+}{
+	{"first element", UInt8{100, 200}, 0, 100},
+	{"second element", UInt8{100, 200}, 1, 200},
+	{"zero", UInt8{0}, 0, 0},
+}
+
+func TestUInt8_ValueAt(t *testing.T) {
+	for _, tt := range uint8ValueAtTests {
+		t.Run(tt.name, func(t *testing.T) {
+			if res := tt.hash.ValueAt(tt.idx); res != tt.expect {
+				t.Errorf("got %v, want %v", res, tt.expect)
+			}
+		})
+	}
+}
+
+func TestUInt8_Distance(t *testing.T) {
+	h1 := UInt8{0, 0}
+	h2 := UInt8{3, 4}
+	d, err := h1.Distance(h2)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if d != 5 {
+		t.Errorf("got %v, want 5", d)
+	}
+
+	d2, err := h1.Distance(h1)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if d2 != 0 {
+		t.Errorf("got %v, want 0", d2)
+	}
+}

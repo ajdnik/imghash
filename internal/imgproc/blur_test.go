@@ -2,6 +2,8 @@ package imgproc
 
 import (
 	"fmt"
+	"image"
+	"image/color"
 	"math"
 	"testing"
 )
@@ -44,5 +46,43 @@ func TestGetGaussianKernel(t *testing.T) {
 			}
 		})
 	}
+}
 
+func TestGaussianBlur_gray(t *testing.T) {
+	img := image.NewGray(image.Rect(0, 0, 8, 8))
+	for x := 0; x < 8; x++ {
+		for y := 0; y < 8; y++ {
+			img.SetGray(x, y, color.Gray{uint8((x + y) * 10)})
+		}
+	}
+	result := GaussianBlur(img, 3, 1.0)
+	if result.Bounds().Dx() != 8 || result.Bounds().Dy() != 8 {
+		t.Errorf("expected 8x8 output, got %dx%d", result.Bounds().Dx(), result.Bounds().Dy())
+	}
+}
+
+func TestGaussianBlur_rgba(t *testing.T) {
+	img := image.NewRGBA(image.Rect(0, 0, 8, 8))
+	for x := 0; x < 8; x++ {
+		for y := 0; y < 8; y++ {
+			img.Set(x, y, color.RGBA{uint8(x * 10), uint8(y * 10), 100, 255})
+		}
+	}
+	result := GaussianBlur(img, 3, 1.0)
+	if result.Bounds().Dx() != 8 || result.Bounds().Dy() != 8 {
+		t.Errorf("expected 8x8 output, got %dx%d", result.Bounds().Dx(), result.Bounds().Dy())
+	}
+}
+
+func TestGaussianBlur_autoKernel(t *testing.T) {
+	img := image.NewGray(image.Rect(0, 0, 8, 8))
+	for x := 0; x < 8; x++ {
+		for y := 0; y < 8; y++ {
+			img.SetGray(x, y, color.Gray{128})
+		}
+	}
+	result := GaussianBlur(img, 0, 1.0)
+	if result == nil {
+		t.Fatal("result should not be nil")
+	}
 }
