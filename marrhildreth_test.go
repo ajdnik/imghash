@@ -35,7 +35,11 @@ func TestMarrHildreth_Calculate(t *testing.T) {
 		t.Run(tt.filename, func(t *testing.T) {
 			hash := NewMarrHildrethWithParams(tt.scale, tt.alpha, tt.width, tt.height, tt.resizeType, tt.kernelSize, tt.sigma)
 			img, _ := imgproc.Read(tt.filename)
-			res := hash.Calculate(img).(hashtype.Binary)
+			result, err := hash.Calculate(img)
+			if err != nil {
+				t.Fatalf("unexpected error: %v", err)
+			}
+			res := result.(hashtype.Binary)
 			if !res.Equal(tt.hash) {
 				t.Errorf("got %v, want %v", res, tt.hash)
 			}
@@ -49,7 +53,7 @@ func ExampleMarrHildreth_calculate() {
 	// Create new Marr-Hildreth Hash using default parameters
 	marr := NewMarrHildreth()
 	// Calculate hash
-	hash := marr.Calculate(img)
+	hash, _ := marr.Calculate(img)
 
 	fmt.Println(hash)
 	// Output: [92 190 42 111 87 107 101 164 184 24 75 41 185 54 178 162 26 236 155 150 108 98 233 112 56 235 124 177 139 159 148 66 89 38 229 47 195 44 158 180 85 115 79 165 92 131 225 252 54 148 218 61 99 92 82 141 141 96 112 186 185 208 174 112 252 150 153 164 173 206 43 130]
@@ -80,8 +84,8 @@ func TestMarrHildreth_Distance(t *testing.T) {
 			hash := NewMarrHildrethWithParams(tt.scale, tt.alpha, tt.width, tt.height, tt.resizeType, tt.kernelSize, tt.sigma)
 			img1, _ := imgproc.Read(tt.firstImage)
 			img2, _ := imgproc.Read(tt.secondImage)
-			h1 := hash.Calculate(img1)
-			h2 := hash.Calculate(img2)
+			h1, _ := hash.Calculate(img1)
+			h2, _ := hash.Calculate(img2)
 			dist, _ := similarity.Hamming(h1, h2)
 			if !dist.Equal(tt.distance) {
 				t.Errorf("got %v, want %v", dist, tt.distance)

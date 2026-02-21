@@ -33,7 +33,11 @@ func TestDifference_Calculate(t *testing.T) {
 		t.Run(tt.filename, func(t *testing.T) {
 			hash := NewDifferenceWithParams(tt.width, tt.height, tt.resizeType)
 			img, _ := imgproc.Read(tt.filename)
-			res := hash.Calculate(img).(hashtype.Binary)
+			result, err := hash.Calculate(img)
+			if err != nil {
+				t.Fatalf("unexpected error: %v", err)
+			}
+			res := result.(hashtype.Binary)
 			if !res.Equal(tt.hash) {
 				t.Errorf("got %v, want %v", res, tt.hash)
 			}
@@ -47,7 +51,7 @@ func ExampleDifference_Calculate() {
 	// Create new Difference Hash using default parameters
 	diff := NewDifference()
 	// Calculate hash
-	hash := diff.Calculate(img)
+	hash, _ := diff.Calculate(img)
 
 	fmt.Println(hash)
 	// Output: [6 2 194 64 124 60 16 16]
@@ -74,8 +78,8 @@ func TestDifference_Distance(t *testing.T) {
 			hash := NewDifferenceWithParams(tt.width, tt.height, tt.resizeType)
 			img1, _ := imgproc.Read(tt.firstImage)
 			img2, _ := imgproc.Read(tt.secondImage)
-			h1 := hash.Calculate(img1)
-			h2 := hash.Calculate(img2)
+			h1, _ := hash.Calculate(img1)
+			h2, _ := hash.Calculate(img2)
 			dist, _ := similarity.Hamming(h1, h2)
 			if !dist.Equal(tt.distance) {
 				t.Errorf("got %v, want %v", dist, tt.distance)

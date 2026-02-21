@@ -31,7 +31,11 @@ func TestAverage_Calculate(t *testing.T) {
 		t.Run(tt.filename, func(t *testing.T) {
 			hash := NewAverageWithParams(tt.width, tt.height, tt.resizeType)
 			img, _ := imgproc.Read(tt.filename)
-			res := hash.Calculate(img).(hashtype.Binary)
+			result, err := hash.Calculate(img)
+			if err != nil {
+				t.Fatalf("unexpected error: %v", err)
+			}
+			res := result.(hashtype.Binary)
 			if !res.Equal(tt.hash) {
 				t.Errorf("got %v, want %v", res, tt.hash)
 			}
@@ -45,7 +49,7 @@ func ExampleAverage_Calculate() {
 	// Create new Average Hash using default parameters
 	avg := NewAverage()
 	// Calculate hash
-	hash := avg.Calculate(img)
+	hash, _ := avg.Calculate(img)
 
 	fmt.Println(hash)
 	// Output: [255 255 15 7 1 0 0 0]
@@ -72,8 +76,8 @@ func TestAverage_Distance(t *testing.T) {
 			hash := NewAverageWithParams(tt.width, tt.height, tt.resizeType)
 			img1, _ := imgproc.Read(tt.firstImage)
 			img2, _ := imgproc.Read(tt.secondImage)
-			h1 := hash.Calculate(img1)
-			h2 := hash.Calculate(img2)
+			h1, _ := hash.Calculate(img1)
+			h2, _ := hash.Calculate(img2)
 			dist, _ := similarity.Hamming(h1, h2)
 			if !dist.Equal(tt.distance) {
 				t.Errorf("got %v, want %v", dist, tt.distance)

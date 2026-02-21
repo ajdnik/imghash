@@ -39,11 +39,17 @@ func NewMedianWithParams(resizeWidth, resizeHeight uint, resizeType imgproc.Resi
 }
 
 // Calculate returns a perceptual image hash.
-func (mh *Median) Calculate(img image.Image) hashtype.Hash {
+func (mh *Median) Calculate(img image.Image) (hashtype.Hash, error) {
 	r := imgproc.Resize(mh.width, mh.height, img, mh.interp)
-	g, _ := imgproc.Grayscale(r)
-	med, _ := imgproc.Median(g)
-	return mh.computeHash(g, uint(math.Round(med)))
+	g, err := imgproc.Grayscale(r)
+	if err != nil {
+		return nil, err
+	}
+	med, err := imgproc.Median(g)
+	if err != nil {
+		return nil, err
+	}
+	return mh.computeHash(g, uint(math.Round(med))), nil
 }
 
 // Computes the binary hash based on the median value of the resized image.

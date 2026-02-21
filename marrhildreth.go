@@ -62,15 +62,17 @@ func NewMarrHildrethWithParams(scale, alpha float64, resizeWidth, resizeHeight u
 }
 
 // Calculate returns a perceptual image hash.
-func (mhh *MarrHildreth) Calculate(img image.Image) hashtype.Hash {
-	g, _ := imgproc.Grayscale(img)
+func (mhh *MarrHildreth) Calculate(img image.Image) (hashtype.Hash, error) {
+	g, err := imgproc.Grayscale(img)
+	if err != nil {
+		return nil, err
+	}
 	b := imgproc.GaussianBlur(g, mhh.kernel, mhh.sigma)
 	r := imgproc.Resize(mhh.width, mhh.height, b, mhh.interp)
 	eq := imgproc.EqualizeHist(r.(*image.Gray))
-	// Run a 2D marr hildereth filter over image
 	f := imgproc.Filter2DGray(eq, mhh.kernels)
 	blks := mhh.blocksSum(f)
-	return mhh.createHash(blks)
+	return mhh.createHash(blks), nil
 }
 
 // Compute sums of blocks.

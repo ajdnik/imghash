@@ -38,10 +38,13 @@ func NewDifferenceWithParams(resizeWidth, resizeHeight uint, resizeType imgproc.
 }
 
 // Calculate returns a perceptual image hash.
-func (dh *Difference) Calculate(img image.Image) hashtype.Hash {
+func (dh *Difference) Calculate(img image.Image) (hashtype.Hash, error) {
 	r := imgproc.Resize(dh.width+1, dh.height, img, dh.interp)
-	g, _ := imgproc.Grayscale(r)
-	return dh.computeHash(g)
+	g, err := imgproc.Grayscale(r)
+	if err != nil {
+		return nil, err
+	}
+	return dh.computeHash(g), nil
 }
 
 // Computes the binary hash based on the gradients in the resized image.

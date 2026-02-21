@@ -11,5 +11,5 @@ import (
 // Average, Difference, PHash, Median, BlockMean, MarrHildreth,
 // RadialVariance, and ColorMoment.
 type Hasher interface {
-	Calculate(image.Image) hashtype.Hash
+	Calculate(image.Image) (hashtype.Hash, error)
 }

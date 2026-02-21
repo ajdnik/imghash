@@ -47,16 +47,20 @@ func NewColorMomentWithParams(resizeWidth, resizeHeight uint, resizeType imgproc
 }
 
 // Calculate returns a perceptual image hash.
-func (ch *ColorMoment) Calculate(img image.Image) hashtype.Hash {
+func (ch *ColorMoment) Calculate(img image.Image) (hashtype.Hash, error) {
 	r := imgproc.Resize(ch.width, ch.height, img, ch.interp)
 	b := imgproc.GaussianBlur(r, ch.kernel, ch.sigma)
-	yrb, _ := imgproc.YCrCb(b)
-	hsv, _ := imgproc.HSV(b)
+	yrb, err := imgproc.YCrCb(b)
+	if err != nil {
+		return nil, err
+	}
+	hsv, err := imgproc.HSV(b)
+	if err != nil {
+		return nil, err
+	}
 	yrbMom := imgproc.GetMoments(yrb)
-	// Switch R and B channels
 	yrbMom[0], yrbMom[2] = yrbMom[2], yrbMom[0]
 	hsvMom := imgproc.GetMoments(hsv)
-	// Switch R and B channels
 	hsvMom[0], hsvMom[2] = hsvMom[2], hsvMom[0]
 	yHuMom := imgproc.HuMoments(yrbMom)
 	hHuMom := imgproc.HuMoments(hsvMom)
@@ -68,5 +72,5 @@ func (ch *ColorMoment) Calculate(img image.Image) hashtype.Hash {
 	for ; i < len(hHuMom)+len(yHuMom); i++ {
 		hash[i] = yHuMom[i-len(hHuMom)]
 	}
-	return hash
+	return hash, nil
 }

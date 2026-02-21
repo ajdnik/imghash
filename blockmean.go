@@ -66,12 +66,18 @@ func NewBlockMeanWithParams(resizeWidth, resizeHeight uint, resizeType imgproc.R
 }
 
 // Calculate returns a perceptual image hash.
-func (bh *BlockMean) Calculate(img image.Image) hashtype.Hash {
+func (bh *BlockMean) Calculate(img image.Image) (hashtype.Hash, error) {
 	r := imgproc.Resize(bh.rWidth, bh.rHeight, img, bh.interp)
-	g, _ := imgproc.Grayscale(r)
+	g, err := imgproc.Grayscale(r)
+	if err != nil {
+		return nil, err
+	}
 	mm := bh.computeMean(g)
-	med, _ := imgproc.Mean(g)
-	return bh.computeHash(mm, med)
+	med, err := imgproc.Mean(g)
+	if err != nil {
+		return nil, err
+	}
+	return bh.computeHash(mm, med), nil
 }
 
 // Computes mean values of constructed blocks.

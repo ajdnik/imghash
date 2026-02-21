@@ -40,7 +40,11 @@ func TestBlockMean_Calculate(t *testing.T) {
 		t.Run(tt.filename, func(t *testing.T) {
 			hash := NewBlockMeanWithParams(tt.width, tt.height, tt.resizeType, tt.blockWidth, tt.blockHeight, tt.method)
 			img, _ := imgproc.Read(tt.filename)
-			res := hash.Calculate(img).(hashtype.Binary)
+			result, err := hash.Calculate(img)
+			if err != nil {
+				t.Fatalf("unexpected error: %v", err)
+			}
+			res := result.(hashtype.Binary)
 			if !res.Equal(tt.hash) {
 				t.Errorf("got %v, want %v", res, tt.hash)
 			}
@@ -54,7 +58,7 @@ func ExampleBlockMean_Calculate() {
 	// Create new Block Mean Hash using default parameters
 	block := NewBlockMean()
 	// Calculate hash
-	hash := block.Calculate(img)
+	hash, _ := block.Calculate(img)
 
 	fmt.Println(hash)
 	// Output: [255 255 255 255 255 255 255 255 255 225 127 0 63 0 15 0 7 2 3 0 1 0 1 0 0 0 0 0 0 0 116 4]
@@ -89,8 +93,8 @@ func TestBlockMean_Distance(t *testing.T) {
 			hash := NewBlockMeanWithParams(tt.width, tt.height, tt.resizeType, tt.blockWidth, tt.blockHeight, tt.method)
 			img1, _ := imgproc.Read(tt.firstImage)
 			img2, _ := imgproc.Read(tt.secondImage)
-			h1 := hash.Calculate(img1)
-			h2 := hash.Calculate(img2)
+			h1, _ := hash.Calculate(img1)
+			h2, _ := hash.Calculate(img2)
 			dist, _ := similarity.Hamming(h1, h2)
 			if !dist.Equal(tt.distance) {
 				t.Errorf("got %v, want %v", dist, tt.distance)

@@ -39,12 +39,15 @@ func NewRadialVarianceWithParams(sigma float64, numOfAngleLines int) RadialVaria
 }
 
 // Calculate returns a perceptual image hash.
-func (rv *RadialVariance) Calculate(img image.Image) hashtype.Hash {
-	g, _ := imgproc.Grayscale(img)
+func (rv *RadialVariance) Calculate(img image.Image) (hashtype.Hash, error) {
+	g, err := imgproc.Grayscale(img)
+	if err != nil {
+		return nil, err
+	}
 	b := imgproc.GaussianBlur(g, 0, rv.sigma)
 	proj, ppl, dim := rv.radialProjections(b.(*image.Gray))
 	feat := rv.findFeatureVector(proj, ppl, dim)
-	return rv.computeHash(feat)
+	return rv.computeHash(feat), nil
 }
 
 func getSize(img image.Image) (int, int) {

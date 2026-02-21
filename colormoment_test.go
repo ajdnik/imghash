@@ -33,7 +33,11 @@ func TestColorMoment_Calculate(t *testing.T) {
 		t.Run(tt.filename, func(t *testing.T) {
 			hash := NewColorMomentWithParams(tt.width, tt.height, tt.resizeType, tt.kernel, tt.sigma)
 			img, _ := imgproc.Read(tt.filename)
-			res := hash.Calculate(img).(hashtype.Float64)
+			result, err := hash.Calculate(img)
+			if err != nil {
+				t.Fatalf("unexpected error: %v", err)
+			}
+			res := result.(hashtype.Float64)
 			if !res.Equal(tt.hash) {
 				t.Errorf("got %v, want %v", res, tt.hash)
 			}
@@ -47,7 +51,7 @@ func ExampleColorMoment_Calculate() {
 	// Create new Color Moment Hash using default parameters
 	color := NewColorMoment()
 	// Calculate hash
-	hash := color.Calculate(img)
+	hash, _ := color.Calculate(img)
 
 	fmt.Println(hash)
 }
@@ -75,8 +79,8 @@ func TestColorMoment_Distance(t *testing.T) {
 			hash := NewColorMomentWithParams(tt.width, tt.height, tt.resizeType, tt.kernel, tt.sigma)
 			img1, _ := imgproc.Read(tt.firstImage)
 			img2, _ := imgproc.Read(tt.secondImage)
-			h1 := hash.Calculate(img1)
-			h2 := hash.Calculate(img2)
+			h1, _ := hash.Calculate(img1)
+			h2, _ := hash.Calculate(img2)
 			dist := similarity.L2(h1, h2)
 			if !dist.Equal(tt.distance) {
 				t.Errorf("got %v, want %v", dist, tt.distance)

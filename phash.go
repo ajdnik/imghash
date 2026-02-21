@@ -38,10 +38,13 @@ func NewPHashWithParams(resizeWidth, resizeHeight uint, resizeType imgproc.Resiz
 	}
 }
 
-// Calculate returns a percaptual image hash.
-func (ph *PHash) Calculate(img image.Image) hashtype.Hash {
+// Calculate returns a perceptual image hash.
+func (ph *PHash) Calculate(img image.Image) (hashtype.Hash, error) {
 	r := imgproc.Resize(ph.width, ph.height, img, ph.interp)
-	g, _ := imgproc.Grayscale(r)
+	g, err := imgproc.Grayscale(r)
+	if err != nil {
+		return nil, err
+	}
 	fImg := imgproc.GrayToF32(g)
 	dctImg := imgproc.DCT(fImg)
 	tLeft := ph.topLeft(dctImg)
@@ -49,7 +52,7 @@ func (ph *PHash) Calculate(img image.Image) hashtype.Hash {
 	tLeft[0][0] = 0
 	mean := ph.mean(tLeft)
 	bitImg := ph.compare(tLeft, mean)
-	return ph.computeHash(bitImg)
+	return ph.computeHash(bitImg), nil
 }
 
 // Computes the binary hash based on the binary image supplied.

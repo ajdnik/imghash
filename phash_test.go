@@ -31,7 +31,11 @@ func TestPHash_Calculate(t *testing.T) {
 		t.Run(tt.filename, func(t *testing.T) {
 			hash := NewPHashWithParams(tt.width, tt.height, tt.resizeType)
 			img, _ := imgproc.Read(tt.filename)
-			res := hash.Calculate(img).(hashtype.Binary)
+			result, err := hash.Calculate(img)
+			if err != nil {
+				t.Fatalf("unexpected error: %v", err)
+			}
+			res := result.(hashtype.Binary)
 			if !res.Equal(tt.hash) {
 				t.Errorf("got %v, want %v", res, tt.hash)
 			}
@@ -45,7 +49,7 @@ func ExamplePHash_Calculate() {
 	// Create new PHash using default parameters
 	ph := NewPHash()
 	// Calculate hash
-	hash := ph.Calculate(img)
+	hash, _ := ph.Calculate(img)
 
 	fmt.Println(hash)
 	// Output: [170 195 65 29 10 2 38 84]
@@ -72,8 +76,8 @@ func TestPHash_Distance(t *testing.T) {
 			hash := NewPHashWithParams(tt.width, tt.height, tt.resizeType)
 			img1, _ := imgproc.Read(tt.firstImage)
 			img2, _ := imgproc.Read(tt.secondImage)
-			h1 := hash.Calculate(img1)
-			h2 := hash.Calculate(img2)
+			h1, _ := hash.Calculate(img1)
+			h2, _ := hash.Calculate(img2)
 			dist, _ := similarity.Hamming(h1, h2)
 			if !dist.Equal(tt.distance) {
 				t.Errorf("got %v, want %v", dist, tt.distance)
