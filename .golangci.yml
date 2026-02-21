@@ -1,0 +1,33 @@
+version: "2"
+
+linters:
+  default: standard
+  enable:
+    - copyloopvar
+    - errcheck
+    - errorlint
+    - govet
+    - ineffassign
+    - misspell
+    - revive
+    - staticcheck
+    - unused
+
+linters-settings:
+  revive:
+    enable-all-rules: true
+    rules:
+      - name: blank-imports
+      - name: dot-imports
+      - name: exported
+        arguments:
+          - "checkPrivateReceivers"
+      - name: redefines-builtin-id
+      - name: unexported-return
+      - name: unreachable-code
+      - name: unused-parameter
+
+formatters:
+  enable:
+    - gofmt
+    - goimports

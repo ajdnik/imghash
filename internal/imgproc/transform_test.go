@@ -108,7 +108,7 @@ func TestHaarDWT2D_twoLevels(t *testing.T) {
 	}
 }
 
-func TestHaarDWT2D_empty(t *testing.T) {
+func TestHaarDWT2D_empty(_ *testing.T) {
 	HaarDWT2D(nil, 1)
 	HaarDWT2D([][]float32{}, 1)
 }

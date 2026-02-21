@@ -1,3 +1,5 @@
+// Package imgproc provides low-level image processing primitives used
+// by the perceptual hashing algorithms in the parent package.
 package imgproc
 
 import (

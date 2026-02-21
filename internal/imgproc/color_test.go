@@ -1,6 +1,7 @@
 package imgproc
 
 import (
+	"errors"
 	"image"
 	"image/color"
 	"testing"
@@ -8,7 +9,7 @@ import (
 
 func TestGrayscale_nil(t *testing.T) {
 	_, err := Grayscale(nil)
-	if err != ErrImageIsNil {
+	if !errors.Is(err, ErrImageIsNil) {
 		t.Errorf("got %v, want %v", err, ErrImageIsNil)
 	}
 }
@@ -31,7 +32,7 @@ func TestGrayscale_valid(t *testing.T) {
 
 func TestYCrCb_nil(t *testing.T) {
 	_, err := YCrCb(nil)
-	if err != ErrImageIsNil {
+	if !errors.Is(err, ErrImageIsNil) {
 		t.Errorf("got %v, want %v", err, ErrImageIsNil)
 	}
 }
@@ -53,7 +54,7 @@ func TestYCrCb_valid(t *testing.T) {
 
 func TestHSV_nil(t *testing.T) {
 	_, err := HSV(nil)
-	if err != ErrImageIsNil {
+	if !errors.Is(err, ErrImageIsNil) {
 		t.Errorf("got %v, want %v", err, ErrImageIsNil)
 	}
 }
@@ -85,7 +86,7 @@ func TestRgbToYCbCr(t *testing.T) {
 		{"blue", 0, 0, 255},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
+		t.Run(tt.name, func(_ *testing.T) {
 			y, cb, cr := rgbToYCbCr(tt.r, tt.g, tt.b)
 			_ = y
 			_ = cb
@@ -108,7 +109,7 @@ func TestRgbToHSV(t *testing.T) {
 		{"mid gray", 128, 128, 128},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
+		t.Run(tt.name, func(_ *testing.T) {
 			h, s, v := rgbToHSV(tt.r, tt.g, tt.b)
 			_ = h
 			_ = s

@@ -1,23 +1,24 @@
 package hashtype_test
 
 import (
+	"errors"
 	"fmt"
 	"testing"
 
-	. "github.com/ajdnik/imghash/v2/hashtype"
+	"github.com/ajdnik/imghash/v2/hashtype"
 )
 
 var binaryStringTests = []struct {
 	name   string
-	hash   Binary
+	hash   hashtype.Binary
 	result string
 }{
-	{"zero byte", Binary{0}, "[0]"},
-	{"1 byte", Binary{1}, "[1]"},
-	{"max byte", Binary{255}, "[255]"},
-	{"two zero bytes", Binary{0, 0}, "[0 0]"},
-	{"1 two bytes", Binary{1, 0}, "[1 0]"},
-	{"1 two bytes second", Binary{0, 1}, "[0 1]"},
+	{"zero byte", hashtype.Binary{0}, "[0]"},
+	{"1 byte", hashtype.Binary{1}, "[1]"},
+	{"max byte", hashtype.Binary{255}, "[255]"},
+	{"two zero bytes", hashtype.Binary{0, 0}, "[0 0]"},
+	{"1 two bytes", hashtype.Binary{1, 0}, "[1 0]"},
+	{"1 two bytes second", hashtype.Binary{0, 1}, "[0 1]"},
 }
 
 func TestBinary_String(t *testing.T) {
@@ -31,28 +32,28 @@ func TestBinary_String(t *testing.T) {
 }
 
 func ExampleBinary_String() {
-	hash := Binary{115, 247, 1}
+	hash := hashtype.Binary{115, 247, 1}
 	fmt.Println(hash.String())
 	// Output: [115 247 1]
 }
 
 var binarySetErrorTests = []struct {
 	name     string
-	start    Binary
+	start    hashtype.Binary
 	position uint
 	expect   error
 }{
-	{"first position one byte", Binary{0}, 0, nil},
-	{"eight position one byte", Binary{0}, 7, nil},
-	{"first position two bytes", Binary{0, 0}, 0, nil},
-	{"last position two bytes", Binary{0, 0}, 15, nil},
-	{"out of bounds", Binary{0, 0}, 17, ErrOutOfBounds},
+	{"first position one byte", hashtype.Binary{0}, 0, nil},
+	{"eight position one byte", hashtype.Binary{0}, 7, nil},
+	{"first position two bytes", hashtype.Binary{0, 0}, 0, nil},
+	{"last position two bytes", hashtype.Binary{0, 0}, 15, nil},
+	{"out of bounds", hashtype.Binary{0, 0}, 17, hashtype.ErrOutOfBounds},
 }
 
 func TestBinary_Set_error(t *testing.T) {
 	for _, tt := range binarySetErrorTests {
 		t.Run(tt.name, func(t *testing.T) {
-			if res := tt.start.Set(tt.position); res != tt.expect {
+			if res := tt.start.Set(tt.position); !errors.Is(res, tt.expect) {
 				t.Errorf("got %v, want %v", res, tt.expect)
 			}
 		})
@@ -62,14 +63,14 @@ func TestBinary_Set_error(t *testing.T) {
 
 var binarySetTests = []struct {
 	name     string
-	start    Binary
+	start    hashtype.Binary
 	position uint
-	expect   Binary
+	expect   hashtype.Binary
 }{
-	{"first position one byte", Binary{0}, 0, Binary{1}},
-	{"eight position one byte", Binary{0}, 7, Binary{128}},
-	{"first position two bytes", Binary{0, 0}, 0, Binary{1, 0}},
-	{"last position two bytes", Binary{0, 0}, 15, Binary{0, 128}},
+	{"first position one byte", hashtype.Binary{0}, 0, hashtype.Binary{1}},
+	{"eight position one byte", hashtype.Binary{0}, 7, hashtype.Binary{128}},
+	{"first position two bytes", hashtype.Binary{0, 0}, 0, hashtype.Binary{1, 0}},
+	{"last position two bytes", hashtype.Binary{0, 0}, 15, hashtype.Binary{0, 128}},
 }
 
 func TestBinary_Set(t *testing.T) {
@@ -83,7 +84,7 @@ func TestBinary_Set(t *testing.T) {
 }
 
 func ExampleBinary_Set() {
-	hash := Binary{0, 0}
+	hash := hashtype.Binary{0, 0}
 	_ = hash.Set(0)
 	_ = hash.Set(15)
 	fmt.Println(hash.String())
@@ -92,21 +93,21 @@ func ExampleBinary_Set() {
 
 var binarySetReverseErrorTests = []struct {
 	name     string
-	start    Binary
+	start    hashtype.Binary
 	position uint
 	expect   error
 }{
-	{"first position one byte", Binary{0}, 0, nil},
-	{"eight position one byte", Binary{0}, 7, nil},
-	{"first position two bytes", Binary{0, 0}, 0, nil},
-	{"last position two bytes", Binary{0, 0}, 15, nil},
-	{"out of bounds", Binary{0, 0}, 17, ErrOutOfBounds},
+	{"first position one byte", hashtype.Binary{0}, 0, nil},
+	{"eight position one byte", hashtype.Binary{0}, 7, nil},
+	{"first position two bytes", hashtype.Binary{0, 0}, 0, nil},
+	{"last position two bytes", hashtype.Binary{0, 0}, 15, nil},
+	{"out of bounds", hashtype.Binary{0, 0}, 17, hashtype.ErrOutOfBounds},
 }
 
 func TestBinary_SetReverse_error(t *testing.T) {
 	for _, tt := range binarySetReverseErrorTests {
 		t.Run(tt.name, func(t *testing.T) {
-			if res := tt.start.SetReverse(tt.position); res != tt.expect {
+			if res := tt.start.SetReverse(tt.position); !errors.Is(res, tt.expect) {
 				t.Errorf("got %v, want %v", res, tt.expect)
 			}
 		})
@@ -116,14 +117,14 @@ func TestBinary_SetReverse_error(t *testing.T) {
 
 var binarySetReverseTests = []struct {
 	name     string
-	start    Binary
+	start    hashtype.Binary
 	position uint
-	expect   Binary
+	expect   hashtype.Binary
 }{
-	{"first position one byte", Binary{0}, 0, Binary{128}},
-	{"eight position one byte", Binary{0}, 7, Binary{1}},
-	{"first position two bytes", Binary{0, 0}, 0, Binary{128, 0}},
-	{"last position two bytes", Binary{0, 0}, 15, Binary{0, 1}},
+	{"first position one byte", hashtype.Binary{0}, 0, hashtype.Binary{128}},
+	{"eight position one byte", hashtype.Binary{0}, 7, hashtype.Binary{1}},
+	{"first position two bytes", hashtype.Binary{0, 0}, 0, hashtype.Binary{128, 0}},
+	{"last position two bytes", hashtype.Binary{0, 0}, 15, hashtype.Binary{0, 1}},
 }
 
 func TestBinary_SetReverse(t *testing.T) {
@@ -137,7 +138,7 @@ func TestBinary_SetReverse(t *testing.T) {
 }
 
 func ExampleBinary_SetReverse() {
-	hash := Binary{0, 0}
+	hash := hashtype.Binary{0, 0}
 	_ = hash.SetReverse(0)
 	_ = hash.SetReverse(15)
 	fmt.Println(hash.String())
@@ -146,15 +147,15 @@ func ExampleBinary_SetReverse() {
 
 var binaryEqualTests = []struct {
 	name   string
-	h1     Binary
-	h2     Binary
+	h1     hashtype.Binary
+	h2     hashtype.Binary
 	expect bool
 }{
-	{"match 1", Binary{0}, Binary{0}, true},
-	{"match 2", Binary{1, 2, 3, 4, 5, 6, 7, 8, 9}, Binary{1, 2, 3, 4, 5, 6, 7, 8, 9}, true},
-	{"match 3", Binary{231, 145, 13, 91, 22}, Binary{231, 145, 13, 91, 22}, true},
-	{"mismatch 1", Binary{0}, Binary{1}, false},
-	{"mismatch 2", Binary{1, 2, 3, 4}, Binary{1, 2, 3, 4, 5, 6}, false},
+	{"match 1", hashtype.Binary{0}, hashtype.Binary{0}, true},
+	{"match 2", hashtype.Binary{1, 2, 3, 4, 5, 6, 7, 8, 9}, hashtype.Binary{1, 2, 3, 4, 5, 6, 7, 8, 9}, true},
+	{"match 3", hashtype.Binary{231, 145, 13, 91, 22}, hashtype.Binary{231, 145, 13, 91, 22}, true},
+	{"mismatch 1", hashtype.Binary{0}, hashtype.Binary{1}, false},
+	{"mismatch 2", hashtype.Binary{1, 2, 3, 4}, hashtype.Binary{1, 2, 3, 4, 5, 6}, false},
 }
 
 func TestBinary_Equal(t *testing.T) {
@@ -168,9 +169,9 @@ func TestBinary_Equal(t *testing.T) {
 }
 
 func ExampleBinary_Equal() {
-	h1 := Binary{1, 2, 128}
-	h2 := Binary{2, 128}
-	h3 := Binary{1, 2, 128}
+	h1 := hashtype.Binary{1, 2, 128}
+	h2 := hashtype.Binary{2, 128}
+	h3 := hashtype.Binary{1, 2, 128}
 	fmt.Println(h1.Equal(h2))
 	fmt.Println(h1.Equal(h3))
 	// Output:
@@ -180,12 +181,12 @@ func ExampleBinary_Equal() {
 
 var binaryLenTests = []struct {
 	name   string
-	hash   Binary
+	hash   hashtype.Binary
 	expect int
 }{
-	{"empty", Binary{}, 0},
-	{"one byte", Binary{0}, 1},
-	{"three bytes", Binary{1, 2, 3}, 3},
+	{"empty", hashtype.Binary{}, 0},
+	{"one byte", hashtype.Binary{0}, 1},
+	{"three bytes", hashtype.Binary{1, 2, 3}, 3},
 }
 
 func TestBinary_Len(t *testing.T) {
@@ -200,13 +201,13 @@ func TestBinary_Len(t *testing.T) {
 
 var binaryValueAtTests = []struct {
 	name   string
-	hash   Binary
+	hash   hashtype.Binary
 	idx    int
 	expect float64
 }{
-	{"first byte zero", Binary{0, 128}, 0, 0},
-	{"second byte 128", Binary{0, 128}, 1, 128},
-	{"byte 255", Binary{255}, 0, 255},
+	{"first byte zero", hashtype.Binary{0, 128}, 0, 0},
+	{"second byte 128", hashtype.Binary{0, 128}, 1, 128},
+	{"byte 255", hashtype.Binary{255}, 0, 255},
 }
 
 func TestBinary_ValueAt(t *testing.T) {
@@ -221,15 +222,15 @@ func TestBinary_ValueAt(t *testing.T) {
 
 var binaryDistanceTests = []struct {
 	name   string
-	h1     Binary
-	h2     Binary
+	h1     hashtype.Binary
+	h2     hashtype.Binary
 	expect float64
 }{
-	{"identical", Binary{0xFF}, Binary{0xFF}, 0},
-	{"one bit diff", Binary{0}, Binary{1}, 1},
-	{"all bits diff", Binary{0x00}, Binary{0xFF}, 8},
-	{"two bytes", Binary{0xFF, 0x00}, Binary{0x00, 0xFF}, 16},
-	{"different lengths", Binary{0xFF, 0x00}, Binary{0xFF}, 0},
+	{"identical", hashtype.Binary{0xFF}, hashtype.Binary{0xFF}, 0},
+	{"one bit diff", hashtype.Binary{0}, hashtype.Binary{1}, 1},
+	{"all bits diff", hashtype.Binary{0x00}, hashtype.Binary{0xFF}, 8},
+	{"two bytes", hashtype.Binary{0xFF, 0x00}, hashtype.Binary{0x00, 0xFF}, 16},
+	{"different lengths", hashtype.Binary{0xFF, 0x00}, hashtype.Binary{0xFF}, 0},
 }
 
 func TestBinary_Distance(t *testing.T) {
@@ -247,10 +248,10 @@ func TestBinary_Distance(t *testing.T) {
 }
 
 func TestBinary_Distance_incompatible(t *testing.T) {
-	h1 := Binary{1, 2, 3}
-	h2 := UInt8{1, 2, 3}
+	h1 := hashtype.Binary{1, 2, 3}
+	h2 := hashtype.UInt8{1, 2, 3}
 	_, err := h1.Distance(h2)
-	if err != ErrIncompatibleHash {
-		t.Errorf("got %v, want %v", err, ErrIncompatibleHash)
+	if !errors.Is(err, hashtype.ErrIncompatibleHash) {
+		t.Errorf("got %v, want %v", err, hashtype.ErrIncompatibleHash)
 	}
 }

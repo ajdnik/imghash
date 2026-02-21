@@ -1,3 +1,5 @@
+// Package imghash provides perceptual image hashing algorithms and
+// similarity metrics for comparing images by visual content.
 package imghash
 
 import (

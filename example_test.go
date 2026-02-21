@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"os"
 
-	. "github.com/ajdnik/imghash/v2"
+	"github.com/ajdnik/imghash/v2"
 )
 
 func ExampleOpenImage() {
-	img, err := OpenImage("assets/cat.jpg")
+	img, err := imghash.OpenImage("assets/cat.jpg")
 	if err != nil {
 		panic(err)
 	}
@@ -17,11 +17,11 @@ func ExampleOpenImage() {
 }
 
 func ExampleHashFile() {
-	avg, err := NewAverage()
+	avg, err := imghash.NewAverage()
 	if err != nil {
 		panic(err)
 	}
-	hash, err := HashFile(avg, "assets/cat.jpg")
+	hash, err := imghash.HashFile(avg, "assets/cat.jpg")
 	if err != nil {
 		panic(err)
 	}
@@ -36,11 +36,11 @@ func ExampleHashReader() {
 	}
 	defer func() { _ = f.Close() }()
 
-	avg, err := NewAverage()
+	avg, err := imghash.NewAverage()
 	if err != nil {
 		panic(err)
 	}
-	hash, err := HashReader(avg, f)
+	hash, err := imghash.HashReader(avg, f)
 	if err != nil {
 		panic(err)
 	}
@@ -49,20 +49,20 @@ func ExampleHashReader() {
 }
 
 func ExampleCompare() {
-	avg, err := NewAverage()
+	avg, err := imghash.NewAverage()
 	if err != nil {
 		panic(err)
 	}
-	h1, err := HashFile(avg, "assets/lena.jpg")
+	h1, err := imghash.HashFile(avg, "assets/lena.jpg")
 	if err != nil {
 		panic(err)
 	}
-	h2, err := HashFile(avg, "assets/cat.jpg")
+	h2, err := imghash.HashFile(avg, "assets/cat.jpg")
 	if err != nil {
 		panic(err)
 	}
 
-	dist, err := Compare(h1, h2)
+	dist, err := imghash.Compare(h1, h2)
 	if err != nil {
 		panic(err)
 	}
@@ -71,18 +71,18 @@ func ExampleCompare() {
 }
 
 func ExampleNewMarrHildreth_options() {
-	mh, err := NewMarrHildreth(
-		WithScale(1),
-		WithAlpha(2),
-		WithSize(512, 512),
-		WithInterpolation(Bicubic),
-		WithKernelSize(7),
-		WithSigma(0),
+	mh, err := imghash.NewMarrHildreth(
+		imghash.WithScale(1),
+		imghash.WithAlpha(2),
+		imghash.WithSize(512, 512),
+		imghash.WithInterpolation(imghash.Bicubic),
+		imghash.WithKernelSize(7),
+		imghash.WithSigma(0),
 	)
 	if err != nil {
 		panic(err)
 	}
-	hash, err := HashFile(mh, "assets/cat.jpg")
+	hash, err := imghash.HashFile(mh, "assets/cat.jpg")
 	if err != nil {
 		panic(err)
 	}
@@ -91,9 +91,9 @@ func ExampleNewMarrHildreth_options() {
 }
 
 func ExampleInterpolation_String() {
-	fmt.Println(Bilinear)
-	fmt.Println(Bicubic)
-	fmt.Println(Lanczos3)
+	fmt.Println(imghash.Bilinear)
+	fmt.Println(imghash.Bicubic)
+	fmt.Println(imghash.Lanczos3)
 	// Output:
 	// Bilinear
 	// Bicubic

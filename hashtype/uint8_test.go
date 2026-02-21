@@ -4,17 +4,17 @@ import (
 	"fmt"
 	"testing"
 
-	. "github.com/ajdnik/imghash/v2/hashtype"
+	"github.com/ajdnik/imghash/v2/hashtype"
 )
 
 var uint8StringTests = []struct {
 	name   string
-	hash   UInt8
+	hash   hashtype.UInt8
 	result string
 }{
-	{"empty hash", UInt8{}, "[]"},
-	{"single value", UInt8{112}, "[112]"},
-	{"multiple values", UInt8{1, 2, 89, 113}, "[1 2 89 113]"},
+	{"empty hash", hashtype.UInt8{}, "[]"},
+	{"single value", hashtype.UInt8{112}, "[112]"},
+	{"multiple values", hashtype.UInt8{1, 2, 89, 113}, "[1 2 89 113]"},
 }
 
 func TestUInt8_String(t *testing.T) {
@@ -28,23 +28,23 @@ func TestUInt8_String(t *testing.T) {
 }
 
 func ExampleUInt8_String() {
-	hash := UInt8{0, 1, 2, 3, 4, 5}
+	hash := hashtype.UInt8{0, 1, 2, 3, 4, 5}
 	fmt.Println(hash.String())
 	// Output: [0 1 2 3 4 5]
 }
 
 var uint8EqualTests = []struct {
 	name   string
-	h1     UInt8
-	h2     UInt8
+	h1     hashtype.UInt8
+	h2     hashtype.UInt8
 	expect bool
 }{
-	{"match 1", UInt8{}, UInt8{}, true},
-	{"match 2", UInt8{1, 2, 3, 4}, UInt8{1, 2, 3, 4}, true},
-	{"match 3", UInt8{123, 255, 61, 72}, UInt8{123, 255, 61, 72}, true},
-	{"mismatch 1", UInt8{}, UInt8{156}, false},
-	{"mismatch 2", UInt8{1, 2, 3, 4}, UInt8{1, 3, 2, 4}, false},
-	{"mismatch 3", UInt8{1, 2, 3, 4}, UInt8{1, 2, 3, 4, 5}, false},
+	{"match 1", hashtype.UInt8{}, hashtype.UInt8{}, true},
+	{"match 2", hashtype.UInt8{1, 2, 3, 4}, hashtype.UInt8{1, 2, 3, 4}, true},
+	{"match 3", hashtype.UInt8{123, 255, 61, 72}, hashtype.UInt8{123, 255, 61, 72}, true},
+	{"mismatch 1", hashtype.UInt8{}, hashtype.UInt8{156}, false},
+	{"mismatch 2", hashtype.UInt8{1, 2, 3, 4}, hashtype.UInt8{1, 3, 2, 4}, false},
+	{"mismatch 3", hashtype.UInt8{1, 2, 3, 4}, hashtype.UInt8{1, 2, 3, 4, 5}, false},
 }
 
 func TestUInt8_Equal(t *testing.T) {
@@ -58,9 +58,9 @@ func TestUInt8_Equal(t *testing.T) {
 }
 
 func ExampleUInt8_Equal() {
-	h1 := UInt8{0, 1, 2, 3}
-	h2 := UInt8{0, 1, 2}
-	h3 := UInt8{0, 1, 2, 3}
+	h1 := hashtype.UInt8{0, 1, 2, 3}
+	h2 := hashtype.UInt8{0, 1, 2}
+	h3 := hashtype.UInt8{0, 1, 2, 3}
 	fmt.Println(h1.Equal(h2))
 	fmt.Println(h1.Equal(h3))
 	// Output:
@@ -70,12 +70,12 @@ func ExampleUInt8_Equal() {
 
 var uint8LenTests = []struct {
 	name   string
-	hash   UInt8
+	hash   hashtype.UInt8
 	expect int
 }{
-	{"empty", UInt8{}, 0},
-	{"one element", UInt8{42}, 1},
-	{"five elements", UInt8{1, 2, 3, 4, 5}, 5},
+	{"empty", hashtype.UInt8{}, 0},
+	{"one element", hashtype.UInt8{42}, 1},
+	{"five elements", hashtype.UInt8{1, 2, 3, 4, 5}, 5},
 }
 
 func TestUInt8_Len(t *testing.T) {
@@ -90,13 +90,13 @@ func TestUInt8_Len(t *testing.T) {
 
 var uint8ValueAtTests = []struct {
 	name   string
-	hash   UInt8
+	hash   hashtype.UInt8
 	idx    int
 	expect float64
 }{
-	{"first element", UInt8{100, 200}, 0, 100},
-	{"second element", UInt8{100, 200}, 1, 200},
-	{"zero", UInt8{0}, 0, 0},
+	{"first element", hashtype.UInt8{100, 200}, 0, 100},
+	{"second element", hashtype.UInt8{100, 200}, 1, 200},
+	{"zero", hashtype.UInt8{0}, 0, 0},
 }
 
 func TestUInt8_ValueAt(t *testing.T) {
@@ -110,8 +110,8 @@ func TestUInt8_ValueAt(t *testing.T) {
 }
 
 func TestUInt8_Distance(t *testing.T) {
-	h1 := UInt8{0, 0}
-	h2 := UInt8{3, 4}
+	h1 := hashtype.UInt8{0, 0}
+	h2 := hashtype.UInt8{3, 4}
 	d, err := h1.Distance(h2)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)

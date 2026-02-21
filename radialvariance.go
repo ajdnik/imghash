@@ -61,8 +61,8 @@ func roundingFactor(val float32) float32 {
 	return -0.5
 }
 
-func createOffset(len int) int {
-	cen := float32(len / 2)
+func createOffset(size int) int {
+	cen := float32(size / 2)
 	return int(math.Floor(float64(cen + roundingFactor(cen))))
 }
 
@@ -145,7 +145,7 @@ func (rv RadialVariance) findFeatureVector(proj []uint8, ppl []int32, dim int) [
 func (rv RadialVariance) computeHash(feat []float64) hashtype.UInt8 {
 	hash := make(hashtype.UInt8, hashSize)
 	temp := make([]float64, hashSize)
-	var max, min float64
+	var hi, lo float64
 	for i := 0; i < hashSize; i++ {
 		var sum float64
 		for j := 0; j < len(feat); j++ {
@@ -156,18 +156,18 @@ func (rv RadialVariance) computeHash(feat []float64) hashtype.UInt8 {
 		} else {
 			temp[i] = sum * sqTwo / math.Sqrt(float64(len(feat)))
 		}
-		if temp[i] > max {
-			max = temp[i]
-		} else if temp[i] < min {
-			min = temp[i]
+		if temp[i] > hi {
+			hi = temp[i]
+		} else if temp[i] < lo {
+			lo = temp[i]
 		}
 	}
-	r := max - min
+	r := hi - lo
 	if r == 0 {
 		return hash
 	}
 	for i := 0; i < hashSize; i++ {
-		hash[i] = uint8((255 * (temp[i] - min) / r))
+		hash[i] = uint8((255 * (temp[i] - lo) / r))
 	}
 	return hash
 }

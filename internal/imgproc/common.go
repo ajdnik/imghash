@@ -84,24 +84,24 @@ func cvRound(value float64) int {
 
 // Normalize normalize images to [0,1] range
 func Normalize(img [][]float32) {
-	var max, min float32
-	max = -1 << 30
-	min = 1 << 30
+	var hi, lo float32
+	hi = -1 << 30
+	lo = 1 << 30
 	for _, list := range img {
 		for _, v := range list {
-			if v > max {
-				max = v
+			if v > hi {
+				hi = v
 			}
-			if v < min {
-				min = v
+			if v < lo {
+				lo = v
 			}
 		}
 	}
 
-	diff := max - min
+	diff := hi - lo
 	for x, list := range img {
 		for y, v := range list {
-			(img)[x][y] = (v - min) / diff
+			(img)[x][y] = (v - lo) / diff
 		}
 	}
 }
