@@ -58,6 +58,52 @@ func matf64Tof32(mat [][]float64) [][]float32 {
 	return res
 }
 
+// HaarDWT2D applies a multi-level 2-D Haar discrete wavelet transform
+// in-place on the top-left region of mat. After `levels` iterations the
+// top-left (rows/2^levels)×(cols/2^levels) block holds the LL coefficients.
+func HaarDWT2D(mat [][]float32, levels int) {
+	rows := len(mat)
+	if rows == 0 {
+		return
+	}
+	cols := len(mat[0])
+	for l := 0; l < levels; l++ {
+		h := rows >> uint(l)
+		w := cols >> uint(l)
+		if h < 2 || w < 2 {
+			break
+		}
+		haarRows(mat, h, w)
+		haarCols(mat, h, w)
+	}
+}
+
+func haarRows(mat [][]float32, rows, cols int) {
+	half := cols / 2
+	tmp := make([]float32, cols)
+	for r := 0; r < rows; r++ {
+		for c := 0; c < half; c++ {
+			tmp[c] = (mat[r][2*c] + mat[r][2*c+1]) / 2
+			tmp[half+c] = (mat[r][2*c] - mat[r][2*c+1]) / 2
+		}
+		copy(mat[r][:cols], tmp)
+	}
+}
+
+func haarCols(mat [][]float32, rows, cols int) {
+	half := rows / 2
+	tmp := make([]float32, rows)
+	for c := 0; c < cols; c++ {
+		for r := 0; r < half; r++ {
+			tmp[r] = (mat[2*r][c] + mat[2*r+1][c]) / 2
+			tmp[half+r] = (mat[2*r][c] - mat[2*r+1][c]) / 2
+		}
+		for r := 0; r < rows; r++ {
+			mat[r][c] = tmp[r]
+		}
+	}
+}
+
 func transpose(mat [][]float64) [][]float64 {
 	height := len(mat)
 	width := len(mat[0])

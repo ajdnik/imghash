@@ -70,3 +70,45 @@ func TestMatf64Tof32(t *testing.T) {
 		t.Errorf("conversion incorrect")
 	}
 }
+
+func TestHaarDWT2D_oneLevel(t *testing.T) {
+	mat := [][]float32{
+		{1, 2, 3, 4},
+		{5, 6, 7, 8},
+		{9, 10, 11, 12},
+		{13, 14, 15, 16},
+	}
+	HaarDWT2D(mat, 1)
+	// LL quadrant (top-left 2x2): averages of 2x2 blocks
+	wantLL := [][]float32{
+		{3.5, 5.5},
+		{11.5, 13.5},
+	}
+	for r := 0; r < 2; r++ {
+		for c := 0; c < 2; c++ {
+			if math.Abs(float64(mat[r][c]-wantLL[r][c])) > 1e-5 {
+				t.Errorf("LL[%d][%d] = %v, want %v", r, c, mat[r][c], wantLL[r][c])
+			}
+		}
+	}
+}
+
+func TestHaarDWT2D_twoLevels(t *testing.T) {
+	mat := [][]float32{
+		{1, 2, 3, 4},
+		{5, 6, 7, 8},
+		{9, 10, 11, 12},
+		{13, 14, 15, 16},
+	}
+	HaarDWT2D(mat, 2)
+	// After 2 levels the top-left 1x1 is the global average
+	globalAvg := float32(8.5)
+	if math.Abs(float64(mat[0][0]-globalAvg)) > 1e-5 {
+		t.Errorf("LL after 2 levels = %v, want %v", mat[0][0], globalAvg)
+	}
+}
+
+func TestHaarDWT2D_empty(t *testing.T) {
+	HaarDWT2D(nil, 1)
+	HaarDWT2D([][]float32{}, 1)
+}

@@ -35,3 +35,7 @@ var _ ColorMomentOption = WithSize(0, 0)
 var _ ColorMomentOption = WithInterpolation(Bilinear)
 var _ ColorMomentOption = WithKernelSize(0)
 var _ ColorMomentOption = WithSigma(0)
+
+var _ WHashOption = WithSize(0, 0)
+var _ WHashOption = WithInterpolation(Bilinear)
+var _ WHashOption = WithLevel(0)
