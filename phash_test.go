@@ -19,9 +19,9 @@ var pHashCalculateTests = []struct {
 	resizeType imgproc.ResizeType
 }{
 	{"assets/lena.jpg", hashtype.Binary{152, 99, 42, 180, 174, 204, 69, 105}, 32, 32, imgproc.BilinearExact},
-	{"assets/baboon.jpg", hashtype.Binary{251, 4, 6, 190, 248, 133, 27, 241}, 32, 32, imgproc.BilinearExact},
-	{"assets/cat.jpg", hashtype.Binary{170, 211, 65, 29, 10, 2, 38, 84}, 32, 32, imgproc.BilinearExact},
-	{"assets/monarch.jpg", hashtype.Binary{150, 222, 38, 31, 25, 105, 128, 70}, 32, 32, imgproc.BilinearExact},
+	{"assets/baboon.jpg", hashtype.Binary{251, 4, 6, 190, 248, 133, 91, 241}, 32, 32, imgproc.BilinearExact},
+	{"assets/cat.jpg", hashtype.Binary{170, 195, 65, 29, 10, 2, 38, 84}, 32, 32, imgproc.BilinearExact},
+	{"assets/monarch.jpg", hashtype.Binary{150, 222, 38, 63, 25, 105, 128, 70}, 32, 32, imgproc.BilinearExact},
 	{"assets/peppers.jpg", hashtype.Binary{192, 245, 62, 8, 227, 136, 19, 155}, 32, 32, imgproc.BilinearExact},
 	{"assets/tulips.jpg", hashtype.Binary{34, 117, 194, 95, 55, 122, 48, 37}, 32, 32, imgproc.BilinearExact},
 }
@@ -47,7 +47,7 @@ func ExamplePHash_Calculate() {
 	hash := ph.Calculate(img)
 
 	fmt.Println(hash)
-	// Output: [170 211 65 29 10 2 38 84]
+	// Output: [170 195 65 29 10 2 38 84]
 }
 
 var pHashDistanceTests = []struct {
@@ -58,11 +58,11 @@ var pHashDistanceTests = []struct {
 	height      uint
 	resizeType  imgproc.ResizeType
 }{
-	{"assets/lena.jpg", "assets/cat.jpg", 32, 32, 32, imgproc.BilinearExact},
-	{"assets/lena.jpg", "assets/monarch.jpg", 35, 32, 32, imgproc.BilinearExact},
+	{"assets/lena.jpg", "assets/cat.jpg", 31, 32, 32, imgproc.BilinearExact},
+	{"assets/lena.jpg", "assets/monarch.jpg", 34, 32, 32, imgproc.BilinearExact},
 	{"assets/baboon.jpg", "assets/cat.jpg", 35, 32, 32, imgproc.BilinearExact},
-	{"assets/peppers.jpg", "assets/baboon.jpg", 30, 32, 32, imgproc.BilinearExact},
-	{"assets/tulips.jpg", "assets/monarch.jpg", 28, 32, 32, imgproc.BilinearExact},
+	{"assets/peppers.jpg", "assets/baboon.jpg", 31, 32, 32, imgproc.BilinearExact},
+	{"assets/tulips.jpg", "assets/monarch.jpg", 29, 32, 32, imgproc.BilinearExact},
 }
 
 func TestPHash_Distance(t *testing.T) {

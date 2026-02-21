@@ -33,7 +33,7 @@ type MarrHildreth struct {
 
 // NewMarrHildreth creates a new MarrHildreth struct using default values.
 func NewMarrHildreth() MarrHildreth {
-	return MarrHildreth{
+	mh := MarrHildreth{
 		scale:  1,
 		alpha:  2,
 		width:  512,
@@ -42,6 +42,8 @@ func NewMarrHildreth() MarrHildreth {
 		kernel: 7,
 		sigma:  0,
 	}
+	mh.kernels = computeMarrHildrethKernel(mh.alpha, mh.scale)
+	return mh
 }
 
 // NewMarrHildrethWithParams creates a new MarrHildreth struct using the supplied parameters.

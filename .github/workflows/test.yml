@@ -13,27 +13,20 @@ jobs:
     name: tests
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Setup Go
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v5
         with:
-          go-version: 1.16
-      - name: Install Dependencies
-        run: |
-          go version
-          go get -u golang.org/x/tools/cmd/cover
-          go get -u golang.org/x/lint/golint
+          go-version: '1.25'
       - name: Build Binary
         run: go build ./...
       - name: Run Validation
-        run: |
-          go vet ./...
-          golint ./...
+        run: go vet ./...
       - name: Run Tests
         run: go test -v -covermode=atomic -coverprofile=coverage.out -coverpkg=./... ./...
         shell: bash
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: tests
           path: coverage.out
@@ -43,23 +36,19 @@ jobs:
     needs: test
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Setup Go
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v5
         with:
-          go-version: 1.16
+          go-version: '1.25'
       - name: Install Dependencies
-        run: |
-          go version
-          go get -u golang.org/x/tools/cmd/cover
-          go get -u github.com/mattn/goveralls
+        run: go install github.com/mattn/goveralls@latest
       - name: Download Artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: tests
       - name: Send Coverage
         env:
           COVERALLS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          goveralls -coverprofile=coverage.out -service=github
+        run: goveralls -coverprofile=coverage.out -service=github
         shell: bash

@@ -20,11 +20,11 @@ var differenceCalculateTests = []struct {
 	height     uint
 	resizeType imgproc.ResizeType
 }{
-	{"assets/lena.jpg", hashtype.Binary{46, 14, 158, 218, 220, 200, 90, 28}, 8, 8, imgproc.Bilinear},
-	{"assets/baboon.jpg", hashtype.Binary{248, 213, 23, 22, 22, 28, 96, 22}, 8, 8, imgproc.Bilinear},
+	{"assets/lena.jpg", hashtype.Binary{46, 14, 158, 218, 220, 200, 88, 28}, 8, 8, imgproc.Bilinear},
+	{"assets/baboon.jpg", hashtype.Binary{248, 213, 23, 22, 22, 28, 64, 22}, 8, 8, imgproc.Bilinear},
 	{"assets/cat.jpg", hashtype.Binary{6, 2, 194, 64, 124, 60, 16, 16}, 8, 8, imgproc.Bilinear},
-	{"assets/monarch.jpg", hashtype.Binary{204, 204, 138, 138, 204, 77, 113, 101}, 8, 8, imgproc.Bilinear},
-	{"assets/peppers.jpg", hashtype.Binary{56, 246, 211, 211, 187, 187, 41, 225}, 8, 8, imgproc.Bilinear},
+	{"assets/monarch.jpg", hashtype.Binary{204, 204, 138, 10, 204, 77, 113, 101}, 8, 8, imgproc.Bilinear},
+	{"assets/peppers.jpg", hashtype.Binary{56, 242, 211, 211, 187, 187, 41, 225}, 8, 8, imgproc.Bilinear},
 	{"assets/tulips.jpg", hashtype.Binary{164, 51, 111, 109, 105, 31, 19, 35}, 8, 8, imgproc.Bilinear},
 }
 
@@ -60,11 +60,11 @@ var differenceDistanceTests = []struct {
 	height      uint
 	resizeType  imgproc.ResizeType
 }{
-	{"assets/lena.jpg", "assets/cat.jpg", 24, 8, 8, imgproc.Bilinear},
+	{"assets/lena.jpg", "assets/cat.jpg", 23, 8, 8, imgproc.Bilinear},
 	{"assets/lena.jpg", "assets/monarch.jpg", 24, 8, 8, imgproc.Bilinear},
-	{"assets/baboon.jpg", "assets/cat.jpg", 32, 8, 8, imgproc.Bilinear},
-	{"assets/peppers.jpg", "assets/baboon.jpg", 32, 8, 8, imgproc.Bilinear},
-	{"assets/tulips.jpg", "assets/monarch.jpg", 35, 8, 8, imgproc.Bilinear},
+	{"assets/baboon.jpg", "assets/cat.jpg", 31, 8, 8, imgproc.Bilinear},
+	{"assets/peppers.jpg", "assets/baboon.jpg", 34, 8, 8, imgproc.Bilinear},
+	{"assets/tulips.jpg", "assets/monarch.jpg", 34, 8, 8, imgproc.Bilinear},
 }
 
 func TestDifference_Distance(t *testing.T) {

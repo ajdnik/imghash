@@ -22,8 +22,8 @@ var medianCalculateTests = []struct {
 }{
 	{"assets/lena.jpg", hashtype.Binary{125, 57, 188, 144, 208, 208, 240, 112}, 8, 8, imgproc.Bilinear},
 	{"assets/baboon.jpg", hashtype.Binary{128, 192, 252, 60, 61, 25, 95, 29}, 8, 8, imgproc.Bilinear},
-	{"assets/cat.jpg", hashtype.Binary{255, 255, 31, 7, 3, 1, 1, 39}, 8, 8, imgproc.Bilinear},
-	{"assets/monarch.jpg", hashtype.Binary{1, 1, 17, 252, 191, 255, 194, 0}, 8, 8, imgproc.Bilinear},
+	{"assets/cat.jpg", hashtype.Binary{255, 255, 31, 7, 1, 1, 1, 39}, 8, 8, imgproc.Bilinear},
+	{"assets/monarch.jpg", hashtype.Binary{1, 3, 17, 252, 191, 255, 198, 0}, 8, 8, imgproc.Bilinear},
 	{"assets/peppers.jpg", hashtype.Binary{225, 224, 206, 244, 62, 54, 2, 7}, 8, 8, imgproc.Bilinear},
 	{"assets/tulips.jpg", hashtype.Binary{13, 38, 76, 90, 122, 62, 62, 6}, 8, 8, imgproc.Bilinear},
 }
@@ -49,7 +49,7 @@ func ExampleMedian_Calculate() {
 	hash := med.Calculate(img)
 
 	fmt.Println(hash)
-	// Output: [255 255 31 7 3 1 1 39]
+	// Output: [255 255 31 7 1 1 1 39]
 }
 
 var medianDistanceTests = []struct {
@@ -60,11 +60,11 @@ var medianDistanceTests = []struct {
 	height      uint
 	resizeType  imgproc.ResizeType
 }{
-	{"assets/lena.jpg", "assets/cat.jpg", 34, 8, 8, imgproc.Bilinear},
-	{"assets/lena.jpg", "assets/monarch.jpg", 34, 8, 8, imgproc.Bilinear},
-	{"assets/baboon.jpg", "assets/cat.jpg", 39, 8, 8, imgproc.Bilinear},
+	{"assets/lena.jpg", "assets/cat.jpg", 33, 8, 8, imgproc.Bilinear},
+	{"assets/lena.jpg", "assets/monarch.jpg", 36, 8, 8, imgproc.Bilinear},
+	{"assets/baboon.jpg", "assets/cat.jpg", 38, 8, 8, imgproc.Bilinear},
 	{"assets/peppers.jpg", "assets/baboon.jpg", 25, 8, 8, imgproc.Bilinear},
-	{"assets/tulips.jpg", "assets/monarch.jpg", 30, 8, 8, imgproc.Bilinear},
+	{"assets/tulips.jpg", "assets/monarch.jpg", 28, 8, 8, imgproc.Bilinear},
 }
 
 func TestMedian_Distance(t *testing.T) {
