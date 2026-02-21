@@ -77,11 +77,11 @@ var hogHashDistanceTests = []struct {
 	cellSize    uint
 	numBins     uint
 }{
-	{"assets/lena.jpg", "assets/cat.jpg", 1530.9330488300263, 32, 32, Bilinear, 8, 9},
-	{"assets/lena.jpg", "assets/monarch.jpg", 1315.5991030705366, 32, 32, Bilinear, 8, 9},
-	{"assets/baboon.jpg", "assets/cat.jpg", 1403.76386903211, 32, 32, Bilinear, 8, 9},
-	{"assets/peppers.jpg", "assets/baboon.jpg", 1183.0942481476275, 32, 32, Bilinear, 8, 9},
-	{"assets/tulips.jpg", "assets/monarch.jpg", 1056.4710123803682, 32, 32, Bilinear, 8, 9},
+	{"assets/lena.jpg", "assets/cat.jpg", 0.509984487750516, 32, 32, Bilinear, 8, 9},
+	{"assets/lena.jpg", "assets/monarch.jpg", 0.3223155603833341, 32, 32, Bilinear, 8, 9},
+	{"assets/baboon.jpg", "assets/cat.jpg", 0.4056824811720108, 32, 32, Bilinear, 8, 9},
+	{"assets/peppers.jpg", "assets/baboon.jpg", 0.28314243977711895, 32, 32, Bilinear, 8, 9},
+	{"assets/tulips.jpg", "assets/monarch.jpg", 0.17623016930102986, 32, 32, Bilinear, 8, 9},
 }
 
 func TestHOGHash_Distance(t *testing.T) {
@@ -107,7 +107,7 @@ func TestHOGHash_Distance(t *testing.T) {
 			if err != nil {
 				t.Fatalf("failed to calculate hash for %s: %v", tt.secondImage, err)
 			}
-			dist := similarity.L2(h1, h2)
+			dist := hash.Compare(h1, h2)
 			if !dist.Equal(tt.distance) {
 				t.Errorf("got %v, want %v", dist, tt.distance)
 			}

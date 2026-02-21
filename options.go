@@ -125,6 +125,10 @@ type ringsOption struct{ rings int }
 
 func (o ringsOption) applyRASH(r *RASH) { r.rings = o.rings }
 
+type weightsOption struct{ weights []float64 }
+
+func (o weightsOption) applyPHash(p *PHash) { p.weights = o.weights }
+
 // --- public constructors ---
 
 // WithSize sets the resize dimensions used during hash computation.
@@ -210,4 +214,11 @@ func WithNumBins(bins uint) numBinsOption {
 // Applies to RASH.
 func WithRings(rings int) ringsOption {
 	return ringsOption{rings}
+}
+
+// WithWeights sets the per-byte weights used for weighted Hamming distance.
+// The slice length must match the number of hash bytes (8 for default PHash).
+// Applies to PHash.
+func WithWeights(weights []float64) weightsOption {
+	return weightsOption{weights}
 }

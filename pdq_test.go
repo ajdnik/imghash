@@ -99,7 +99,7 @@ func TestPDQ_Distance(t *testing.T) {
 			if err != nil {
 				t.Fatalf("failed to calculate hash for %s: %v", tt.secondImage, err)
 			}
-			dist, err := similarity.Hamming(h1, h2)
+			dist, err := hash.Compare(h1, h2)
 			if err != nil {
 				t.Fatalf("failed to compute distance: %v", err)
 			}

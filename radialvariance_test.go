@@ -88,11 +88,11 @@ var radialVarianceDistanceTests = []struct {
 	sigma       float64
 	angles      int
 }{
-	{"assets/lena.jpg", "assets/cat.jpg", 0.247818888750317, 1, 180},
-	{"assets/lena.jpg", "assets/monarch.jpg", 0.6339729738012116, 1, 180},
-	{"assets/baboon.jpg", "assets/cat.jpg", 0.31577803436311935, 1, 180},
-	{"assets/peppers.jpg", "assets/baboon.jpg", 0.5791217549142161, 1, 180},
-	{"assets/tulips.jpg", "assets/monarch.jpg", 0.5199454464617648, 1, 180},
+	{"assets/lena.jpg", "assets/cat.jpg", 2514, 1, 180},
+	{"assets/lena.jpg", "assets/monarch.jpg", 1621, 1, 180},
+	{"assets/baboon.jpg", "assets/cat.jpg", 4228, 1, 180},
+	{"assets/peppers.jpg", "assets/baboon.jpg", 918, 1, 180},
+	{"assets/tulips.jpg", "assets/monarch.jpg", 1586, 1, 180},
 }
 
 func TestRadialVariance_Distance(t *testing.T) {
@@ -118,10 +118,7 @@ func TestRadialVariance_Distance(t *testing.T) {
 			if err != nil {
 				t.Fatalf("failed to calculate hash for %s: %v", tt.secondImage, err)
 			}
-			dist, err := similarity.PCC(h1, h2)
-			if err != nil {
-				t.Fatalf("failed to compute distance: %v", err)
-			}
+			dist := hash.Compare(h1, h2)
 			if math.Abs(float64(dist)-float64(tt.distance)) > 0.01 {
 				t.Errorf("got %v, want %v", dist, tt.distance)
 			}

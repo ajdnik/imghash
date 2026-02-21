@@ -5,6 +5,7 @@ import (
 
 	"github.com/ajdnik/imghash/v2/hashtype"
 	"github.com/ajdnik/imghash/v2/internal/imgproc"
+	"github.com/ajdnik/imghash/v2/similarity"
 )
 
 // Difference is a perceptual hash that uses the method described in Kinf of Like That by Dr. Neal Krawetz.
@@ -63,4 +64,9 @@ func (dh Difference) computeHash(img *image.Gray) hashtype.Binary {
 		}
 	}
 	return hash
+}
+
+// Compare computes the Hamming distance between two Difference hashes.
+func (dh Difference) Compare(h1, h2 hashtype.Hash) (similarity.Distance, error) {
+	return similarity.Hamming(h1, h2)
 }
