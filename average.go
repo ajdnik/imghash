@@ -45,23 +45,5 @@ func (ah Average) Calculate(img image.Image) (hashtype.Hash, error) {
 	if err != nil {
 		return nil, err
 	}
-	return ah.computeHash(g, uint(math.Round(m))), nil
-}
-
-// Computes the binary hash based on the average value of resized image.
-func (ah Average) computeHash(img *image.Gray, mean uint) hashtype.Binary {
-	size := ah.width * ah.height / 8
-	hash := make(hashtype.Binary, size)
-	bnds := img.Bounds()
-	var c uint
-	for i := bnds.Min.Y; i < bnds.Max.Y; i++ {
-		for j := bnds.Min.X; j < bnds.Max.X; j++ {
-			pix := img.GrayAt(j, i).Y
-			if uint(pix) > mean {
-				_ = hash.Set(c)
-			}
-			c++
-		}
-	}
-	return hash
+	return thresholdHash(g, uint(math.Round(m))), nil
 }

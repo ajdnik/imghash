@@ -45,23 +45,5 @@ func (mh Median) Calculate(img image.Image) (hashtype.Hash, error) {
 	if err != nil {
 		return nil, err
 	}
-	return mh.computeHash(g, uint(math.Round(med))), nil
-}
-
-// Computes the binary hash based on the median value of the resized image.
-func (mh Median) computeHash(img *image.Gray, median uint) hashtype.Binary {
-	size := mh.width * mh.height / 8
-	hash := make(hashtype.Binary, size)
-	bnds := img.Bounds()
-	var c uint
-	for i := bnds.Min.Y; i < bnds.Max.Y; i++ {
-		for j := bnds.Min.X; j < bnds.Max.X; j++ {
-			pix := img.GrayAt(j, i).Y
-			if uint(pix) > median {
-				_ = hash.Set(c)
-			}
-			c++
-		}
-	}
-	return hash
+	return thresholdHash(g, uint(math.Round(med))), nil
 }
