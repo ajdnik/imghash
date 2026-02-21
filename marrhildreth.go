@@ -8,6 +8,13 @@ import (
 	"github.com/ajdnik/imghash/internal/imgproc"
 )
 
+const (
+	mhBlockSize = 16 // pixel block size for summation
+	mhNumBlocks = 31 // blocks per dimension (default 512/16 - 1)
+	mhSubBlock  = 3  // sub-block dimension for hash construction
+	mhStride    = 4  // step between hash sub-blocks
+)
+
 // MarrHildreth is a perceptual hash that uses the method described in
 // Implementation and Benchmarking of Perceptual Image Hash Functions; Zauner et. al.
 //
@@ -72,15 +79,14 @@ func (mhh MarrHildreth) Calculate(img image.Image) (hashtype.Hash, error) {
 }
 
 // Compute sums of blocks.
-// TODO: Remove all magic numbers.
 func (mhh MarrHildreth) blocksSum(img [][]float32) [][]float32 {
-	blocks := make([][]float32, 31)
-	for r := 0; r < 31; r++ {
-		blocks[r] = make([]float32, 31)
-		for c := 0; c < 31; c++ {
+	blocks := make([][]float32, mhNumBlocks)
+	for r := 0; r < mhNumBlocks; r++ {
+		blocks[r] = make([]float32, mhNumBlocks)
+		for c := 0; c < mhNumBlocks; c++ {
 			var sum float32
-			for roiR := r * 16; roiR < r*16+16; roiR++ {
-				for roiC := c * 16; roiC < c*16+16; roiC++ {
+			for roiR := r * mhBlockSize; roiR < r*mhBlockSize+mhBlockSize; roiR++ {
+				for roiC := c * mhBlockSize; roiC < c*mhBlockSize+mhBlockSize; roiC++ {
 					sum += img[roiR][roiC]
 				}
 			}
@@ -91,21 +97,23 @@ func (mhh MarrHildreth) blocksSum(img [][]float32) [][]float32 {
 }
 
 // Compute binary hash from block sums.
-// TODO: Remove all magic numbers.
 func (mhh MarrHildreth) createHash(blocks [][]float32) hashtype.Binary {
-	hash := make(hashtype.Binary, 72)
+	gridLimit := mhNumBlocks - mhSubBlock + 1
+	gridSteps := (gridLimit-1)/mhStride + 1
+	hashBits := gridSteps * gridSteps * mhSubBlock * mhSubBlock
+	hash := make(hashtype.Binary, hashBits/8)
 	var count uint
-	for r := 0; r < 29; r += 4 {
-		for c := 0; c < 29; c += 4 {
+	for r := 0; r < gridLimit; r += mhStride {
+		for c := 0; c < gridLimit; c += mhStride {
 			var sum float32
-			for i := r; i < r+3; i++ {
-				for j := c; j < c+3; j++ {
+			for i := r; i < r+mhSubBlock; i++ {
+				for j := c; j < c+mhSubBlock; j++ {
 					sum += blocks[j][i]
 				}
 			}
-			avg := sum / 9.0
-			for i := r; i < r+3; i++ {
-				for j := c; j < c+3; j++ {
+			avg := sum / float32(mhSubBlock*mhSubBlock)
+			for i := r; i < r+mhSubBlock; i++ {
+				for j := c; j < c+mhSubBlock; j++ {
 					if blocks[j][i] > avg {
 						_ = hash.SetReverse(count)
 					}

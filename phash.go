@@ -7,6 +7,10 @@ import (
 	"github.com/ajdnik/imghash/internal/imgproc"
 )
 
+// Size of the low-frequency DCT coefficient block used by PHash.
+// An 8x8 block produces a 64-bit (8-byte) binary hash.
+const dctCoefSize = 8
+
 // PHash is a perceptual hash that uses the method described in
 // Implementation and Benchmarking of Perceptual Image Hash Functions; Zauner et. al.
 //
@@ -55,8 +59,7 @@ func (ph PHash) Calculate(img image.Image) (hashtype.Hash, error) {
 
 // Computes the binary hash based on the binary image supplied.
 func (ph PHash) computeHash(img [][]float32) hashtype.Binary {
-	// TODO: Remove magic numbers
-	hash := make(hashtype.Binary, 8)
+	hash := make(hashtype.Binary, dctCoefSize)
 	var c uint
 	for i := range img {
 		for j := range img[i] {
@@ -71,10 +74,9 @@ func (ph PHash) computeHash(img [][]float32) hashtype.Binary {
 
 // Extract top left block from supplied image.
 func (ph PHash) topLeft(img [][]float32) [][]float32 {
-	// TODO: Remove magic numbers
-	tL := make([][]float32, 8)
+	tL := make([][]float32, dctCoefSize)
 	for i := range tL {
-		tL[i] = img[i][0:8]
+		tL[i] = img[i][0:dctCoefSize]
 	}
 	return tL
 }
