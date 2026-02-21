@@ -31,16 +31,19 @@ func TestL2Float64(t *testing.T) {
 	}
 }
 
-func ExampleL2Float64() {
+func TestL2Float64Example(t *testing.T) {
 	hash1 := hashtype.Float64{-6.582886393254827e-25, 8.709067220205253e-17, 8.575690996612257e-25}
 	hash2 := hashtype.Float64{7.006891104009164e-24, 2.9211456863128017e-16, 2.376195809939422e-22, 0.0011816509074528167, 2.9408079432297224e-09}
 	hash3 := hashtype.Float64{-1.983273625570263e-26, 6.064435932101452e-19, -6.695730840743158e-27, 0.0013973374569736076, 1.915611857766067e-09, 3.205292709962961e-13}
 
-	fmt.Println(L2Float64(hash1, hash2))
-	fmt.Println(L2Float64(hash1, hash3))
-	// Output:
-	// 2.0502389642936448e-16
-	// 8.648422860884239e-17
+	res1 := L2Float64(hash1, hash2)
+	if !res1.Equal(2.0502389642936448e-16) {
+		t.Errorf("got %v, want ~2.0502389642936448e-16", res1)
+	}
+	res2 := L2Float64(hash1, hash3)
+	if !res2.Equal(8.648422860884239e-17) {
+		t.Errorf("got %v, want ~8.648422860884239e-17", res2)
+	}
 }
 
 var l2Uint8Tests = []struct {
