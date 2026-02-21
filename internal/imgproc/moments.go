@@ -5,7 +5,7 @@ import (
 	"math"
 )
 
-// Moments ...
+// Moments holds raw, central, and normalized central moments for a single image channel.
 type Moments struct {
 	m10  float64
 	m00  float64
@@ -33,7 +33,7 @@ type Moments struct {
 	nu11 float64
 }
 
-// GetMoments ...
+// GetMoments computes image moments for each channel of the given image.
 func GetMoments(img image.Image) []Moments {
 	switch i := img.(type) {
 	case *image.Gray:
@@ -43,7 +43,7 @@ func GetMoments(img image.Image) []Moments {
 	}
 }
 
-// HuMoments ...
+// HuMoments computes the seven Hu invariant moments for each channel's Moments.
 func HuMoments(m []Moments) []float64 {
 	hu := make([]float64, len(m)*7)
 	var cnt int

@@ -6,10 +6,10 @@ import (
 	"image/color"
 )
 
-// ErrImageIsNil ...
+// ErrImageIsNil is returned when a nil image is passed to a conversion function.
 var ErrImageIsNil = errors.New("image argument is nil")
 
-// Grayscale ...
+// Grayscale converts an image to 8-bit grayscale.
 func Grayscale(img image.Image) (*image.Gray, error) {
 	if img == nil {
 		return nil, ErrImageIsNil
@@ -24,7 +24,7 @@ func Grayscale(img image.Image) (*image.Gray, error) {
 	return gray, nil
 }
 
-// YCrCb ...
+// YCrCb converts an image from RGB to YCrCb color space.
 func YCrCb(img image.Image) (image.Image, error) {
 	if img == nil {
 		return nil, ErrImageIsNil
@@ -41,7 +41,7 @@ func YCrCb(img image.Image) (image.Image, error) {
 	return ycrcb, nil
 }
 
-// HSV ...
+// HSV converts an image from RGB to HSV color space.
 func HSV(img image.Image) (image.Image, error) {
 	if img == nil {
 		return nil, ErrImageIsNil
@@ -58,7 +58,7 @@ func HSV(img image.Image) (image.Image, error) {
 	return hsv, nil
 }
 
-// rgbToYCbCr ...
+// rgbToYCbCr converts a single RGB pixel to YCbCr using fixed-point arithmetic.
 func rgbToYCbCr(r, g, b uint8) (uint8, uint8, uint8) {
 	yuvShift := uint8(14)
 	var delta = 128 * (1 << yuvShift)
@@ -72,7 +72,7 @@ func rgbToYCbCr(r, g, b uint8) (uint8, uint8, uint8) {
 	return Y, Cb, Cr
 }
 
-// rgbToHSV ...
+// rgbToHSV converts a single RGB pixel to HSV using fixed-point arithmetic.
 func rgbToHSV(r, g, b uint8) (uint8, uint8, uint8) {
 	hsvShift := uint8(12)
 	var R, G, B = int(r), int(g), int(b)
