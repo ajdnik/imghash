@@ -4,7 +4,7 @@ import (
 	"image"
 
 	"github.com/ajdnik/imghash/hashtype"
-	"github.com/ajdnik/imghash/imgproc"
+	"github.com/ajdnik/imghash/internal/imgproc"
 )
 
 // BlockMean is a perceptual hash that uses the method described in
@@ -17,7 +17,7 @@ type BlockMean struct {
 	// Resized image height.
 	rHeight uint
 	// Resize interpolation method.
-	interp imgproc.ResizeType
+	interp Interpolation
 	// Block width.
 	bWidth uint
 	// Block height.
@@ -41,37 +41,41 @@ const (
 	RotationOverlap
 )
 
-// NewBlockMean creates a new BlockMean struct using default values.
-func NewBlockMean() BlockMean {
-	return BlockMean{
-		rWidth:  256,
-		rHeight: 256,
-		interp:  imgproc.BilinearExact,
-		bWidth:  16,
-		bHeight: 16,
-		method:  Direct,
+// NewBlockMean creates a new BlockMean hash with the given options.
+// Without options, sensible defaults are used.
+func NewBlockMean(opts ...Option) BlockMean {
+	o := options{
+		width:       256,
+		height:      256,
+		interp:      BilinearExact,
+		blockWidth:  16,
+		blockHeight: 16,
+		blockMethod: Direct,
 	}
-}
-
-// NewBlockMeanWithParams creates a new BlockMean struct using the supplied parameters.
-func NewBlockMeanWithParams(resizeWidth, resizeHeight uint, resizeType imgproc.ResizeType, blockWidth, blockHeight uint, blockMeanMethod BlockMeanMethod) BlockMean {
+	applyOptions(&o, opts)
 	return BlockMean{
-		rWidth:  resizeWidth,
-		rHeight: resizeHeight,
-		interp:  resizeType,
-		bWidth:  blockWidth,
-		bHeight: blockHeight,
-		method:  blockMeanMethod,
+		rWidth:  o.width,
+		rHeight: o.height,
+		interp:  o.interp,
+		bWidth:  o.blockWidth,
+		bHeight: o.blockHeight,
+		method:  o.blockMethod,
 	}
 }
 
 // Calculate returns a perceptual image hash.
-func (bh *BlockMean) Calculate(img image.Image) hashtype.Binary {
-	r := imgproc.Resize(bh.rWidth, bh.rHeight, img, bh.interp)
-	g, _ := imgproc.Grayscale(r)
+func (bh *BlockMean) Calculate(img image.Image) (hashtype.Hash, error) {
+	r := imgproc.Resize(bh.rWidth, bh.rHeight, img, bh.interp.resizeType())
+	g, err := imgproc.Grayscale(r)
+	if err != nil {
+		return nil, err
+	}
 	mm := bh.computeMean(g)
-	med, _ := imgproc.Mean(g)
-	return bh.computeHash(mm, med)
+	med, err := imgproc.Mean(g)
+	if err != nil {
+		return nil, err
+	}
+	return bh.computeHash(mm, med), nil
 }
 
 // Computes mean values of constructed blocks.

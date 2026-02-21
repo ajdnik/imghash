@@ -8,7 +8,6 @@ import (
 
 	. "github.com/ajdnik/imghash"
 	"github.com/ajdnik/imghash/hashtype"
-	"github.com/ajdnik/imghash/imgproc"
 	"github.com/ajdnik/imghash/similarity"
 )
 
@@ -42,9 +41,13 @@ func uint8ApproxEqual(a, b hashtype.UInt8, maxDiff int) bool {
 func TestRadialVariance_Calculate(t *testing.T) {
 	for _, tt := range radialVarianceCalculateTests {
 		t.Run(tt.filename, func(t *testing.T) {
-			hash := NewRadialVarianceWithParams(tt.sigma, tt.angles)
-			img, _ := imgproc.Read(tt.filename)
-			res := hash.Calculate(img)
+			hash := NewRadialVariance(WithSigma(tt.sigma), WithAngles(tt.angles))
+			img, _ := OpenImage(tt.filename)
+			result, err := hash.Calculate(img)
+			if err != nil {
+				t.Fatalf("unexpected error: %v", err)
+			}
+			res := result.(hashtype.UInt8)
 			if !uint8ApproxEqual(res, tt.hash, 1) {
 				t.Errorf("got %v, want %v", res, tt.hash)
 			}
@@ -54,11 +57,11 @@ func TestRadialVariance_Calculate(t *testing.T) {
 
 func ExampleRadialVariance_Calculate() {
 	// Read image from file
-	img, _ := imgproc.Read("assets/cat.jpg")
+	img, _ := OpenImage("assets/cat.jpg")
 	// Create new Radial Variance Hash using default parameters
 	rad := NewRadialVariance()
 	// Calculate hash
-	hash := rad.Calculate(img)
+	hash, _ := rad.Calculate(img)
 
 	fmt.Println(hash)
 }
@@ -80,12 +83,12 @@ var radialVarianceDistanceTests = []struct {
 func TestRadialVariance_Distance(t *testing.T) {
 	for _, tt := range radialVarianceDistanceTests {
 		t.Run(fmt.Sprintf("%v %v", tt.firstImage, tt.secondImage), func(t *testing.T) {
-			hash := NewRadialVarianceWithParams(tt.sigma, tt.angles)
-			img1, _ := imgproc.Read(tt.firstImage)
-			img2, _ := imgproc.Read(tt.secondImage)
-			h1 := hash.Calculate(img1)
-			h2 := hash.Calculate(img2)
-			dist, _ := similarity.PCCUInt8(h1, h2)
+			hash := NewRadialVariance(WithSigma(tt.sigma), WithAngles(tt.angles))
+			img1, _ := OpenImage(tt.firstImage)
+			img2, _ := OpenImage(tt.secondImage)
+			h1, _ := hash.Calculate(img1)
+			h2, _ := hash.Calculate(img2)
+			dist, _ := similarity.PCC(h1, h2)
 			if math.Abs(float64(dist)-float64(tt.distance)) > 0.01 {
 				t.Errorf("got %v, want %v", dist, tt.distance)
 			}

@@ -5,7 +5,7 @@ import (
 	"math"
 
 	"github.com/ajdnik/imghash/hashtype"
-	"github.com/ajdnik/imghash/imgproc"
+	"github.com/ajdnik/imghash/internal/imgproc"
 )
 
 // MarrHildreth is a perceptual hash that uses the method described in
@@ -22,7 +22,7 @@ type MarrHildreth struct {
 	// Resized image height.
 	height uint
 	// Resize interpolation method.
-	interp imgproc.ResizeType
+	interp Interpolation
 	// Gaussian kernel size.
 	kernel int
 	// Gaussian kernel sigma parameter.
@@ -31,46 +31,44 @@ type MarrHildreth struct {
 	kernels [][]float32
 }
 
-// NewMarrHildreth creates a new MarrHildreth struct using default values.
-func NewMarrHildreth() MarrHildreth {
-	mh := MarrHildreth{
+// NewMarrHildreth creates a new MarrHildreth hash with the given options.
+// Without options, sensible defaults are used.
+func NewMarrHildreth(opts ...Option) MarrHildreth {
+	o := options{
 		scale:  1,
 		alpha:  2,
 		width:  512,
 		height: 512,
-		interp: imgproc.Bicubic,
+		interp: Bicubic,
 		kernel: 7,
 		sigma:  0,
+	}
+	applyOptions(&o, opts)
+	mh := MarrHildreth{
+		scale:  o.scale,
+		alpha:  o.alpha,
+		width:  o.width,
+		height: o.height,
+		interp: o.interp,
+		kernel: o.kernel,
+		sigma:  o.sigma,
 	}
 	mh.kernels = computeMarrHildrethKernel(mh.alpha, mh.scale)
 	return mh
 }
 
-// NewMarrHildrethWithParams creates a new MarrHildreth struct using the supplied parameters.
-func NewMarrHildrethWithParams(scale, alpha float64, resizeWidth, resizeHeight uint, resizeType imgproc.ResizeType, kernelSize int, sigma float64) MarrHildreth {
-	mh := MarrHildreth{
-		scale:  scale,
-		alpha:  alpha,
-		width:  resizeWidth,
-		height: resizeHeight,
-		interp: resizeType,
-		kernel: kernelSize,
-		sigma:  sigma,
-	}
-	mh.kernels = computeMarrHildrethKernel(alpha, scale)
-	return mh
-}
-
 // Calculate returns a perceptual image hash.
-func (mhh *MarrHildreth) Calculate(img image.Image) hashtype.Binary {
-	g, _ := imgproc.Grayscale(img)
+func (mhh *MarrHildreth) Calculate(img image.Image) (hashtype.Hash, error) {
+	g, err := imgproc.Grayscale(img)
+	if err != nil {
+		return nil, err
+	}
 	b := imgproc.GaussianBlur(g, mhh.kernel, mhh.sigma)
-	r := imgproc.Resize(mhh.width, mhh.height, b, mhh.interp)
+	r := imgproc.Resize(mhh.width, mhh.height, b, mhh.interp.resizeType())
 	eq := imgproc.EqualizeHist(r.(*image.Gray))
-	// Run a 2D marr hildereth filter over image
 	f := imgproc.Filter2DGray(eq, mhh.kernels)
 	blks := mhh.blocksSum(f)
-	return mhh.createHash(blks)
+	return mhh.createHash(blks), nil
 }
 
 // Compute sums of blocks.

@@ -5,7 +5,7 @@ import (
 	"math"
 
 	"github.com/ajdnik/imghash/hashtype"
-	"github.com/ajdnik/imghash/imgproc"
+	"github.com/ajdnik/imghash/internal/imgproc"
 )
 
 // Average is a perceptual hash that uses the method described in Looks Like It by Dr. Neal Krawetz.
@@ -17,34 +17,37 @@ type Average struct {
 	// Resized image height.
 	height uint
 	// Resize interpolation method.
-	interp imgproc.ResizeType
+	interp Interpolation
 }
 
-// NewAverage creates a new Average struct using default values.
-func NewAverage() Average {
-	return Average{
+// NewAverage creates a new Average hash with the given options.
+// Without options, sensible defaults are used.
+func NewAverage(opts ...Option) Average {
+	o := options{
 		width:  8,
 		height: 8,
-		interp: imgproc.Bilinear,
+		interp: Bilinear,
 	}
-
-}
-
-// NewAverageWithParams creates a new Average struct based on supplied parameters.
-func NewAverageWithParams(resizeWidth, resizeHeight uint, resizeType imgproc.ResizeType) Average {
+	applyOptions(&o, opts)
 	return Average{
-		width:  resizeWidth,
-		height: resizeHeight,
-		interp: resizeType,
+		width:  o.width,
+		height: o.height,
+		interp: o.interp,
 	}
 }
 
 // Calculate returns a perceptual image hash.
-func (ah *Average) Calculate(img image.Image) hashtype.Binary {
-	r := imgproc.Resize(ah.width, ah.height, img, ah.interp)
-	g, _ := imgproc.Grayscale(r)
-	m, _ := imgproc.Mean(g)
-	return ah.computeHash(g, uint(math.Round(m)))
+func (ah *Average) Calculate(img image.Image) (hashtype.Hash, error) {
+	r := imgproc.Resize(ah.width, ah.height, img, ah.interp.resizeType())
+	g, err := imgproc.Grayscale(r)
+	if err != nil {
+		return nil, err
+	}
+	m, err := imgproc.Mean(g)
+	if err != nil {
+		return nil, err
+	}
+	return ah.computeHash(g, uint(math.Round(m))), nil
 }
 
 // Computes the binary hash based on the average value of resized image.

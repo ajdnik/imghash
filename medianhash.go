@@ -5,7 +5,7 @@ import (
 	"math"
 
 	"github.com/ajdnik/imghash/hashtype"
-	"github.com/ajdnik/imghash/imgproc"
+	"github.com/ajdnik/imghash/internal/imgproc"
 )
 
 // Median is a perceptual hash that uses a similar approach as Average hash.
@@ -17,33 +17,37 @@ type Median struct {
 	// Resized image height.
 	height uint
 	// Resize interpoletion method.
-	interp imgproc.ResizeType
+	interp Interpolation
 }
 
-// NewMedian creates a new Median struct using default values.
-func NewMedian() Median {
-	return Median{
+// NewMedian creates a new Median hash with the given options.
+// Without options, sensible defaults are used.
+func NewMedian(opts ...Option) Median {
+	o := options{
 		width:  8,
 		height: 8,
-		interp: imgproc.Bilinear,
+		interp: Bilinear,
 	}
-}
-
-// NewMedianWithParams creates a new Median struct using the supplied parameters.
-func NewMedianWithParams(resizeWidth, resizeHeight uint, resizeType imgproc.ResizeType) Median {
+	applyOptions(&o, opts)
 	return Median{
-		width:  resizeWidth,
-		height: resizeHeight,
-		interp: resizeType,
+		width:  o.width,
+		height: o.height,
+		interp: o.interp,
 	}
 }
 
 // Calculate returns a perceptual image hash.
-func (mh *Median) Calculate(img image.Image) hashtype.Binary {
-	r := imgproc.Resize(mh.width, mh.height, img, mh.interp)
-	g, _ := imgproc.Grayscale(r)
-	med, _ := imgproc.Median(g)
-	return mh.computeHash(g, uint(math.Round(med)))
+func (mh *Median) Calculate(img image.Image) (hashtype.Hash, error) {
+	r := imgproc.Resize(mh.width, mh.height, img, mh.interp.resizeType())
+	g, err := imgproc.Grayscale(r)
+	if err != nil {
+		return nil, err
+	}
+	med, err := imgproc.Median(g)
+	if err != nil {
+		return nil, err
+	}
+	return mh.computeHash(g, uint(math.Round(med))), nil
 }
 
 // Computes the binary hash based on the median value of the resized image.

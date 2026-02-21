@@ -4,7 +4,7 @@ import (
 	"image"
 
 	"github.com/ajdnik/imghash/hashtype"
-	"github.com/ajdnik/imghash/imgproc"
+	"github.com/ajdnik/imghash/internal/imgproc"
 )
 
 // PHash is a perceptual hash that uses the method described in
@@ -17,31 +17,32 @@ type PHash struct {
 	// Resized image height.
 	height uint
 	// Resize interpolation method.
-	interp imgproc.ResizeType
+	interp Interpolation
 }
 
-// NewPHash creates a new PHash struct using default values.
-func NewPHash() PHash {
-	return PHash{
+// NewPHash creates a new PHash with the given options.
+// Without options, sensible defaults are used.
+func NewPHash(opts ...Option) PHash {
+	o := options{
 		width:  32,
 		height: 32,
-		interp: imgproc.BilinearExact,
+		interp: BilinearExact,
 	}
-}
-
-// NewPHashWithParams creates a new PHash struct using the supplied parameters.
-func NewPHashWithParams(resizeWidth, resizeHeight uint, resizeType imgproc.ResizeType) PHash {
+	applyOptions(&o, opts)
 	return PHash{
-		width:  resizeWidth,
-		height: resizeHeight,
-		interp: resizeType,
+		width:  o.width,
+		height: o.height,
+		interp: o.interp,
 	}
 }
 
-// Calculate returns a percaptual image hash.
-func (ph *PHash) Calculate(img image.Image) hashtype.Binary {
-	r := imgproc.Resize(ph.width, ph.height, img, ph.interp)
-	g, _ := imgproc.Grayscale(r)
+// Calculate returns a perceptual image hash.
+func (ph *PHash) Calculate(img image.Image) (hashtype.Hash, error) {
+	r := imgproc.Resize(ph.width, ph.height, img, ph.interp.resizeType())
+	g, err := imgproc.Grayscale(r)
+	if err != nil {
+		return nil, err
+	}
 	fImg := imgproc.GrayToF32(g)
 	dctImg := imgproc.DCT(fImg)
 	tLeft := ph.topLeft(dctImg)
@@ -49,7 +50,7 @@ func (ph *PHash) Calculate(img image.Image) hashtype.Binary {
 	tLeft[0][0] = 0
 	mean := ph.mean(tLeft)
 	bitImg := ph.compare(tLeft, mean)
-	return ph.computeHash(bitImg)
+	return ph.computeHash(bitImg), nil
 }
 
 // Computes the binary hash based on the binary image supplied.

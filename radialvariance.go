@@ -5,7 +5,7 @@ import (
 	"math"
 
 	"github.com/ajdnik/imghash/hashtype"
-	"github.com/ajdnik/imghash/imgproc"
+	"github.com/ajdnik/imghash/internal/imgproc"
 )
 
 // RadialVariance is a perceptual hash that uses the method described in
@@ -22,29 +22,30 @@ type RadialVariance struct {
 const hashSize = 40
 const sqTwo = 1.4142135623730950488016887242097
 
-// NewRadialVariance creates a new RadialVariance struct using default values.
-func NewRadialVariance() RadialVariance {
-	return RadialVariance{
+// NewRadialVariance creates a new RadialVariance hash with the given options.
+// Without options, sensible defaults are used.
+func NewRadialVariance(opts ...Option) RadialVariance {
+	o := options{
 		sigma:  1,
 		angles: 180,
 	}
-}
-
-// NewRadialVarianceWithParams creates a new RadialVariance struct based on supplied parameters.
-func NewRadialVarianceWithParams(sigma float64, numOfAngleLines int) RadialVariance {
+	applyOptions(&o, opts)
 	return RadialVariance{
-		sigma:  sigma,
-		angles: numOfAngleLines,
+		sigma:  o.sigma,
+		angles: o.angles,
 	}
 }
 
 // Calculate returns a perceptual image hash.
-func (rv *RadialVariance) Calculate(img image.Image) hashtype.UInt8 {
-	g, _ := imgproc.Grayscale(img)
+func (rv *RadialVariance) Calculate(img image.Image) (hashtype.Hash, error) {
+	g, err := imgproc.Grayscale(img)
+	if err != nil {
+		return nil, err
+	}
 	b := imgproc.GaussianBlur(g, 0, rv.sigma)
 	proj, ppl, dim := rv.radialProjections(b.(*image.Gray))
 	feat := rv.findFeatureVector(proj, ppl, dim)
-	return rv.computeHash(feat)
+	return rv.computeHash(feat), nil
 }
 
 func getSize(img image.Image) (int, int) {

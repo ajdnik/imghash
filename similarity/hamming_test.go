@@ -28,10 +28,23 @@ func TestHamming(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			if res := Hamming(tt.hash1, tt.hash2); !res.Equal(tt.distance) {
+			res, err := Hamming(tt.hash1, tt.hash2)
+			if err != nil {
+				t.Fatalf("unexpected error: %v", err)
+			}
+			if !res.Equal(tt.distance) {
 				t.Errorf("got %v, want %v", res, tt.distance)
 			}
 		})
+	}
+}
+
+func TestHamming_notBinary(t *testing.T) {
+	h1 := hashtype.UInt8{1, 2, 3}
+	h2 := hashtype.UInt8{4, 5, 6}
+	_, err := Hamming(h1, h2)
+	if err != ErrNotBinaryHash {
+		t.Errorf("got %v, want %v", err, ErrNotBinaryHash)
 	}
 }
 
@@ -40,8 +53,10 @@ func ExampleHamming() {
 	hash2 := hashtype.Binary{24, 60, 126, 126, 126, 126, 60, 0}
 	hash3 := hashtype.Binary{63, 131, 192, 224, 192, 252, 255, 63}
 
-	fmt.Println(Hamming(hash1, hash2))
-	fmt.Println(Hamming(hash1, hash3))
+	res1, _ := Hamming(hash1, hash2)
+	res2, _ := Hamming(hash1, hash3)
+	fmt.Println(res1)
+	fmt.Println(res2)
 	// Output:
 	// 42
 	// 4

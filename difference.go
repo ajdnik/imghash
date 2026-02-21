@@ -4,7 +4,7 @@ import (
 	"image"
 
 	"github.com/ajdnik/imghash/hashtype"
-	"github.com/ajdnik/imghash/imgproc"
+	"github.com/ajdnik/imghash/internal/imgproc"
 )
 
 // Difference is a perceptual hash that uses the method described in Kinf of Like That by Dr. Neal Krawetz.
@@ -16,32 +16,33 @@ type Difference struct {
 	// Resized image height.
 	height uint
 	// Resize interpolation method.
-	interp imgproc.ResizeType
+	interp Interpolation
 }
 
-// NewDifference creates a new Difference struct using default values.
-func NewDifference() Difference {
-	return Difference{
+// NewDifference creates a new Difference hash with the given options.
+// Without options, sensible defaults are used.
+func NewDifference(opts ...Option) Difference {
+	o := options{
 		width:  8,
 		height: 8,
-		interp: imgproc.Bilinear,
+		interp: Bilinear,
 	}
-}
-
-// NewDifferenceWithParams creates a new Difference struct based on supplied parameters.
-func NewDifferenceWithParams(resizeWidth, resizeHeight uint, resizeType imgproc.ResizeType) Difference {
+	applyOptions(&o, opts)
 	return Difference{
-		width:  resizeWidth,
-		height: resizeHeight,
-		interp: resizeType,
+		width:  o.width,
+		height: o.height,
+		interp: o.interp,
 	}
 }
 
 // Calculate returns a perceptual image hash.
-func (dh *Difference) Calculate(img image.Image) hashtype.Binary {
-	r := imgproc.Resize(dh.width+1, dh.height, img, dh.interp)
-	g, _ := imgproc.Grayscale(r)
-	return dh.computeHash(g)
+func (dh *Difference) Calculate(img image.Image) (hashtype.Hash, error) {
+	r := imgproc.Resize(dh.width+1, dh.height, img, dh.interp.resizeType())
+	g, err := imgproc.Grayscale(r)
+	if err != nil {
+		return nil, err
+	}
+	return dh.computeHash(g), nil
 }
 
 // Computes the binary hash based on the gradients in the resized image.

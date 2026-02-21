@@ -26,6 +26,31 @@ func (h Binary) String() string {
 // ErrOutOfBounds is reported when the bit position is larger than the number of bits in the hash.
 var ErrOutOfBounds = errors.New("position out of bounds")
 
+// ErrIncompatibleHash is reported when Distance is called with an incompatible hash type.
+var ErrIncompatibleHash = errors.New("incompatible hash type for distance calculation")
+
+// Distance returns the Hamming distance (number of differing bits) to another Binary hash.
+// Returns ErrIncompatibleHash if other is not a Binary hash.
+func (h Binary) Distance(other Hash) (float64, error) {
+	b, ok := other.(Binary)
+	if !ok {
+		return 0, ErrIncompatibleHash
+	}
+	l := len(h)
+	if len(b) < l {
+		l = len(b)
+	}
+	var dist int
+	for i := 0; i < l; i++ {
+		xor := h[i] ^ b[i]
+		for xor != 0 {
+			xor &= xor - 1
+			dist++
+		}
+	}
+	return float64(dist), nil
+}
+
 // Set turns a bit on in the binary hash.
 // The position argument determines which bit should be turned on.
 // Returns error if position is out of bounds.
@@ -41,6 +66,16 @@ func (h Binary) Set(position uint) error {
 func (h Binary) SetReverse(position uint) error {
 	bit := 7 - position%8
 	return h.setBit(position, bit)
+}
+
+// Len returns the number of bytes in the binary hash.
+func (h Binary) Len() int {
+	return len(h)
+}
+
+// ValueAt returns the byte at the given index as a float64.
+func (h Binary) ValueAt(idx int) float64 {
+	return float64(h[idx])
 }
 
 // Equal checks if two binary hashes are the same.

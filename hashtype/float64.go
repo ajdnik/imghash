@@ -18,6 +18,21 @@ func (h Float64) String() string {
 	return fmt.Sprintf("%v", []float64(h))
 }
 
+// Len returns the number of elements in the hash.
+func (h Float64) Len() int {
+	return len(h)
+}
+
+// ValueAt returns the element at the given index.
+func (h Float64) ValueAt(idx int) float64 {
+	return h[idx]
+}
+
+// Distance returns the L2 (Euclidean) distance to another hash.
+func (h Float64) Distance(other Hash) (float64, error) {
+	return l2(h, other), nil
+}
+
 // Equal checks if two float64 hashes are the same.
 // It uses an epsilon based value comparrison.
 // Returns true if each same index value pair
