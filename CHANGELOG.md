@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.2.0](https://github.com/ajdnik/imghash/compare/v2.1.0...v2.2.0) (2026-02-21)
+
+
+### Features
+
+* distance metrics and per-algorithm Compare methods ([#19](https://github.com/ajdnik/imghash/issues/19)) ([b3d3fed](https://github.com/ajdnik/imghash/commit/b3d3fed6c48c1e4d767b1ceaac0131210d5b51ed))
+* Facebook PDQ Hash ([#17](https://github.com/ajdnik/imghash/issues/17)) ([bbf5c04](https://github.com/ajdnik/imghash/commit/bbf5c04adfce54accd1a09dd7b5c67e5f706f4d2))
+* Histogram Of Oriented Gradients Hash ([#16](https://github.com/ajdnik/imghash/issues/16)) ([f4d03e6](https://github.com/ajdnik/imghash/commit/f4d03e6212923a2259e4c92e881dcdfd6d1f790b))
+* Local Binary Pattern Hash ([#15](https://github.com/ajdnik/imghash/issues/15)) ([7e5bfae](https://github.com/ajdnik/imghash/commit/7e5bfaef16ff35160e1d244448923c4df830dc1b))
+* Rotation Aware Hash ([#18](https://github.com/ajdnik/imghash/issues/18)) ([e07b4e9](https://github.com/ajdnik/imghash/commit/e07b4e9ae3657108529374d816a7e6e32ad57ec0))
+* Wavelet Hash ([#13](https://github.com/ajdnik/imghash/issues/13)) ([e905908](https://github.com/ajdnik/imghash/commit/e9059085bb98681e97c9ddf49a406c61a4a0c12a))
+
 ## [2.1.0](https://github.com/ajdnik/imghash/compare/imghash-v2.0.0...imghash-v2.1.0) (2026-02-21)
 
 
