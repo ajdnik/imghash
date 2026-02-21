@@ -21,16 +21,12 @@ const (
 //
 // See https://www.researchgate.net/publication/252340846_Rihamark_Perceptual_image_hash_benchmarking for more information.
 type MarrHildreth struct {
+	baseConfig
 	// Scale parameter, used to compute Marr-Hildreth kernel.
 	scale float64
 	// Alpha parameter, used to compute Marr-Hildreth kernel.
-	alpha float64
-	// Resized image width.
-	width uint
-	// Resized image height.
-	height uint
-	// Resize interpolation method.
-	interp Interpolation
+	alpha    float64
+	distFunc DistanceFunc
 	// Gaussian kernel size.
 	kernel int
 	// Gaussian kernel sigma parameter.
@@ -43,13 +39,11 @@ type MarrHildreth struct {
 // Without options, sensible defaults are used.
 func NewMarrHildreth(opts ...MarrHildrethOption) (MarrHildreth, error) {
 	mh := MarrHildreth{
-		scale:  1,
-		alpha:  2,
-		width:  512,
-		height: 512,
-		interp: Bicubic,
-		kernel: 7,
-		sigma:  0,
+		baseConfig: baseConfig{width: 512, height: 512, interp: Bicubic},
+		scale:      1,
+		alpha:      2,
+		kernel:     7,
+		sigma:      0,
 	}
 	for _, o := range opts {
 		o.applyMarrHildreth(&mh)
@@ -156,5 +150,8 @@ func computeMarrHildrethKernel(alpha, level float64) [][]float32 {
 
 // Compare computes the Hamming distance between two MarrHildreth hashes.
 func (mhh MarrHildreth) Compare(h1, h2 hashtype.Hash) (similarity.Distance, error) {
+	if mhh.distFunc != nil {
+		return mhh.distFunc(h1, h2)
+	}
 	return similarity.Hamming(h1, h2)
 }

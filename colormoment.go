@@ -13,27 +13,21 @@ import (
 //
 // See https://www.researchgate.net/publication/286870507_Perceptual_hashing_for_color_images_using_invariant_moments for more information.
 type ColorMoment struct {
-	// Resized image width.
-	width uint
-	// Resized image height.
-	height uint
-	// Resize interpolation method.
-	interp Interpolation
+	baseConfig
 	// Gaussian kernel size.
 	kernel int
 	// Gaussian kernel sigma.
-	sigma float64
+	sigma    float64
+	distFunc DistanceFunc
 }
 
 // NewColorMoment creates a new ColorMoment hash with the given options.
 // Without options, sensible defaults are used.
 func NewColorMoment(opts ...ColorMomentOption) (ColorMoment, error) {
 	c := ColorMoment{
-		width:  512,
-		height: 512,
-		interp: Bicubic,
-		kernel: 3,
-		sigma:  0,
+		baseConfig: baseConfig{width: 512, height: 512, interp: Bicubic},
+		kernel:     3,
+		sigma:      0,
 	}
 	for _, o := range opts {
 		o.applyColorMoment(&c)
@@ -80,6 +74,9 @@ func (ch ColorMoment) Calculate(img image.Image) (hashtype.Hash, error) {
 }
 
 // Compare computes the L2 (Euclidean) distance between two ColorMoment hashes.
-func (ch ColorMoment) Compare(h1, h2 hashtype.Hash) similarity.Distance {
+func (ch ColorMoment) Compare(h1, h2 hashtype.Hash) (similarity.Distance, error) {
+	if ch.distFunc != nil {
+		return ch.distFunc(h1, h2)
+	}
 	return similarity.L2(h1, h2)
 }

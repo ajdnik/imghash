@@ -10,7 +10,7 @@ import (
 // Cosine distance is defined as 1 - cos(theta), where cos(theta) is the
 // cosine similarity (dot product divided by the product of magnitudes).
 // Returns 0 when both hashes are zero vectors.
-func Cosine(h1, h2 hashtype.Hash) Distance {
+func Cosine(h1, h2 hashtype.Hash) (Distance, error) {
 	l := h1.Len()
 	if h2.Len() < l {
 		l = h2.Len()
@@ -25,7 +25,7 @@ func Cosine(h1, h2 hashtype.Hash) Distance {
 	}
 	denom := math.Sqrt(mag1) * math.Sqrt(mag2)
 	if denom == 0 {
-		return 0
+		return 0, nil
 	}
-	return Distance(1 - dot/denom)
+	return Distance(1 - dot/denom), nil
 }

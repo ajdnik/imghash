@@ -23,15 +23,15 @@ func PCC(h1, h2 hashtype.Hash) (Distance, error) {
 		hf1[i] -= float32(mn1)
 		hf2[i] -= float32(mn2)
 	}
-	max := math.SmallestNonzeroFloat64
+	peak := math.SmallestNonzeroFloat64
 	for range hf1 {
 		prod, _ := dotProd(hf1, hf2)
 		covar := prod / float64(len(hf1))
 		corre := covar / (std1*std2 + 1e-20)
-		max = math.Max(corre, max)
+		peak = math.Max(corre, peak)
 		hf2 = rotate(hf2, 1)
 	}
-	return Distance(max), nil
+	return Distance(peak), nil
 }
 
 func hashToFloat32(h hashtype.Hash) []float32 {

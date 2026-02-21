@@ -5,6 +5,7 @@ import "github.com/ajdnik/imghash/v2/internal/imgproc"
 // Interpolation specifies the resize interpolation method used during hash computation.
 type Interpolation int
 
+// Supported interpolation methods.
 const (
 	NearestNeighbor   Interpolation = Interpolation(imgproc.NearestNeighbor)
 	Bilinear          Interpolation = Interpolation(imgproc.Bilinear)

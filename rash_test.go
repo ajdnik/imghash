@@ -1,10 +1,11 @@
 package imghash_test
 
 import (
+	"errors"
 	"fmt"
 	"testing"
 
-	. "github.com/ajdnik/imghash/v2"
+	"github.com/ajdnik/imghash/v2"
 	"github.com/ajdnik/imghash/v2/hashtype"
 	"github.com/ajdnik/imghash/v2/similarity"
 )
@@ -14,26 +15,26 @@ var rashCalculateTests = []struct {
 	hash       hashtype.Binary
 	width      uint
 	height     uint
-	resizeType Interpolation
+	resizeType imghash.Interpolation
 	sigma      float64
 	rings      int
 }{
-	{"assets/lena.jpg", hashtype.Binary{6, 0, 99, 12, 0, 253, 255, 255}, 256, 256, Bilinear, 1, 180},
-	{"assets/baboon.jpg", hashtype.Binary{241, 27, 3, 0, 0, 240, 255, 255}, 256, 256, Bilinear, 1, 180},
-	{"assets/cat.jpg", hashtype.Binary{46, 0, 64, 32, 128, 255, 255, 255}, 256, 256, Bilinear, 1, 180},
-	{"assets/monarch.jpg", hashtype.Binary{255, 63, 12, 0, 0, 144, 248, 255}, 256, 256, Bilinear, 1, 180},
-	{"assets/peppers.jpg", hashtype.Binary{9, 0, 40, 32, 168, 251, 255, 255}, 256, 256, Bilinear, 1, 180},
-	{"assets/tulips.jpg", hashtype.Binary{119, 224, 1, 128, 0, 240, 255, 255}, 256, 256, Bilinear, 1, 180},
+	{"assets/lena.jpg", hashtype.Binary{6, 0, 99, 12, 0, 253, 255, 255}, 256, 256, imghash.Bilinear, 1, 180},
+	{"assets/baboon.jpg", hashtype.Binary{241, 27, 3, 0, 0, 240, 255, 255}, 256, 256, imghash.Bilinear, 1, 180},
+	{"assets/cat.jpg", hashtype.Binary{46, 0, 64, 32, 128, 255, 255, 255}, 256, 256, imghash.Bilinear, 1, 180},
+	{"assets/monarch.jpg", hashtype.Binary{255, 63, 12, 0, 0, 144, 248, 255}, 256, 256, imghash.Bilinear, 1, 180},
+	{"assets/peppers.jpg", hashtype.Binary{9, 0, 40, 32, 168, 251, 255, 255}, 256, 256, imghash.Bilinear, 1, 180},
+	{"assets/tulips.jpg", hashtype.Binary{119, 224, 1, 128, 0, 240, 255, 255}, 256, 256, imghash.Bilinear, 1, 180},
 }
 
 func TestRASH_Calculate(t *testing.T) {
 	for _, tt := range rashCalculateTests {
 		t.Run(tt.filename, func(t *testing.T) {
-			hash, err := NewRASH(WithSize(tt.width, tt.height), WithInterpolation(tt.resizeType), WithSigma(tt.sigma), WithRings(tt.rings))
+			hash, err := imghash.NewRASH(imghash.WithSize(tt.width, tt.height), imghash.WithInterpolation(tt.resizeType), imghash.WithSigma(tt.sigma), imghash.WithRings(tt.rings))
 			if err != nil {
 				t.Fatalf("failed to create hasher: %v", err)
 			}
-			img, err := OpenImage(tt.filename)
+			img, err := imghash.OpenImage(tt.filename)
 			if err != nil {
 				t.Fatalf("failed to open %s: %v", tt.filename, err)
 			}
@@ -50,11 +51,11 @@ func TestRASH_Calculate(t *testing.T) {
 }
 
 func ExampleRASH_Calculate() {
-	img, err := OpenImage("assets/cat.jpg")
+	img, err := imghash.OpenImage("assets/cat.jpg")
 	if err != nil {
 		panic(err)
 	}
-	rash, err := NewRASH()
+	rash, err := imghash.NewRASH()
 	if err != nil {
 		panic(err)
 	}
@@ -73,29 +74,29 @@ var rashDistanceTests = []struct {
 	distance    similarity.Distance
 	width       uint
 	height      uint
-	resizeType  Interpolation
+	resizeType  imghash.Interpolation
 	sigma       float64
 	rings       int
 }{
-	{"assets/lena.jpg", "assets/cat.jpg", 10, 256, 256, Bilinear, 1, 180},
-	{"assets/lena.jpg", "assets/monarch.jpg", 28, 256, 256, Bilinear, 1, 180},
-	{"assets/baboon.jpg", "assets/cat.jpg", 20, 256, 256, Bilinear, 1, 180},
-	{"assets/peppers.jpg", "assets/baboon.jpg", 20, 256, 256, Bilinear, 1, 180},
-	{"assets/tulips.jpg", "assets/monarch.jpg", 18, 256, 256, Bilinear, 1, 180},
+	{"assets/lena.jpg", "assets/cat.jpg", 10, 256, 256, imghash.Bilinear, 1, 180},
+	{"assets/lena.jpg", "assets/monarch.jpg", 28, 256, 256, imghash.Bilinear, 1, 180},
+	{"assets/baboon.jpg", "assets/cat.jpg", 20, 256, 256, imghash.Bilinear, 1, 180},
+	{"assets/peppers.jpg", "assets/baboon.jpg", 20, 256, 256, imghash.Bilinear, 1, 180},
+	{"assets/tulips.jpg", "assets/monarch.jpg", 18, 256, 256, imghash.Bilinear, 1, 180},
 }
 
 func TestRASH_Distance(t *testing.T) {
 	for _, tt := range rashDistanceTests {
 		t.Run(fmt.Sprintf("%v %v", tt.firstImage, tt.secondImage), func(t *testing.T) {
-			hash, err := NewRASH(WithSize(tt.width, tt.height), WithInterpolation(tt.resizeType), WithSigma(tt.sigma), WithRings(tt.rings))
+			hash, err := imghash.NewRASH(imghash.WithSize(tt.width, tt.height), imghash.WithInterpolation(tt.resizeType), imghash.WithSigma(tt.sigma), imghash.WithRings(tt.rings))
 			if err != nil {
 				t.Fatalf("failed to create hasher: %v", err)
 			}
-			img1, err := OpenImage(tt.firstImage)
+			img1, err := imghash.OpenImage(tt.firstImage)
 			if err != nil {
 				t.Fatalf("failed to open %s: %v", tt.firstImage, err)
 			}
-			img2, err := OpenImage(tt.secondImage)
+			img2, err := imghash.OpenImage(tt.secondImage)
 			if err != nil {
 				t.Fatalf("failed to open %s: %v", tt.secondImage, err)
 			}
@@ -121,19 +122,19 @@ func TestRASH_Distance(t *testing.T) {
 func TestNewRASH_Errors(t *testing.T) {
 	tests := []struct {
 		name string
-		opts []RASHOption
+		opts []imghash.RASHOption
 		err  error
 	}{
-		{"zero width", []RASHOption{WithSize(0, 256)}, ErrInvalidSize},
-		{"zero height", []RASHOption{WithSize(256, 0)}, ErrInvalidSize},
-		{"negative sigma", []RASHOption{WithSigma(-1)}, ErrInvalidSigma},
-		{"zero rings", []RASHOption{WithRings(0)}, ErrInvalidRings},
-		{"negative rings", []RASHOption{WithRings(-1)}, ErrInvalidRings},
+		{"zero width", []imghash.RASHOption{imghash.WithSize(0, 256)}, imghash.ErrInvalidSize},
+		{"zero height", []imghash.RASHOption{imghash.WithSize(256, 0)}, imghash.ErrInvalidSize},
+		{"negative sigma", []imghash.RASHOption{imghash.WithSigma(-1)}, imghash.ErrInvalidSigma},
+		{"zero rings", []imghash.RASHOption{imghash.WithRings(0)}, imghash.ErrInvalidRings},
+		{"negative rings", []imghash.RASHOption{imghash.WithRings(-1)}, imghash.ErrInvalidRings},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, err := NewRASH(tt.opts...)
-			if err != tt.err {
+			_, err := imghash.NewRASH(tt.opts...)
+			if !errors.Is(err, tt.err) {
 				t.Errorf("got %v, want %v", err, tt.err)
 			}
 		})

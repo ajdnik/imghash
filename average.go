@@ -1,3 +1,5 @@
+// Package imghash provides perceptual image hashing algorithms and
+// similarity metrics for comparing images by visual content.
 package imghash
 
 import (
@@ -13,21 +15,15 @@ import (
 //
 // See https://www.hackerfactor.com/blog/index.php?/archives/432-Looks-Like-It.html for more information.
 type Average struct {
-	// Resized image width.
-	width uint
-	// Resized image height.
-	height uint
-	// Resize interpolation method.
-	interp Interpolation
+	baseConfig
+	distFunc DistanceFunc
 }
 
 // NewAverage creates a new Average hash with the given options.
 // Without options, sensible defaults are used.
 func NewAverage(opts ...AverageOption) (Average, error) {
 	a := Average{
-		width:  8,
-		height: 8,
-		interp: Bilinear,
+		baseConfig: baseConfig{width: 8, height: 8, interp: Bilinear},
 	}
 	for _, o := range opts {
 		o.applyAverage(&a)
@@ -54,5 +50,8 @@ func (ah Average) Calculate(img image.Image) (hashtype.Hash, error) {
 
 // Compare computes the Hamming distance between two Average hashes.
 func (ah Average) Compare(h1, h2 hashtype.Hash) (similarity.Distance, error) {
+	if ah.distFunc != nil {
+		return ah.distFunc(h1, h2)
+	}
 	return similarity.Hamming(h1, h2)
 }

@@ -80,7 +80,7 @@ The library provides helpers so you don't need image decoding boilerplate:
 | `HashReader(hasher, r)` | Decodes from a reader and computes the hash |
 | `Compare(h1, h2)` | Computes distance using the natural metric for the hash type |
 
-You can also call `h1.Distance(h2)` directly on any hash value, or use the algorithm's `Compare` method for the recommended metric (see [Similarity Metrics](#similarity-metrics)).
+Use the algorithm's `Compare` method for its recommended metric, or call top-level `imghash.Compare(h1, h2)` for generic type-based comparison (see [Similarity Metrics](#similarity-metrics)).
 
 ## Perceptual Hash Algorithms
 
@@ -189,7 +189,7 @@ Builds a 42-element float64 vector from YCbCr and HSV color moments. Compares us
 cm, err := imghash.NewColorMoment()
 h1, err := cm.Calculate(img1)
 h2, err := cm.Calculate(img2)
-dist := cm.Compare(h1, h2) // L2 distance
+dist, err := cm.Compare(h1, h2) // L2 distance
 ```
 
 | Option | Default |
@@ -247,7 +247,7 @@ Computes a 3x3 Local Binary Pattern code for each pixel and builds a normalized 
 lbp, err := imghash.NewLBP()
 h1, err := lbp.Calculate(img1)
 h2, err := lbp.Calculate(img2)
-dist := lbp.Compare(h1, h2) // Chi-square distance
+dist, err := lbp.Compare(h1, h2) // Chi-square distance
 ```
 
 | Option | Default |
@@ -266,7 +266,7 @@ Computes gradient magnitudes and orientations at each pixel, divides the image i
 hog, err := imghash.NewHOGHash()
 h1, err := hog.Calculate(img1)
 h2, err := hog.Calculate(img2)
-dist := hog.Compare(h1, h2) // Cosine distance
+dist, err := hog.Compare(h1, h2) // Cosine distance
 ```
 
 | Option | Default |
@@ -286,7 +286,7 @@ Uses radial projections and feature vector computations to generate a 40-element
 rv, err := imghash.NewRadialVariance()
 h1, err := rv.Calculate(img1)
 h2, err := rv.Calculate(img2)
-dist := rv.Compare(h1, h2) // L1 distance
+dist, err := rv.Compare(h1, h2) // L1 distance
 ```
 
 | Option | Default |
@@ -360,9 +360,9 @@ The default metric per algorithm:
 | HOGHash | `UInt8` | Cosine |
 | RadialVariance | `UInt8` | L1 (Manhattan) |
 
-### Hash-level `Distance`
+### Generic `Compare`
 
-Every hash also has a `Distance(other)` method that uses a generic metric based on the hash type:
+Use `imghash.Compare(h1, h2)` for generic comparison based on hash type:
 
 | Hash type | Default metric | Description |
 |-----------|---------------|-------------|
@@ -371,8 +371,6 @@ Every hash also has a `Distance(other)` method that uses a generic metric based 
 | `Float64` | L2 (Euclidean) | Square root of sum of squared differences |
 
 ```go
-dist, err := h1.Distance(h2)
-// or via the top-level convenience:
 dist, err := imghash.Compare(h1, h2)
 ```
 
@@ -384,12 +382,12 @@ The `similarity` sub-package provides all metrics for direct use:
 import "github.com/ajdnik/imghash/v2/similarity"
 
 dist, err := similarity.Hamming(h1, h2)          // bit-level Hamming distance (Binary only)
-dist, err := similarity.WeightedHamming(h1, h2, weights) // weighted Hamming (Binary only)
-dist := similarity.L1(h1, h2)                     // Manhattan distance
-dist := similarity.L2(h1, h2)                     // Euclidean distance
-dist := similarity.ChiSquare(h1, h2)              // Chi-square distance
-dist := similarity.Cosine(h1, h2)                 // Cosine distance (1 - cos similarity)
-dist, err := similarity.PCC(h1, h2)               // Peak cross-correlation
+dist, err = similarity.WeightedHamming(h1, h2, weights) // weighted Hamming (Binary only)
+dist, err = similarity.L1(h1, h2)                       // Manhattan distance
+dist, err = similarity.L2(h1, h2)                       // Euclidean distance
+dist, err = similarity.ChiSquare(h1, h2)                // Chi-square distance
+dist, err = similarity.Cosine(h1, h2)                   // Cosine distance (1 - cos similarity)
+dist, err = similarity.PCC(h1, h2)                      // Peak cross-correlation
 ```
 
 ## Interpolation Methods

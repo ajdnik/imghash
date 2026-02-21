@@ -1,11 +1,12 @@
 package similarity_test
 
 import (
+	"errors"
 	"fmt"
 	"testing"
 
 	"github.com/ajdnik/imghash/v2/hashtype"
-	. "github.com/ajdnik/imghash/v2/similarity"
+	"github.com/ajdnik/imghash/v2/similarity"
 )
 
 var weightedHammingTests = []struct {
@@ -13,7 +14,7 @@ var weightedHammingTests = []struct {
 	hash1    hashtype.Binary
 	hash2    hashtype.Binary
 	weights  []float64
-	distance Distance
+	distance similarity.Distance
 }{
 	{"uniform weights", hashtype.Binary{1}, hashtype.Binary{2}, []float64{1.0}, 2},
 	{"double weight", hashtype.Binary{1}, hashtype.Binary{2}, []float64{2.0}, 4},
@@ -26,10 +27,9 @@ var weightedHammingTests = []struct {
 
 func TestWeightedHamming(t *testing.T) {
 	for _, tt := range weightedHammingTests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			res, err := WeightedHamming(tt.hash1, tt.hash2, tt.weights)
+			res, err := similarity.WeightedHamming(tt.hash1, tt.hash2, tt.weights)
 			if err != nil {
 				t.Fatalf("unexpected error: %v", err)
 			}
@@ -43,18 +43,18 @@ func TestWeightedHamming(t *testing.T) {
 func TestWeightedHamming_notBinary(t *testing.T) {
 	h1 := hashtype.UInt8{1, 2, 3}
 	h2 := hashtype.UInt8{4, 5, 6}
-	_, err := WeightedHamming(h1, h2, []float64{1, 1, 1})
-	if err != ErrNotBinaryHash {
-		t.Errorf("got %v, want %v", err, ErrNotBinaryHash)
+	_, err := similarity.WeightedHamming(h1, h2, []float64{1, 1, 1})
+	if !errors.Is(err, similarity.ErrNotBinaryHash) {
+		t.Errorf("got %v, want %v", err, similarity.ErrNotBinaryHash)
 	}
 }
 
 func TestWeightedHamming_lengthMismatch(t *testing.T) {
 	h1 := hashtype.Binary{1, 2}
 	h2 := hashtype.Binary{3, 4}
-	_, err := WeightedHamming(h1, h2, []float64{1.0})
-	if err != ErrWeightLengthMismatch {
-		t.Errorf("got %v, want %v", err, ErrWeightLengthMismatch)
+	_, err := similarity.WeightedHamming(h1, h2, []float64{1.0})
+	if !errors.Is(err, similarity.ErrWeightLengthMismatch) {
+		t.Errorf("got %v, want %v", err, similarity.ErrWeightLengthMismatch)
 	}
 }
 
@@ -63,7 +63,7 @@ func ExampleWeightedHamming() {
 	hash2 := hashtype.Binary{24, 60, 126, 126, 126, 126, 60, 0}
 	weights := []float64{1, 1, 1, 1, 1, 1, 1, 1}
 
-	res, err := WeightedHamming(hash1, hash2, weights)
+	res, err := similarity.WeightedHamming(hash1, hash2, weights)
 	if err != nil {
 		panic(err)
 	}

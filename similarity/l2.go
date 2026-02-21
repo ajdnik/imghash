@@ -7,7 +7,7 @@ import (
 )
 
 // L2 calculates the L2 (Euclidean) distance between two hashes.
-func L2(h1, h2 hashtype.Hash) Distance {
+func L2(h1, h2 hashtype.Hash) (Distance, error) {
 	l := h1.Len()
 	if h2.Len() < l {
 		l = h2.Len()
@@ -17,5 +17,5 @@ func L2(h1, h2 hashtype.Hash) Distance {
 		d := h1.ValueAt(i) - h2.ValueAt(i)
 		s += d * d
 	}
-	return Distance(math.Sqrt(s))
+	return Distance(math.Sqrt(s)), nil
 }

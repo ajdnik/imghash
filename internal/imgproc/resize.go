@@ -10,6 +10,7 @@ import (
 // ResizeType selects the interpolation method used during image resizing.
 type ResizeType int
 
+// Supported interpolation methods for image resizing.
 const (
 	NearestNeighbor ResizeType = iota
 	Bilinear

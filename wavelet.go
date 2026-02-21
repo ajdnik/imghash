@@ -2,7 +2,6 @@ package imghash
 
 import (
 	"image"
-	"sort"
 
 	"github.com/ajdnik/imghash/v2/hashtype"
 	"github.com/ajdnik/imghash/v2/internal/imgproc"
@@ -15,24 +14,18 @@ import (
 //
 // See https://fullstackml.com/wavelet-image-hash-in-python-3504571f3b08 for more information.
 type WHash struct {
-	// Hash output width (columns in the LL subband).
-	width uint
-	// Hash output height (rows in the LL subband).
-	height uint
+	baseConfig
 	// Number of Haar DWT decomposition levels.
-	level int
-	// Resize interpolation method.
-	interp Interpolation
+	level    int
+	distFunc DistanceFunc
 }
 
 // NewWHash creates a new WHash with the given options.
 // Without options, sensible defaults are used (8×8 hash, 3 levels, Bilinear).
 func NewWHash(opts ...WHashOption) (WHash, error) {
 	w := WHash{
-		width:  8,
-		height: 8,
-		level:  3,
-		interp: Bilinear,
+		baseConfig: baseConfig{width: 8, height: 8, interp: Bilinear},
+		level:      3,
 	}
 	for _, o := range opts {
 		o.applyWHash(&w)
@@ -77,18 +70,7 @@ func (wh WHash) extractLL(mat [][]float32) [][]float32 {
 }
 
 func (wh WHash) median(mat [][]float32) float32 {
-	vals := make([]float64, 0, wh.width*wh.height)
-	for _, row := range mat {
-		for _, v := range row {
-			vals = append(vals, float64(v))
-		}
-	}
-	sort.Float64s(vals)
-	n := len(vals)
-	if n%2 == 0 {
-		return float32((vals[n/2-1] + vals[n/2]) / 2)
-	}
-	return float32(vals[n/2])
+	return imgproc.MedianF32(mat)
 }
 
 func (wh WHash) computeHash(ll [][]float32, median float32) hashtype.Binary {
@@ -107,8 +89,8 @@ func (wh WHash) computeHash(ll [][]float32, median float32) hashtype.Binary {
 
 // Compare computes the Hamming distance between two WHash hashes.
 func (wh WHash) Compare(h1, h2 hashtype.Hash) (similarity.Distance, error) {
+	if wh.distFunc != nil {
+		return wh.distFunc(h1, h2)
+	}
 	return similarity.Hamming(h1, h2)
 }
-
-// Ensure WHash satisfies the Hasher interface.
-var _ Hasher = WHash{}

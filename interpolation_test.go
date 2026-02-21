@@ -3,24 +3,24 @@ package imghash_test
 import (
 	"testing"
 
-	. "github.com/ajdnik/imghash/v2"
+	"github.com/ajdnik/imghash/v2"
 )
 
 func TestInterpolation_String(t *testing.T) {
 	tests := []struct {
 		name   string
-		interp Interpolation
+		interp imghash.Interpolation
 		expect string
 	}{
-		{"NearestNeighbor", NearestNeighbor, "NearestNeighbor"},
-		{"Bilinear", Bilinear, "Bilinear"},
-		{"Bicubic", Bicubic, "Bicubic"},
-		{"MitchellNetravali", MitchellNetravali, "MitchellNetravali"},
-		{"Lanczos2", Lanczos2, "Lanczos2"},
-		{"Lanczos3", Lanczos3, "Lanczos3"},
-		{"BilinearExact", BilinearExact, "BilinearExact"},
-		{"Unknown positive", Interpolation(99), "Unknown"},
-		{"Unknown negative", Interpolation(-1), "Unknown"},
+		{"NearestNeighbor", imghash.NearestNeighbor, "NearestNeighbor"},
+		{"Bilinear", imghash.Bilinear, "Bilinear"},
+		{"Bicubic", imghash.Bicubic, "Bicubic"},
+		{"MitchellNetravali", imghash.MitchellNetravali, "MitchellNetravali"},
+		{"Lanczos2", imghash.Lanczos2, "Lanczos2"},
+		{"Lanczos3", imghash.Lanczos3, "Lanczos3"},
+		{"BilinearExact", imghash.BilinearExact, "BilinearExact"},
+		{"Unknown positive", imghash.Interpolation(99), "Unknown"},
+		{"Unknown negative", imghash.Interpolation(-1), "Unknown"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

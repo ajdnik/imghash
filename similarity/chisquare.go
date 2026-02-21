@@ -7,7 +7,7 @@ import (
 // ChiSquare calculates the chi-square distance between two hashes.
 // For each element pair it computes (a - b)^2 / (a + b), skipping
 // positions where both values are zero to avoid division by zero.
-func ChiSquare(h1, h2 hashtype.Hash) Distance {
+func ChiSquare(h1, h2 hashtype.Hash) (Distance, error) {
 	l := h1.Len()
 	if h2.Len() < l {
 		l = h2.Len()
@@ -23,5 +23,5 @@ func ChiSquare(h1, h2 hashtype.Hash) Distance {
 		d := a - b
 		s += (d * d) / sum
 	}
-	return Distance(s)
+	return Distance(s), nil
 }

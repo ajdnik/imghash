@@ -17,23 +17,17 @@ const dctCoefSize = 8
 //
 // See https://www.researchgate.net/publication/252340846_Rihamark_Perceptual_image_hash_benchmarking for more information.
 type PHash struct {
-	// Resized image width.
-	width uint
-	// Resized image height.
-	height uint
-	// Resize interpolation method.
-	interp Interpolation
+	baseConfig
 	// Per-byte weights for weighted Hamming distance.
-	weights []float64
+	weights  []float64
+	distFunc DistanceFunc
 }
 
 // NewPHash creates a new PHash with the given options.
 // Without options, sensible defaults are used.
 func NewPHash(opts ...PHashOption) (PHash, error) {
 	p := PHash{
-		width:  32,
-		height: 32,
-		interp: BilinearExact,
+		baseConfig: baseConfig{width: 32, height: 32, interp: BilinearExact},
 	}
 	for _, o := range opts {
 		o.applyPHash(&p)
@@ -121,5 +115,8 @@ func (ph PHash) compare(img [][]float32, val float32) [][]float32 {
 // Compare computes the weighted Hamming distance between two PHash hashes
 // using the per-byte weights configured on this hasher.
 func (ph PHash) Compare(h1, h2 hashtype.Hash) (similarity.Distance, error) {
+	if ph.distFunc != nil {
+		return ph.distFunc(h1, h2)
+	}
 	return similarity.WeightedHamming(h1, h2, ph.weights)
 }

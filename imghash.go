@@ -8,6 +8,12 @@ import (
 	"github.com/ajdnik/imghash/v2/similarity"
 )
 
+// DistanceFunc computes a distance between two hashes.
+// All functions in the similarity package (Hamming, L1, L2, Cosine,
+// ChiSquare, PCC) satisfy this signature and can be passed directly
+// to WithDistance.
+type DistanceFunc func(hashtype.Hash, hashtype.Hash) (similarity.Distance, error)
+
 // Hasher computes a perceptual hash from an image.
 // It is implemented by all hash algorithms in this package:
 // Average, Difference, PHash, Median, BlockMean, MarrHildreth,
@@ -15,6 +21,37 @@ import (
 type Hasher interface {
 	Calculate(image.Image) (hashtype.Hash, error)
 }
+
+// Comparer measures the similarity between two hashes using a
+// distance metric appropriate for the algorithm that produced them.
+// It is implemented by all hash algorithms in this package.
+type Comparer interface {
+	Compare(hashtype.Hash, hashtype.Hash) (similarity.Distance, error)
+}
+
+// HasherComparer combines Hasher and Comparer into a single interface
+// for algorithms that can both compute and compare hashes.
+type HasherComparer interface {
+	Hasher
+	Comparer
+}
+
+// Compile-time assertions: every algorithm satisfies HasherComparer.
+var (
+	_ HasherComparer = Average{}
+	_ HasherComparer = Difference{}
+	_ HasherComparer = Median{}
+	_ HasherComparer = PHash{}
+	_ HasherComparer = BlockMean{}
+	_ HasherComparer = MarrHildreth{}
+	_ HasherComparer = RadialVariance{}
+	_ HasherComparer = ColorMoment{}
+	_ HasherComparer = WHash{}
+	_ HasherComparer = LBP{}
+	_ HasherComparer = HOGHash{}
+	_ HasherComparer = PDQ{}
+	_ HasherComparer = RASH{}
+)
 
 // Re-export core types so most consumers only need to import "imghash".
 
@@ -33,8 +70,8 @@ type Float64 = hashtype.Float64
 // Distance represents a similarity measure between two hashes.
 type Distance = similarity.Distance
 
-// ErrIncompatibleHash is reported when Distance is called with an incompatible hash type
-// (e.g. comparing a Binary hash with a non-Binary hash using Hamming distance).
+// ErrIncompatibleHash is reported when a binary-only metric (Hamming or weighted Hamming)
+// is used with incompatible hash types.
 var ErrIncompatibleHash = hashtype.ErrIncompatibleHash
 
 // Constructor validation errors.

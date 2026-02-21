@@ -53,6 +53,23 @@ func Median(img *image.Gray) (float64, error) {
 	return float64(pixels[totalPixels/2]), nil
 }
 
+// MedianF32 returns the median of all values in a 2-D float32 matrix.
+func MedianF32(mat [][]float32) float32 {
+	var n int
+	for _, row := range mat {
+		n += len(row)
+	}
+	vals := make([]float32, 0, n)
+	for _, row := range mat {
+		vals = append(vals, row...)
+	}
+	sort.Slice(vals, func(i, j int) bool { return vals[i] < vals[j] })
+	if n%2 == 0 {
+		return (vals[n/2-1] + vals[n/2]) / 2
+	}
+	return vals[n/2]
+}
+
 func getSize(img image.Image) (int, int) {
 	bounds := img.Bounds()
 	width := bounds.Max.X - bounds.Min.X
@@ -67,24 +84,24 @@ func cvRound(value float64) int {
 
 // Normalize normalize images to [0,1] range
 func Normalize(img [][]float32) {
-	var max, min float32
-	max = -1 << 30
-	min = 1 << 30
+	var hi, lo float32
+	hi = -1 << 30
+	lo = 1 << 30
 	for _, list := range img {
 		for _, v := range list {
-			if v > max {
-				max = v
+			if v > hi {
+				hi = v
 			}
-			if v < min {
-				min = v
+			if v < lo {
+				lo = v
 			}
 		}
 	}
 
-	diff := max - min
+	diff := hi - lo
 	for x, list := range img {
 		for y, v := range list {
-			(img)[x][y] = (v - min) / diff
+			(img)[x][y] = (v - lo) / diff
 		}
 	}
 }

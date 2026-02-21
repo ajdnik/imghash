@@ -6,7 +6,7 @@ import (
 
 	"testing"
 
-	. "github.com/ajdnik/imghash/v2"
+	"github.com/ajdnik/imghash/v2"
 	"github.com/ajdnik/imghash/v2/hashtype"
 	"github.com/ajdnik/imghash/v2/similarity"
 )
@@ -41,11 +41,11 @@ func uint8ApproxEqual(a, b hashtype.UInt8, maxDiff int) bool {
 func TestRadialVariance_Calculate(t *testing.T) {
 	for _, tt := range radialVarianceCalculateTests {
 		t.Run(tt.filename, func(t *testing.T) {
-			hash, err := NewRadialVariance(WithSigma(tt.sigma), WithAngles(tt.angles))
+			hash, err := imghash.NewRadialVariance(imghash.WithSigma(tt.sigma), imghash.WithAngles(tt.angles))
 			if err != nil {
 				t.Fatalf("failed to create hasher: %v", err)
 			}
-			img, err := OpenImage(tt.filename)
+			img, err := imghash.OpenImage(tt.filename)
 			if err != nil {
 				t.Fatalf("failed to open %s: %v", tt.filename, err)
 			}
@@ -63,12 +63,12 @@ func TestRadialVariance_Calculate(t *testing.T) {
 
 func ExampleRadialVariance_Calculate() {
 	// Read image from file
-	img, err := OpenImage("assets/cat.jpg")
+	img, err := imghash.OpenImage("assets/cat.jpg")
 	if err != nil {
 		panic(err)
 	}
 	// Create new Radial Variance Hash using default parameters
-	rad, err := NewRadialVariance()
+	rad, err := imghash.NewRadialVariance()
 	if err != nil {
 		panic(err)
 	}
@@ -98,15 +98,15 @@ var radialVarianceDistanceTests = []struct {
 func TestRadialVariance_Distance(t *testing.T) {
 	for _, tt := range radialVarianceDistanceTests {
 		t.Run(fmt.Sprintf("%v %v", tt.firstImage, tt.secondImage), func(t *testing.T) {
-			hash, err := NewRadialVariance(WithSigma(tt.sigma), WithAngles(tt.angles))
+			hash, err := imghash.NewRadialVariance(imghash.WithSigma(tt.sigma), imghash.WithAngles(tt.angles))
 			if err != nil {
 				t.Fatalf("failed to create hasher: %v", err)
 			}
-			img1, err := OpenImage(tt.firstImage)
+			img1, err := imghash.OpenImage(tt.firstImage)
 			if err != nil {
 				t.Fatalf("failed to open %s: %v", tt.firstImage, err)
 			}
-			img2, err := OpenImage(tt.secondImage)
+			img2, err := imghash.OpenImage(tt.secondImage)
 			if err != nil {
 				t.Fatalf("failed to open %s: %v", tt.secondImage, err)
 			}
@@ -118,7 +118,10 @@ func TestRadialVariance_Distance(t *testing.T) {
 			if err != nil {
 				t.Fatalf("failed to calculate hash for %s: %v", tt.secondImage, err)
 			}
-			dist := hash.Compare(h1, h2)
+			dist, err := hash.Compare(h1, h2)
+			if err != nil {
+				t.Fatalf("failed to compute distance: %v", err)
+			}
 			if math.Abs(float64(dist)-float64(tt.distance)) > 0.01 {
 				t.Errorf("got %v, want %v", dist, tt.distance)
 			}

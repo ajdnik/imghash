@@ -19,27 +19,21 @@ import (
 //
 // See https://ieeexplore.ieee.org/document/1467360 for more information.
 type HOGHash struct {
-	// Resized image width.
-	width uint
-	// Resized image height.
-	height uint
-	// Resize interpolation method.
-	interp Interpolation
+	baseConfig
 	// Cell size in pixels (square cells).
 	cellSize uint
 	// Number of orientation bins (unsigned gradients, 0–180°).
-	numBins uint
+	numBins  uint
+	distFunc DistanceFunc
 }
 
 // NewHOGHash creates a new HOGHash with the given options.
 // Without options, sensible defaults are used.
 func NewHOGHash(opts ...HOGHashOption) (HOGHash, error) {
 	h := HOGHash{
-		width:    256,
-		height:   256,
-		interp:   Bilinear,
-		cellSize: 8,
-		numBins:  9,
+		baseConfig: baseConfig{width: 256, height: 256, interp: Bilinear},
+		cellSize:   8,
+		numBins:    9,
 	}
 	for _, o := range opts {
 		o.applyHOGHash(&h)
@@ -168,6 +162,9 @@ func (hh HOGHash) computeHash(mag, orient []float64, w, h int) hashtype.UInt8 {
 }
 
 // Compare computes the cosine distance between two HOGHash hashes.
-func (hh HOGHash) Compare(h1, h2 hashtype.Hash) similarity.Distance {
+func (hh HOGHash) Compare(h1, h2 hashtype.Hash) (similarity.Distance, error) {
+	if hh.distFunc != nil {
+		return hh.distFunc(h1, h2)
+	}
 	return similarity.Cosine(h1, h2)
 }

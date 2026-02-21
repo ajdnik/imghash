@@ -18,27 +18,21 @@ import (
 //
 // See https://ieeexplore.ieee.org/document/1017623 for more information.
 type LBP struct {
-	// Resized image width.
-	width uint
-	// Resized image height.
-	height uint
-	// Resize interpolation method.
-	interp Interpolation
+	baseConfig
 	// Number of horizontal grid cells.
 	gridX uint
 	// Number of vertical grid cells.
-	gridY uint
+	gridY    uint
+	distFunc DistanceFunc
 }
 
 // NewLBP creates a new LBP hash with the given options.
 // Without options, sensible defaults are used.
 func NewLBP(opts ...LBPOption) (LBP, error) {
 	l := LBP{
-		width:  256,
-		height: 256,
-		interp: Bilinear,
-		gridX:  1,
-		gridY:  1,
+		baseConfig: baseConfig{width: 256, height: 256, interp: Bilinear},
+		gridX:      1,
+		gridY:      1,
 	}
 	for _, o := range opts {
 		o.applyLBP(&l)
@@ -139,6 +133,9 @@ func (lh LBP) computeHash(lbpImg []uint8, w, h int) hashtype.UInt8 {
 }
 
 // Compare computes the chi-square distance between two LBP hashes.
-func (lh LBP) Compare(h1, h2 hashtype.Hash) similarity.Distance {
+func (lh LBP) Compare(h1, h2 hashtype.Hash) (similarity.Distance, error) {
+	if lh.distFunc != nil {
+		return lh.distFunc(h1, h2)
+	}
 	return similarity.ChiSquare(h1, h2)
 }

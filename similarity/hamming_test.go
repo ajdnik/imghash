@@ -1,18 +1,19 @@
 package similarity_test
 
 import (
+	"errors"
 	"fmt"
 	"testing"
 
 	"github.com/ajdnik/imghash/v2/hashtype"
-	. "github.com/ajdnik/imghash/v2/similarity"
+	"github.com/ajdnik/imghash/v2/similarity"
 )
 
 var hammingTests = []struct {
 	name     string
 	hash1    hashtype.Binary
 	hash2    hashtype.Binary
-	distance Distance
+	distance similarity.Distance
 }{
 	{"two bit difference", hashtype.Binary{1}, hashtype.Binary{2}, 2},
 	{"reverse hashes", hashtype.Binary{2}, hashtype.Binary{1}, 2},
@@ -21,14 +22,14 @@ var hammingTests = []struct {
 	{"sample1 vs sample3", hashtype.Binary{15, 131, 192, 224, 192, 252, 255, 255}, hashtype.Binary{63, 131, 192, 224, 192, 252, 255, 63}, 4},
 	{"sample1 vs sample4", hashtype.Binary{15, 131, 192, 224, 192, 252, 255, 255}, hashtype.Binary{16, 60, 124, 126, 124, 124, 60, 24}, 38},
 	{"lena vs cat", hashtype.Binary{125, 121, 185, 149, 213, 197, 112, 52}, hashtype.Binary{255, 255, 143, 3, 33, 65, 32, 27}, 27},
+	{"different lengths", hashtype.Binary{0x00, 0xFF}, hashtype.Binary{0xFF}, 8},
 }
 
 func TestHamming(t *testing.T) {
 	for _, tt := range hammingTests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			res, err := Hamming(tt.hash1, tt.hash2)
+			res, err := similarity.Hamming(tt.hash1, tt.hash2)
 			if err != nil {
 				t.Fatalf("unexpected error: %v", err)
 			}
@@ -42,9 +43,9 @@ func TestHamming(t *testing.T) {
 func TestHamming_notBinary(t *testing.T) {
 	h1 := hashtype.UInt8{1, 2, 3}
 	h2 := hashtype.UInt8{4, 5, 6}
-	_, err := Hamming(h1, h2)
-	if err != ErrNotBinaryHash {
-		t.Errorf("got %v, want %v", err, ErrNotBinaryHash)
+	_, err := similarity.Hamming(h1, h2)
+	if !errors.Is(err, similarity.ErrNotBinaryHash) {
+		t.Errorf("got %v, want %v", err, similarity.ErrNotBinaryHash)
 	}
 }
 
@@ -53,11 +54,11 @@ func ExampleHamming() {
 	hash2 := hashtype.Binary{24, 60, 126, 126, 126, 126, 60, 0}
 	hash3 := hashtype.Binary{63, 131, 192, 224, 192, 252, 255, 63}
 
-	res1, err := Hamming(hash1, hash2)
+	res1, err := similarity.Hamming(hash1, hash2)
 	if err != nil {
 		panic(err)
 	}
-	res2, err := Hamming(hash1, hash3)
+	res2, err := similarity.Hamming(hash1, hash3)
 	if err != nil {
 		panic(err)
 	}

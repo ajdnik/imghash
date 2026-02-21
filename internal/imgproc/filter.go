@@ -5,6 +5,7 @@ import (
 	"image/color"
 )
 
+// Filter2DGray applies a 2-D convolution kernel to a grayscale image.
 func Filter2DGray(img *image.Gray, kernel [][]float32) [][]float32 {
 	bounds := img.Bounds()
 	width, height := getSize(img)
