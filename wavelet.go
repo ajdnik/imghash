@@ -2,7 +2,6 @@ package imghash
 
 import (
 	"image"
-	"sort"
 
 	"github.com/ajdnik/imghash/v2/hashtype"
 	"github.com/ajdnik/imghash/v2/internal/imgproc"
@@ -70,18 +69,7 @@ func (wh WHash) extractLL(mat [][]float32) [][]float32 {
 }
 
 func (wh WHash) median(mat [][]float32) float32 {
-	vals := make([]float64, 0, wh.width*wh.height)
-	for _, row := range mat {
-		for _, v := range row {
-			vals = append(vals, float64(v))
-		}
-	}
-	sort.Float64s(vals)
-	n := len(vals)
-	if n%2 == 0 {
-		return float32((vals[n/2-1] + vals[n/2]) / 2)
-	}
-	return float32(vals[n/2])
+	return imgproc.MedianF32(mat)
 }
 
 func (wh WHash) computeHash(ll [][]float32, median float32) hashtype.Binary {

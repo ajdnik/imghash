@@ -2,7 +2,6 @@ package imghash
 
 import (
 	"image"
-	"sort"
 
 	"github.com/ajdnik/imghash/v2/hashtype"
 	"github.com/ajdnik/imghash/v2/internal/imgproc"
@@ -75,16 +74,7 @@ func (p PDQ) extractBlock(dct [][]float32) [][]float32 {
 
 // median computes the median of all values in the block.
 func (p PDQ) median(block [][]float32) float32 {
-	n := len(block) * len(block[0])
-	vals := make([]float32, 0, n)
-	for _, row := range block {
-		vals = append(vals, row...)
-	}
-	sort.Slice(vals, func(i, j int) bool { return vals[i] < vals[j] })
-	if n%2 == 0 {
-		return (vals[n/2-1] + vals[n/2]) / 2
-	}
-	return vals[n/2]
+	return imgproc.MedianF32(block)
 }
 
 // computeHash thresholds the DCT block against the median to produce a 256-bit hash.

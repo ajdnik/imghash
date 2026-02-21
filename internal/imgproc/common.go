@@ -53,6 +53,23 @@ func Median(img *image.Gray) (float64, error) {
 	return float64(pixels[totalPixels/2]), nil
 }
 
+// MedianF32 returns the median of all values in a 2-D float32 matrix.
+func MedianF32(mat [][]float32) float32 {
+	var n int
+	for _, row := range mat {
+		n += len(row)
+	}
+	vals := make([]float32, 0, n)
+	for _, row := range mat {
+		vals = append(vals, row...)
+	}
+	sort.Slice(vals, func(i, j int) bool { return vals[i] < vals[j] })
+	if n%2 == 0 {
+		return (vals[n/2-1] + vals[n/2]) / 2
+	}
+	return vals[n/2]
+}
+
 func getSize(img image.Image) (int, int) {
 	bounds := img.Bounds()
 	width := bounds.Max.X - bounds.Min.X
