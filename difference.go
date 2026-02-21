@@ -8,7 +8,7 @@ import (
 	"github.com/ajdnik/imghash/v2/similarity"
 )
 
-// Difference is a perceptual hash that uses the method described in Kinf of Like That by Dr. Neal Krawetz.
+// Difference is a perceptual hash that uses the method described in Kind of Like That by Dr. Neal Krawetz.
 //
 // See https://www.hackerfactor.com/blog/index.php?/archives/529-Kind-of-Like-That.html for more information.
 type Difference struct {
