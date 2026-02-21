@@ -1,10 +1,12 @@
 package imghash_test
 
 import (
+	"errors"
 	"strings"
 	"testing"
 
 	"github.com/ajdnik/imghash/v2"
+	"github.com/ajdnik/imghash/v2/hashtype"
 )
 
 func TestOpenImage_nonexistent(t *testing.T) {
@@ -73,5 +75,47 @@ func TestCompare_incompatible(t *testing.T) {
 	_, err := imghash.Compare(h1, h2)
 	if err == nil {
 		t.Error("expected error for incompatible hash types")
+	}
+}
+
+func TestCompare_override(t *testing.T) {
+	want := imghash.Distance(77.7)
+	called := false
+	custom := func(_, _ hashtype.Hash) (imghash.Distance, error) {
+		called = true
+		return want, nil
+	}
+
+	got, err := imghash.Compare(imghash.UInt8{1, 2}, imghash.UInt8{3, 4}, custom)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if !called {
+		t.Fatal("expected custom distance function to be called")
+	}
+	if !got.Equal(want) {
+		t.Fatalf("got %v, want %v", got, want)
+	}
+}
+
+func TestCompare_overrideError(t *testing.T) {
+	wantErr := errors.New("custom compare failed")
+	custom := func(_, _ hashtype.Hash) (imghash.Distance, error) {
+		return 0, wantErr
+	}
+
+	_, err := imghash.Compare(imghash.UInt8{1, 2}, imghash.UInt8{3, 4}, custom)
+	if !errors.Is(err, wantErr) {
+		t.Fatalf("got %v, want %v", err, wantErr)
+	}
+}
+
+func TestCompare_nilOverrideFallsBack(t *testing.T) {
+	got, err := imghash.Compare(imghash.UInt8{0, 0}, imghash.UInt8{3, 4}, nil)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if !got.Equal(5) {
+		t.Fatalf("got %v, want 5", got)
 	}
 }

@@ -22,6 +22,7 @@ var hammingTests = []struct {
 	{"sample1 vs sample3", hashtype.Binary{15, 131, 192, 224, 192, 252, 255, 255}, hashtype.Binary{63, 131, 192, 224, 192, 252, 255, 63}, 4},
 	{"sample1 vs sample4", hashtype.Binary{15, 131, 192, 224, 192, 252, 255, 255}, hashtype.Binary{16, 60, 124, 126, 124, 124, 60, 24}, 38},
 	{"lena vs cat", hashtype.Binary{125, 121, 185, 149, 213, 197, 112, 52}, hashtype.Binary{255, 255, 143, 3, 33, 65, 32, 27}, 27},
+	{"different lengths", hashtype.Binary{0x00, 0xFF}, hashtype.Binary{0xFF}, 8},
 }
 
 func TestHamming(t *testing.T) {
