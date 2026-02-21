@@ -81,7 +81,7 @@ You can also call `h1.Distance(h2)` directly on any hash value.
 
 ## Perceptual Hash Algorithms
 
-The library supports 10 perceptual hashing algorithms. Most are ported from [OpenCV Contrib](https://github.com/opencv/opencv_contrib) and tested against its implementations.
+The library supports 11 perceptual hashing algorithms. Most are ported from [OpenCV Contrib](https://github.com/opencv/opencv_contrib) and tested against its implementations.
 
 Every constructor accepts functional options. Call with no arguments for defaults, or pass `With*` options to customize:
 
@@ -235,6 +235,24 @@ hash, err := lbp.Calculate(img)
 | `WithGridSize(x, y)` | 1, 1 |
 
 With the default 1x1 grid the hash is a 256-element uint8 vector. Set `WithGridSize(4, 4)` for a 4096-element spatially-aware hash.
+
+#### HOG Hash (Histogram of Oriented Gradients)
+
+Computes gradient magnitudes and orientations at each pixel, divides the image into square cells, and builds a magnitude-weighted orientation histogram per cell. The histograms are normalized and concatenated into a uint8 vector. See [Histogram of oriented gradients](https://en.wikipedia.org/wiki/Histogram_of_oriented_gradients) for more information.
+
+```go
+hog, err := imghash.NewHOGHash()
+hash, err := hog.Calculate(img)
+```
+
+| Option | Default |
+|--------|---------|
+| `WithSize(w, h)` | 256, 256 |
+| `WithInterpolation(i)` | `Bilinear` |
+| `WithCellSize(s)` | 8 |
+| `WithNumBins(n)` | 9 |
+
+With default settings the hash is a 9216-element uint8 vector (32×32 cells × 9 bins). Use `WithSize(32, 32)` for a compact 144-element hash (4×4 cells × 9 bins).
 
 #### Radial Variance Hash
 
