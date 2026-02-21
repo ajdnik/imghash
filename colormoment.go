@@ -45,7 +45,7 @@ func NewColorMoment(opts ...Option) ColorMoment {
 }
 
 // Calculate returns a perceptual image hash.
-func (ch *ColorMoment) Calculate(img image.Image) (hashtype.Hash, error) {
+func (ch ColorMoment) Calculate(img image.Image) (hashtype.Hash, error) {
 	r := imgproc.Resize(ch.width, ch.height, img, ch.interp.resizeType())
 	b := imgproc.GaussianBlur(r, ch.kernel, ch.sigma)
 	yrb, err := imgproc.YCrCb(b)

@@ -37,7 +37,7 @@ func NewPHash(opts ...Option) PHash {
 }
 
 // Calculate returns a perceptual image hash.
-func (ph *PHash) Calculate(img image.Image) (hashtype.Hash, error) {
+func (ph PHash) Calculate(img image.Image) (hashtype.Hash, error) {
 	r := imgproc.Resize(ph.width, ph.height, img, ph.interp.resizeType())
 	g, err := imgproc.Grayscale(r)
 	if err != nil {
@@ -54,7 +54,7 @@ func (ph *PHash) Calculate(img image.Image) (hashtype.Hash, error) {
 }
 
 // Computes the binary hash based on the binary image supplied.
-func (ph *PHash) computeHash(img [][]float32) hashtype.Binary {
+func (ph PHash) computeHash(img [][]float32) hashtype.Binary {
 	// TODO: Remove magic numbers
 	hash := make(hashtype.Binary, 8)
 	var c uint
@@ -70,7 +70,7 @@ func (ph *PHash) computeHash(img [][]float32) hashtype.Binary {
 }
 
 // Extract top left block from supplied image.
-func (ph *PHash) topLeft(img [][]float32) [][]float32 {
+func (ph PHash) topLeft(img [][]float32) [][]float32 {
 	// TODO: Remove magic numbers
 	tL := make([][]float32, 8)
 	for i := range tL {
@@ -80,7 +80,7 @@ func (ph *PHash) topLeft(img [][]float32) [][]float32 {
 }
 
 // Compute mean of the supplied image.
-func (ph *PHash) mean(img [][]float32) float32 {
+func (ph PHash) mean(img [][]float32) float32 {
 	var c int
 	var s float32
 	for i := range img {
@@ -93,7 +93,7 @@ func (ph *PHash) mean(img [][]float32) float32 {
 }
 
 // Build a binary image by comparring the value to the supplied image.
-func (ph *PHash) compare(img [][]float32, val float32) [][]float32 {
+func (ph PHash) compare(img [][]float32, val float32) [][]float32 {
 	bit := make([][]float32, len(img))
 	for i := range img {
 		bit[i] = make([]float32, len(img[i]))

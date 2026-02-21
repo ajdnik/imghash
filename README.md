@@ -44,12 +44,12 @@ import (
 func main() {
   phash := imghash.NewPHash()
 
-  h1, err := imghash.HashFile(&phash, "image1.png")
+  h1, err := imghash.HashFile(phash, "image1.png")
   if err != nil {
     panic(err)
   }
 
-  h2, err := imghash.HashFile(&phash, "image2.png")
+  h2, err := imghash.HashFile(phash, "image2.png")
   if err != nil {
     panic(err)
   }

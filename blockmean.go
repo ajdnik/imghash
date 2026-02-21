@@ -64,7 +64,7 @@ func NewBlockMean(opts ...Option) BlockMean {
 }
 
 // Calculate returns a perceptual image hash.
-func (bh *BlockMean) Calculate(img image.Image) (hashtype.Hash, error) {
+func (bh BlockMean) Calculate(img image.Image) (hashtype.Hash, error) {
 	r := imgproc.Resize(bh.rWidth, bh.rHeight, img, bh.interp.resizeType())
 	g, err := imgproc.Grayscale(r)
 	if err != nil {
@@ -79,7 +79,7 @@ func (bh *BlockMean) Calculate(img image.Image) (hashtype.Hash, error) {
 }
 
 // Computes mean values of constructed blocks.
-func (bh *BlockMean) computeMean(img *image.Gray) []float64 {
+func (bh BlockMean) computeMean(img *image.Gray) []float64 {
 	blksInX := int(bh.rWidth / bh.bWidth)
 	blksInY := int(bh.rHeight / bh.bHeight)
 	numB := blksInX * blksInY
@@ -112,7 +112,7 @@ func (bh *BlockMean) computeMean(img *image.Gray) []float64 {
 }
 
 // Computest binary hash value based on block means.
-func (bh *BlockMean) computeHash(means []float64, median float64) hashtype.Binary {
+func (bh BlockMean) computeHash(means []float64, median float64) hashtype.Binary {
 	mSize := len(means)
 	hSize := mSize/8 + mSize%8
 	hash := make(hashtype.Binary, hSize)

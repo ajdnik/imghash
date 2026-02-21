@@ -58,7 +58,7 @@ func NewMarrHildreth(opts ...Option) MarrHildreth {
 }
 
 // Calculate returns a perceptual image hash.
-func (mhh *MarrHildreth) Calculate(img image.Image) (hashtype.Hash, error) {
+func (mhh MarrHildreth) Calculate(img image.Image) (hashtype.Hash, error) {
 	g, err := imgproc.Grayscale(img)
 	if err != nil {
 		return nil, err
@@ -73,7 +73,7 @@ func (mhh *MarrHildreth) Calculate(img image.Image) (hashtype.Hash, error) {
 
 // Compute sums of blocks.
 // TODO: Remove all magic numbers.
-func (mhh *MarrHildreth) blocksSum(img [][]float32) [][]float32 {
+func (mhh MarrHildreth) blocksSum(img [][]float32) [][]float32 {
 	blocks := make([][]float32, 31)
 	for r := 0; r < 31; r++ {
 		blocks[r] = make([]float32, 31)
@@ -92,7 +92,7 @@ func (mhh *MarrHildreth) blocksSum(img [][]float32) [][]float32 {
 
 // Compute binary hash from block sums.
 // TODO: Remove all magic numbers.
-func (mhh *MarrHildreth) createHash(blocks [][]float32) hashtype.Binary {
+func (mhh MarrHildreth) createHash(blocks [][]float32) hashtype.Binary {
 	hash := make(hashtype.Binary, 72)
 	var count uint
 	for r := 0; r < 29; r += 4 {

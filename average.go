@@ -37,7 +37,7 @@ func NewAverage(opts ...Option) Average {
 }
 
 // Calculate returns a perceptual image hash.
-func (ah *Average) Calculate(img image.Image) (hashtype.Hash, error) {
+func (ah Average) Calculate(img image.Image) (hashtype.Hash, error) {
 	r := imgproc.Resize(ah.width, ah.height, img, ah.interp.resizeType())
 	g, err := imgproc.Grayscale(r)
 	if err != nil {
@@ -51,7 +51,7 @@ func (ah *Average) Calculate(img image.Image) (hashtype.Hash, error) {
 }
 
 // Computes the binary hash based on the average value of resized image.
-func (ah *Average) computeHash(img *image.Gray, mean uint) hashtype.Binary {
+func (ah Average) computeHash(img *image.Gray, mean uint) hashtype.Binary {
 	size := ah.width * ah.height / 8
 	hash := make(hashtype.Binary, size)
 	bnds := img.Bounds()
