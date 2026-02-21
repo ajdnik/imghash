@@ -59,7 +59,8 @@ func main() {
     panic(err)
   }
 
-  dist, err := imghash.Compare(h1, h2)
+  // Use the algorithm's recommended distance metric
+  dist, err := pdq.Compare(h1, h2)
   if err != nil {
     panic(err)
   }
@@ -79,7 +80,7 @@ The library provides helpers so you don't need image decoding boilerplate:
 | `HashReader(hasher, r)` | Decodes from a reader and computes the hash |
 | `Compare(h1, h2)` | Computes distance using the natural metric for the hash type |
 
-You can also call `h1.Distance(h2)` directly on any hash value.
+You can also call `h1.Distance(h2)` directly on any hash value, or use the algorithm's `Compare` method for the recommended metric (see [Similarity Metrics](#similarity-metrics)).
 
 ## Perceptual Hash Algorithms
 
@@ -104,7 +105,9 @@ Produces a 64-bit binary hash. Compares using Hamming distance. Based on [Looks 
 
 ```go
 avg, err := imghash.NewAverage()
-hash, err := avg.Calculate(img)
+h1, err := avg.Calculate(img1)
+h2, err := avg.Calculate(img2)
+dist, err := avg.Compare(h1, h2) // Hamming distance
 ```
 
 | Option | Default |
@@ -114,11 +117,13 @@ hash, err := avg.Calculate(img)
 
 #### Difference Hash
 
-Very similar to Average but computes gradients instead of averages. Based on [Kind of Like That](https://www.hackerfactor.com/blog/index.php?/archives/529-Kind-of-Like-That.html).
+Very similar to Average but computes gradients instead of averages. Compares using Hamming distance. Based on [Kind of Like That](https://www.hackerfactor.com/blog/index.php?/archives/529-Kind-of-Like-That.html).
 
 ```go
 diff, err := imghash.NewDifference()
-hash, err := diff.Calculate(img)
+h1, err := diff.Calculate(img1)
+h2, err := diff.Calculate(img2)
+dist, err := diff.Compare(h1, h2) // Hamming distance
 ```
 
 | Option | Default |
@@ -128,11 +133,13 @@ hash, err := diff.Calculate(img)
 
 #### Median Hash
 
-Almost identical to Average hash but uses the median instead of the mean.
+Almost identical to Average hash but uses the median instead of the mean. Compares using Hamming distance.
 
 ```go
 med, err := imghash.NewMedian()
-hash, err := med.Calculate(img)
+h1, err := med.Calculate(img1)
+h2, err := med.Calculate(img2)
+dist, err := med.Compare(h1, h2) // Hamming distance
 ```
 
 | Option | Default |
@@ -142,25 +149,30 @@ hash, err := med.Calculate(img)
 
 #### pHash
 
-Uses a discrete cosine transform to produce a 64-bit binary hash. From [Rihamark: Perceptual image hash benchmarking](https://www.researchgate.net/publication/252340846_Rihamark_Perceptual_image_hash_benchmarking).
+Uses a discrete cosine transform to produce a 64-bit binary hash. Compares using weighted Hamming distance, where each byte position can be assigned a different weight (defaults to uniform). From [Rihamark: Perceptual image hash benchmarking](https://www.researchgate.net/publication/252340846_Rihamark_Perceptual_image_hash_benchmarking).
 
 ```go
 ph, err := imghash.NewPHash()
-hash, err := ph.Calculate(img)
+h1, err := ph.Calculate(img1)
+h2, err := ph.Calculate(img2)
+dist, err := ph.Compare(h1, h2) // Weighted Hamming distance
 ```
 
 | Option | Default |
 |--------|---------|
 | `WithSize(w, h)` | 32, 32 |
 | `WithInterpolation(i)` | `BilinearExact` |
+| `WithWeights(w)` | `[1, 1, 1, 1, 1, 1, 1, 1]` |
 
 #### Wavelet Hash (wHash)
 
-Uses a multi-level Haar discrete wavelet transform to produce a 64-bit binary hash. The image is resized to `(width * 2^level) x (height * 2^level)`, converted to grayscale, and decomposed via the Haar DWT. The low-frequency (LL) subband coefficients are thresholded against their median. See [Wavelet image hash](https://fullstackml.com/wavelet-image-hash-in-python-3504571f3b08) for more information.
+Uses a multi-level Haar discrete wavelet transform to produce a 64-bit binary hash. Compares using Hamming distance. The image is resized to `(width * 2^level) x (height * 2^level)`, converted to grayscale, and decomposed via the Haar DWT. The low-frequency (LL) subband coefficients are thresholded against their median. See [Wavelet image hash](https://fullstackml.com/wavelet-image-hash-in-python-3504571f3b08) for more information.
 
 ```go
 wh, err := imghash.NewWHash()
-hash, err := wh.Calculate(img)
+h1, err := wh.Calculate(img1)
+h2, err := wh.Calculate(img2)
+dist, err := wh.Compare(h1, h2) // Hamming distance
 ```
 
 | Option | Default |
@@ -171,11 +183,13 @@ hash, err := wh.Calculate(img)
 
 #### Color Moments Hash
 
-Builds a 42-element float64 vector from YCbCr and HSV color moments. Based on [Perceptual hashing for color images using invariant moments](https://www.researchgate.net/publication/286870507_Perceptual_hashing_for_color_images_using_invariant_moments).
+Builds a 42-element float64 vector from YCbCr and HSV color moments. Compares using L2 (Euclidean) distance. Based on [Perceptual hashing for color images using invariant moments](https://www.researchgate.net/publication/286870507_Perceptual_hashing_for_color_images_using_invariant_moments).
 
 ```go
 cm, err := imghash.NewColorMoment()
-hash, err := cm.Calculate(img)
+h1, err := cm.Calculate(img1)
+h2, err := cm.Calculate(img2)
+dist := cm.Compare(h1, h2) // L2 distance
 ```
 
 | Option | Default |
@@ -187,11 +201,13 @@ hash, err := cm.Calculate(img)
 
 #### Marr-Hildreth Hash
 
-Uses a 2D wavelet transform to produce a 576-bit binary hash. From [Rihamark: Perceptual image hash benchmarking](https://www.researchgate.net/publication/252340846_Rihamark_Perceptual_image_hash_benchmarking).
+Uses a 2D wavelet transform to produce a 576-bit binary hash. Compares using Hamming distance. From [Rihamark: Perceptual image hash benchmarking](https://www.researchgate.net/publication/252340846_Rihamark_Perceptual_image_hash_benchmarking).
 
 ```go
 mh, err := imghash.NewMarrHildreth()
-hash, err := mh.Calculate(img)
+h1, err := mh.Calculate(img1)
+h2, err := mh.Calculate(img2)
+dist, err := mh.Compare(h1, h2) // Hamming distance
 ```
 
 | Option | Default |
@@ -205,11 +221,13 @@ hash, err := mh.Calculate(img)
 
 #### Block Mean Value Hash
 
-Computes means using a sliding window to produce a 256-bit binary hash. Based on [Block Mean Value Based Image Perceptual Hashing](https://ieeexplore.ieee.org/document/4041692).
+Computes means using a sliding window to produce a 256-bit binary hash. Compares using Hamming distance. Based on [Block Mean Value Based Image Perceptual Hashing](https://ieeexplore.ieee.org/document/4041692).
 
 ```go
 bm, err := imghash.NewBlockMean()
-hash, err := bm.Calculate(img)
+h1, err := bm.Calculate(img1)
+h2, err := bm.Calculate(img2)
+dist, err := bm.Compare(h1, h2) // Hamming distance
 ```
 
 | Option | Default |
@@ -223,11 +241,13 @@ Block mean methods: `Direct`, `Overlap`, `Rotation`, `RotationOverlap`.
 
 #### Local Binary Pattern (LBP) Hash
 
-Computes a 3x3 Local Binary Pattern code for each pixel and builds a normalized 256-bin histogram per grid cell, producing a uint8 vector. The grid can be increased for spatially-aware hashing. Based on [Multiresolution Gray-Scale and Rotation Invariant Texture Classification with Local Binary Patterns](https://ieeexplore.ieee.org/document/1017623) by Ojala et al.
+Computes a 3x3 Local Binary Pattern code for each pixel and builds a normalized 256-bin histogram per grid cell, producing a uint8 vector. Compares using chi-square distance, which is well suited for histogram comparison. The grid can be increased for spatially-aware hashing. Based on [Multiresolution Gray-Scale and Rotation Invariant Texture Classification with Local Binary Patterns](https://ieeexplore.ieee.org/document/1017623) by Ojala et al.
 
 ```go
 lbp, err := imghash.NewLBP()
-hash, err := lbp.Calculate(img)
+h1, err := lbp.Calculate(img1)
+h2, err := lbp.Calculate(img2)
+dist := lbp.Compare(h1, h2) // Chi-square distance
 ```
 
 | Option | Default |
@@ -240,11 +260,13 @@ With the default 1x1 grid the hash is a 256-element uint8 vector. Set `WithGridS
 
 #### HOG Hash (Histogram of Oriented Gradients)
 
-Computes gradient magnitudes and orientations at each pixel, divides the image into square cells, and builds a magnitude-weighted orientation histogram per cell. The histograms are normalized and concatenated into a uint8 vector. Based on [Histograms of Oriented Gradients for Human Detection](https://ieeexplore.ieee.org/document/1467360) by Dalal and Triggs.
+Computes gradient magnitudes and orientations at each pixel, divides the image into square cells, and builds a magnitude-weighted orientation histogram per cell. The histograms are normalized and concatenated into a uint8 vector. Compares using cosine distance, which measures orientation similarity independent of magnitude scaling. Based on [Histograms of Oriented Gradients for Human Detection](https://ieeexplore.ieee.org/document/1467360) by Dalal and Triggs.
 
 ```go
 hog, err := imghash.NewHOGHash()
-hash, err := hog.Calculate(img)
+h1, err := hog.Calculate(img1)
+h2, err := hog.Calculate(img2)
+dist := hog.Compare(h1, h2) // Cosine distance
 ```
 
 | Option | Default |
@@ -258,11 +280,13 @@ With default settings the hash is a 9216-element uint8 vector (32×32 cells × 9
 
 #### Radial Variance Hash
 
-Uses radial projections and feature vector computations to generate a 40-element uint8 vector. From [Robust image hashing based on radial variance of pixels](https://www.researchgate.net/publication/4186555_Robust_image_hashing_based_on_radial_variance_of_pixels).
+Uses radial projections and feature vector computations to generate a 40-element uint8 vector. Compares using L1 (Manhattan) distance. From [Robust image hashing based on radial variance of pixels](https://www.researchgate.net/publication/4186555_Robust_image_hashing_based_on_radial_variance_of_pixels).
 
 ```go
 rv, err := imghash.NewRadialVariance()
-hash, err := rv.Calculate(img)
+h1, err := rv.Calculate(img1)
+h2, err := rv.Calculate(img2)
+dist := rv.Compare(h1, h2) // L1 distance
 ```
 
 | Option | Default |
@@ -272,11 +296,13 @@ hash, err := rv.Calculate(img)
 
 #### RASH (Rotation Aware Spatial Hash)
 
-Produces a 64-bit binary hash designed to be robust against image rotation. This is a custom algorithm that combines concentric ring sampling for rotation invariance, a 1-D DCT for frequency compaction, and median thresholding for binarisation. The algorithm resizes the image, converts to grayscale, applies Gaussian blur, then samples pixel intensities on concentric rings around the image centre. Because ring-mean features are inherently rotation-invariant (rotating the image only permutes pixels within a ring, leaving its mean unchanged), the resulting hash stays stable under arbitrary rotations. Compares using Hamming distance. Inspired by ring-partition hashing literature such as [Robust Image Hashing with Ring Partition and Invariant Vector Distance](https://ieeexplore.ieee.org/document/7368930) by Tang et al. and [Robust image hashing based on radial variance of pixels](https://www.researchgate.net/publication/4186555_Robust_image_hashing_based_on_radial_variance_of_pixels) by De Roover et al.
+Produces a 64-bit binary hash designed to be robust against image rotation. Compares using Hamming distance. This is a custom algorithm that combines concentric ring sampling for rotation invariance, a 1-D DCT for frequency compaction, and median thresholding for binarisation. The algorithm resizes the image, converts to grayscale, applies Gaussian blur, then samples pixel intensities on concentric rings around the image centre. Because ring-mean features are inherently rotation-invariant (rotating the image only permutes pixels within a ring, leaving its mean unchanged), the resulting hash stays stable under arbitrary rotations. Inspired by ring-partition hashing literature such as [Robust Image Hashing with Ring Partition and Invariant Vector Distance](https://ieeexplore.ieee.org/document/7368930) by Tang et al. and [Robust image hashing based on radial variance of pixels](https://www.researchgate.net/publication/4186555_Robust_image_hashing_based_on_radial_variance_of_pixels) by De Roover et al.
 
 ```go
 rash, err := imghash.NewRASH()
-hash, err := rash.Calculate(img)
+h1, err := rash.Calculate(img1)
+h2, err := rash.Calculate(img2)
+dist, err := rash.Compare(h1, h2) // Hamming distance
 ```
 
 | Option | Default |
@@ -288,11 +314,13 @@ hash, err := rash.Calculate(img)
 
 #### PDQ Hash
 
-Produces a 256-bit binary hash designed for large-scale image deduplication. The algorithm resizes to 64×64, applies a Jarosz box filter for noise smoothing, computes a 2D DCT, and thresholds the 16×16 low-frequency coefficients against their median. Robust to JPEG compression, rescaling, and minor edits. From Facebook (Meta) [ThreatExchange PDQ](https://github.com/facebook/ThreatExchange/tree/main/pdq).
+Produces a 256-bit binary hash designed for large-scale image deduplication. Compares using Hamming distance. The algorithm resizes to 64×64, applies a Jarosz box filter for noise smoothing, computes a 2D DCT, and thresholds the 16×16 low-frequency coefficients against their median. Robust to JPEG compression, rescaling, and minor edits. From Facebook (Meta) [ThreatExchange PDQ](https://github.com/facebook/ThreatExchange/tree/main/pdq).
 
 ```go
 pdq, err := imghash.NewPDQ()
-hash, err := pdq.Calculate(img)
+h1, err := pdq.Calculate(img1)
+h2, err := pdq.Calculate(img2)
+dist, err := pdq.Compare(h1, h2) // Hamming distance
 ```
 
 | Option | Default |
@@ -303,7 +331,38 @@ The input size is fixed at 64×64 per the algorithm specification and is not con
 
 ## Similarity Metrics
 
-Every hash has a `Distance(other)` method that uses the natural metric for its type:
+### Algorithm-specific `Compare`
+
+Every hash algorithm has a `Compare` method that uses the recommended distance metric for that algorithm. This is the preferred way to compare hashes:
+
+```go
+pdq, _ := imghash.NewPDQ()
+h1, _ := imghash.HashFile(pdq, "image1.png")
+h2, _ := imghash.HashFile(pdq, "image2.png")
+dist, err := pdq.Compare(h1, h2)
+```
+
+The default metric per algorithm:
+
+| Algorithm | Hash type | Default `Compare` metric |
+|-----------|-----------|--------------------------|
+| Average | `Binary` | Hamming |
+| Difference | `Binary` | Hamming |
+| Median | `Binary` | Hamming |
+| PHash | `Binary` | Weighted Hamming |
+| WHash | `Binary` | Hamming |
+| MarrHildreth | `Binary` | Hamming |
+| BlockMean | `Binary` | Hamming |
+| PDQ | `Binary` | Hamming |
+| RASH | `Binary` | Hamming |
+| ColorMoment | `Float64` | L2 (Euclidean) |
+| LBP | `UInt8` | Chi-Square |
+| HOGHash | `UInt8` | Cosine |
+| RadialVariance | `UInt8` | L1 (Manhattan) |
+
+### Hash-level `Distance`
+
+Every hash also has a `Distance(other)` method that uses a generic metric based on the hash type:
 
 | Hash type | Default metric | Description |
 |-----------|---------------|-------------|
@@ -311,26 +370,26 @@ Every hash has a `Distance(other)` method that uses the natural metric for its t
 | `UInt8` | L2 (Euclidean) | Square root of sum of squared differences |
 | `Float64` | L2 (Euclidean) | Square root of sum of squared differences |
 
-For direct use:
-
 ```go
 dist, err := h1.Distance(h2)
-```
-
-Or via the top-level convenience which returns a `Distance` value:
-
-```go
+// or via the top-level convenience:
 dist, err := imghash.Compare(h1, h2)
 ```
 
-For advanced use cases (e.g. Pearson Correlation), use the `similarity` sub-package:
+### Available metrics
+
+The `similarity` sub-package provides all metrics for direct use:
 
 ```go
 import "github.com/ajdnik/imghash/v2/similarity"
 
-dist := similarity.L2(h1, h2)
-dist, err := similarity.PCC(h1, h2)
-dist, err := similarity.Hamming(h1, h2)
+dist, err := similarity.Hamming(h1, h2)          // bit-level Hamming distance (Binary only)
+dist, err := similarity.WeightedHamming(h1, h2, weights) // weighted Hamming (Binary only)
+dist := similarity.L1(h1, h2)                     // Manhattan distance
+dist := similarity.L2(h1, h2)                     // Euclidean distance
+dist := similarity.ChiSquare(h1, h2)              // Chi-square distance
+dist := similarity.Cosine(h1, h2)                 // Cosine distance (1 - cos similarity)
+dist, err := similarity.PCC(h1, h2)               // Peak cross-correlation
 ```
 
 ## Interpolation Methods

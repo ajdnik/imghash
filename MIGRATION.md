@@ -126,10 +126,29 @@ bin := h1.(imghash.Binary)
 | `similarity.PCCFloat64(f1, f2)` | `similarity.PCC(h1, h2)` |
 | `similarity.PCCUInt8(u1, u2)` | `similarity.PCC(h1, h2)` |
 
-For most callers, the new top-level helper is simpler:
+**Preferred: use the algorithm's `Compare` method.** Every hash algorithm now has
+a `Compare` method that applies the recommended distance metric for that algorithm
+(e.g. Hamming for binary hashes, chi-square for LBP, cosine for HOG):
 
 ```go
+pdq, _ := imghash.NewPDQ()
+h1, _ := pdq.Calculate(img1)
+h2, _ := pdq.Calculate(img2)
+dist, err := pdq.Compare(h1, h2)
+```
+
+The generic top-level helper and the `similarity` sub-package remain available
+for callers who need a specific metric regardless of algorithm:
+
+```go
+// Generic comparison based on hash type (Hamming for Binary, L2 for UInt8/Float64)
 dist, err := imghash.Compare(h1, h2)
+
+// Specific metric via the similarity package
+dist := similarity.ChiSquare(h1, h2)
+dist := similarity.Cosine(h1, h2)
+dist := similarity.L1(h1, h2)
+dist, err := similarity.WeightedHamming(h1, h2, weights)
 ```
 
 ## 7. Optional: adopt new convenience helpers
