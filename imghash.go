@@ -16,6 +16,20 @@ type Hasher interface {
 	Calculate(image.Image) (hashtype.Hash, error)
 }
 
+// Comparer measures the similarity between two hashes using a
+// distance metric appropriate for the algorithm that produced them.
+// It is implemented by all hash algorithms in this package.
+type Comparer interface {
+	Compare(hashtype.Hash, hashtype.Hash) (similarity.Distance, error)
+}
+
+// HasherComparer combines Hasher and Comparer into a single interface
+// for algorithms that can both compute and compare hashes.
+type HasherComparer interface {
+	Hasher
+	Comparer
+}
+
 // Re-export core types so most consumers only need to import "imghash".
 
 // Hash is the common interface for all hash representations.

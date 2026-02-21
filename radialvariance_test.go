@@ -118,8 +118,11 @@ func TestRadialVariance_Distance(t *testing.T) {
 			if err != nil {
 				t.Fatalf("failed to calculate hash for %s: %v", tt.secondImage, err)
 			}
-			dist := hash.Compare(h1, h2)
-			if math.Abs(float64(dist)-float64(tt.distance)) > 0.01 {
+		dist, err := hash.Compare(h1, h2)
+		if err != nil {
+			t.Fatalf("failed to compute distance: %v", err)
+		}
+		if math.Abs(float64(dist)-float64(tt.distance)) > 0.01 {
 				t.Errorf("got %v, want %v", dist, tt.distance)
 			}
 		})
