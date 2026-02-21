@@ -27,6 +27,9 @@ type RadialVarianceOption interface{ applyRadialVariance(*RadialVariance) }
 // ColorMomentOption configures the ColorMoment hash algorithm.
 type ColorMomentOption interface{ applyColorMoment(*ColorMoment) }
 
+// WHashOption configures the WHash algorithm.
+type WHashOption interface{ applyWHash(*WHash) }
+
 // --- concrete option types ---
 
 type sizeOption struct{ width, height uint }
@@ -38,6 +41,7 @@ func (o sizeOption) applyPHash(p *PHash)               { p.width, p.height = o.w
 func (o sizeOption) applyBlockMean(b *BlockMean)       { b.rWidth, b.rHeight = o.width, o.height }
 func (o sizeOption) applyMarrHildreth(m *MarrHildreth) { m.width, m.height = o.width, o.height }
 func (o sizeOption) applyColorMoment(c *ColorMoment)   { c.width, c.height = o.width, o.height }
+func (o sizeOption) applyWHash(w *WHash)               { w.width, w.height = o.width, o.height }
 
 type interpolationOption struct{ interp Interpolation }
 
@@ -48,6 +52,7 @@ func (o interpolationOption) applyPHash(p *PHash)               { p.interp = o.i
 func (o interpolationOption) applyBlockMean(b *BlockMean)       { b.interp = o.interp }
 func (o interpolationOption) applyMarrHildreth(m *MarrHildreth) { m.interp = o.interp }
 func (o interpolationOption) applyColorMoment(c *ColorMoment)   { c.interp = o.interp }
+func (o interpolationOption) applyWHash(w *WHash)               { w.interp = o.interp }
 
 type kernelSizeOption struct{ size int }
 
@@ -80,16 +85,20 @@ type anglesOption struct{ angles int }
 
 func (o anglesOption) applyRadialVariance(r *RadialVariance) { r.angles = o.angles }
 
+type levelOption struct{ level int }
+
+func (o levelOption) applyWHash(w *WHash) { w.level = o.level }
+
 // --- public constructors ---
 
 // WithSize sets the resize dimensions used during hash computation.
-// Applies to Average, Difference, Median, PHash, BlockMean, MarrHildreth, and ColorMoment.
+// Applies to Average, Difference, Median, PHash, BlockMean, MarrHildreth, ColorMoment, and WHash.
 func WithSize(width, height uint) sizeOption {
 	return sizeOption{width, height}
 }
 
 // WithInterpolation sets the resize interpolation method.
-// Applies to Average, Difference, Median, PHash, BlockMean, MarrHildreth, and ColorMoment.
+// Applies to Average, Difference, Median, PHash, BlockMean, MarrHildreth, ColorMoment, and WHash.
 func WithInterpolation(interp Interpolation) interpolationOption {
 	return interpolationOption{interp}
 }
@@ -134,4 +143,10 @@ func WithAlpha(alpha float64) alphaOption {
 // Applies to RadialVariance.
 func WithAngles(angles int) anglesOption {
 	return anglesOption{angles}
+}
+
+// WithLevel sets the number of Haar wavelet decomposition levels.
+// Applies to WHash.
+func WithLevel(level int) levelOption {
+	return levelOption{level}
 }

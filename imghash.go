@@ -11,7 +11,7 @@ import (
 // Hasher computes a perceptual hash from an image.
 // It is implemented by all hash algorithms in this package:
 // Average, Difference, PHash, Median, BlockMean, MarrHildreth,
-// RadialVariance, and ColorMoment.
+// RadialVariance, ColorMoment, and WHash.
 type Hasher interface {
 	Calculate(image.Image) (hashtype.Hash, error)
 }
@@ -53,4 +53,6 @@ var (
 	ErrInvalidAlpha = errors.New("imghash: alpha must be greater than zero")
 	// ErrInvalidSigma is returned when sigma is negative.
 	ErrInvalidSigma = errors.New("imghash: sigma must not be negative")
+	// ErrInvalidLevel is returned when the wavelet decomposition level is not positive.
+	ErrInvalidLevel = errors.New("imghash: level must be greater than zero")
 )
