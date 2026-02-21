@@ -57,7 +57,7 @@ func (ah *Average) computeHash(img *image.Gray, mean uint) hashtype.Binary {
 		for j := bnds.Min.X; j < bnds.Max.X; j++ {
 			pix := img.GrayAt(j, i).Y
 			if uint(pix) > mean {
-				hash.Set(c)
+				_ = hash.Set(c)
 			}
 			c++
 		}

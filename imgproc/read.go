@@ -13,7 +13,7 @@ func Read(file string) (image.Image, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer iFile.Close()
+	defer func() { _ = iFile.Close() }()
 	img, _, err := image.Decode(iFile)
 	if err != nil {
 		return nil, err

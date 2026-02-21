@@ -75,7 +75,7 @@ var binarySetTests = []struct {
 func TestBinary_Set(t *testing.T) {
 	for _, tt := range binarySetTests {
 		t.Run(tt.name, func(t *testing.T) {
-			if tt.start.Set(tt.position); !tt.start.Equal(tt.expect) {
+			if _ = tt.start.Set(tt.position); !tt.start.Equal(tt.expect) {
 				t.Errorf("got %08b, want %08b", tt.start, tt.expect)
 			}
 		})
@@ -84,8 +84,8 @@ func TestBinary_Set(t *testing.T) {
 
 func ExampleBinary_Set() {
 	hash := Binary{0, 0}
-	hash.Set(0)
-	hash.Set(15)
+	_ = hash.Set(0)
+	_ = hash.Set(15)
 	fmt.Println(hash.String())
 	// Output: [1 128]
 }
@@ -129,7 +129,7 @@ var binarySetReverseTests = []struct {
 func TestBinary_SetReverse(t *testing.T) {
 	for _, tt := range binarySetReverseTests {
 		t.Run(tt.name, func(t *testing.T) {
-			if tt.start.SetReverse(tt.position); !tt.start.Equal(tt.expect) {
+			if _ = tt.start.SetReverse(tt.position); !tt.start.Equal(tt.expect) {
 				t.Errorf("got %08b, want %08b", tt.start, tt.expect)
 			}
 		})
@@ -138,8 +138,8 @@ func TestBinary_SetReverse(t *testing.T) {
 
 func ExampleBinary_SetReverse() {
 	hash := Binary{0, 0}
-	hash.SetReverse(0)
-	hash.SetReverse(15)
+	_ = hash.SetReverse(0)
+	_ = hash.SetReverse(15)
 	fmt.Println(hash.String())
 	// Output: [128 1]
 }

@@ -60,7 +60,7 @@ func (ph *PHash) computeHash(img [][]float32) hashtype.Binary {
 	for i := range img {
 		for j := range img[i] {
 			if img[i][j] != 0 {
-				hash.Set(c)
+				_ = hash.Set(c)
 			}
 			c++
 		}

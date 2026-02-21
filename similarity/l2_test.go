@@ -39,8 +39,8 @@ func ExampleL2Float64() {
 	fmt.Println(L2Float64(hash1, hash2))
 	fmt.Println(L2Float64(hash1, hash3))
 	// Output:
-	// 2.050238964293645e-16
-	// 8.648422860884238e-17
+	// 2.0502389642936448e-16
+	// 8.648422860884239e-17
 }
 
 var l2Uint8Tests = []struct {

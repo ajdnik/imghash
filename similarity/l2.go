@@ -23,7 +23,7 @@ func l2Calculate(h1, h2 interface{}) Distance {
 	var s float64
 	for i := 0; i < l; i++ {
 		val1, val2 := genElem(h1, i), genElem(h2, i)
-		s += math.Pow(val1-val2, 2)
+		s += (val1 - val2) * (val1 - val2)
 	}
 	return Distance(math.Sqrt(s))
 }

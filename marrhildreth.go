@@ -109,7 +109,7 @@ func (mhh *MarrHildreth) createHash(blocks [][]float32) hashtype.Binary {
 			for i := r; i < r+3; i++ {
 				for j := c; j < c+3; j++ {
 					if blocks[j][i] > avg {
-						hash.SetReverse(count)
+						_ = hash.SetReverse(count)
 					}
 					count++
 				}

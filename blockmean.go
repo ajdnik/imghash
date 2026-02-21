@@ -114,7 +114,7 @@ func (bh *BlockMean) computeHash(means []float64, median float64) hashtype.Binar
 	hash := make(hashtype.Binary, hSize)
 	for i := 0; i < mSize; i++ {
 		if means[i] >= median {
-			hash.Set(uint(i))
+			_ = hash.Set(uint(i))
 		}
 	}
 	return hash

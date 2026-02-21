@@ -16,8 +16,5 @@ type Distance float64
 // Equal checks if two distances are the same, it uses the epsilon approach for comparring floats.
 func (d Distance) Equal(dst Distance) bool {
 	eps := 1e-12
-	if math.Abs(float64(d)-float64(dst)) > eps {
-		return false
-	}
-	return true
+	return math.Abs(float64(d)-float64(dst)) <= eps
 }

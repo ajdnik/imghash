@@ -55,7 +55,7 @@ func (dh *Difference) computeHash(img *image.Gray) hashtype.Binary {
 			lft := img.GrayAt(j-1, i).Y
 			pix := img.GrayAt(j, i).Y
 			if pix > lft {
-				hash.Set(c)
+				_ = hash.Set(c)
 			}
 			c++
 		}
