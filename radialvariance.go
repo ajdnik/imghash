@@ -48,13 +48,6 @@ func (rv RadialVariance) Calculate(img image.Image) (hashtype.Hash, error) {
 	return rv.computeHash(feat), nil
 }
 
-func getSize(img image.Image) (int, int) {
-	bounds := img.Bounds()
-	width := bounds.Max.X - bounds.Min.X
-	height := bounds.Max.Y - bounds.Min.Y
-	return width, height
-}
-
 func roundingFactor(val float32) float32 {
 	if val >= 0 {
 		return 0.5
@@ -68,7 +61,8 @@ func createOffset(len int) int {
 }
 
 func (rv RadialVariance) radialProjections(img *image.Gray) ([]uint8, []int32, int) {
-	w, h := getSize(img)
+	bounds := img.Bounds()
+	w, h := bounds.Dx(), bounds.Dy()
 	dim := h
 	if w > h {
 		dim = w
