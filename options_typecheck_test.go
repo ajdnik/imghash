@@ -50,3 +50,8 @@ var _ HOGHashOption = WithCellSize(0)
 var _ HOGHashOption = WithNumBins(0)
 
 var _ PDQOption = WithInterpolation(Bilinear)
+
+var _ RASHOption = WithSize(0, 0)
+var _ RASHOption = WithInterpolation(Bilinear)
+var _ RASHOption = WithSigma(0)
+var _ RASHOption = WithRings(0)

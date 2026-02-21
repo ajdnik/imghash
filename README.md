@@ -32,6 +32,8 @@ Most consumers only need the top-level `imghash` package. The core types (`Hash`
 
 ## Quick Start
 
+If you're not sure which hash algorithm to use, go with PDQ. It's generally the best all-around choice — robust to JPEG compression, rescaling, and minor edits. Pick a different algorithm only if you have specific needs (e.g. rotation invariance, color-aware comparison, or a particular hash size).
+
 ```go
 package main
 
@@ -42,17 +44,17 @@ import (
 )
 
 func main() {
-  phash, err := imghash.NewPHash()
+  pdq, err := imghash.NewPDQ()
   if err != nil {
     panic(err)
   }
 
-  h1, err := imghash.HashFile(phash, "image1.png")
+  h1, err := imghash.HashFile(pdq, "image1.png")
   if err != nil {
     panic(err)
   }
 
-  h2, err := imghash.HashFile(phash, "image2.png")
+  h2, err := imghash.HashFile(pdq, "image2.png")
   if err != nil {
     panic(err)
   }
@@ -81,7 +83,7 @@ You can also call `h1.Distance(h2)` directly on any hash value.
 
 ## Perceptual Hash Algorithms
 
-The library supports 12 perceptual hashing algorithms. Most are ported from [OpenCV Contrib](https://github.com/opencv/opencv_contrib) and tested against its implementations.
+The library supports 13 perceptual hashing algorithms. Most are ported from [OpenCV Contrib](https://github.com/opencv/opencv_contrib) and tested against its implementations.
 
 Every constructor accepts functional options. Call with no arguments for defaults, or pass `With*` options to customize:
 
@@ -267,6 +269,22 @@ hash, err := rv.Calculate(img)
 |--------|---------|
 | `WithSigma(s)` | 1 |
 | `WithAngles(n)` | 180 |
+
+#### RASH (Rotation Aware Spatial Hash)
+
+Produces a 64-bit binary hash designed to be robust against image rotation. This is a custom algorithm that combines concentric ring sampling for rotation invariance, a 1-D DCT for frequency compaction, and median thresholding for binarisation. The algorithm resizes the image, converts to grayscale, applies Gaussian blur, then samples pixel intensities on concentric rings around the image centre. Because ring-mean features are inherently rotation-invariant (rotating the image only permutes pixels within a ring, leaving its mean unchanged), the resulting hash stays stable under arbitrary rotations. Compares using Hamming distance. Inspired by ring-partition hashing literature such as [Robust Image Hashing with Ring Partition and Invariant Vector Distance](https://ieeexplore.ieee.org/document/7368930) by Tang et al. and [Robust image hashing based on radial variance of pixels](https://www.researchgate.net/publication/4186555_Robust_image_hashing_based_on_radial_variance_of_pixels) by De Roover et al.
+
+```go
+rash, err := imghash.NewRASH()
+hash, err := rash.Calculate(img)
+```
+
+| Option | Default |
+|--------|---------|
+| `WithSize(w, h)` | 256, 256 |
+| `WithInterpolation(i)` | `Bilinear` |
+| `WithSigma(s)` | 1 |
+| `WithRings(n)` | 180 |
 
 #### PDQ Hash
 
