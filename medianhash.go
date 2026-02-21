@@ -6,6 +6,7 @@ import (
 
 	"github.com/ajdnik/imghash/v2/hashtype"
 	"github.com/ajdnik/imghash/v2/internal/imgproc"
+	"github.com/ajdnik/imghash/v2/similarity"
 )
 
 // Median is a perceptual hash that uses a similar approach as Average hash.
@@ -49,4 +50,9 @@ func (mh Median) Calculate(img image.Image) (hashtype.Hash, error) {
 		return nil, err
 	}
 	return thresholdHash(g, uint(math.Round(med))), nil
+}
+
+// Compare computes the Hamming distance between two Median hashes.
+func (mh Median) Compare(h1, h2 hashtype.Hash) (similarity.Distance, error) {
+	return similarity.Hamming(h1, h2)
 }

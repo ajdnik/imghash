@@ -6,6 +6,7 @@ import (
 
 	"github.com/ajdnik/imghash/v2/hashtype"
 	"github.com/ajdnik/imghash/v2/internal/imgproc"
+	"github.com/ajdnik/imghash/v2/similarity"
 )
 
 // Average is a perceptual hash that uses the method described in Looks Like It by Dr. Neal Krawetz.
@@ -49,4 +50,9 @@ func (ah Average) Calculate(img image.Image) (hashtype.Hash, error) {
 		return nil, err
 	}
 	return thresholdHash(g, uint(math.Round(m))), nil
+}
+
+// Compare computes the Hamming distance between two Average hashes.
+func (ah Average) Compare(h1, h2 hashtype.Hash) (similarity.Distance, error) {
+	return similarity.Hamming(h1, h2)
 }

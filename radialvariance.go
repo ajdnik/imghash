@@ -6,6 +6,7 @@ import (
 
 	"github.com/ajdnik/imghash/v2/hashtype"
 	"github.com/ajdnik/imghash/v2/internal/imgproc"
+	"github.com/ajdnik/imghash/v2/similarity"
 )
 
 // RadialVariance is a perceptual hash that uses the method described in
@@ -169,4 +170,9 @@ func (rv RadialVariance) computeHash(feat []float64) hashtype.UInt8 {
 		hash[i] = uint8((255 * (temp[i] - min) / r))
 	}
 	return hash
+}
+
+// Compare computes the L1 (Manhattan) distance between two RadialVariance hashes.
+func (rv RadialVariance) Compare(h1, h2 hashtype.Hash) similarity.Distance {
+	return similarity.L1(h1, h2)
 }

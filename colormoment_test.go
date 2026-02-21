@@ -110,7 +110,7 @@ func TestColorMoment_Distance(t *testing.T) {
 			if err != nil {
 				t.Fatalf("failed to calculate hash for %s: %v", tt.secondImage, err)
 			}
-			dist := similarity.L2(h1, h2)
+			dist := hash.Compare(h1, h2)
 			if !dist.Equal(tt.distance) {
 				t.Errorf("got %v, want %v", dist, tt.distance)
 			}

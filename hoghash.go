@@ -6,6 +6,7 @@ import (
 
 	"github.com/ajdnik/imghash/v2/hashtype"
 	"github.com/ajdnik/imghash/v2/internal/imgproc"
+	"github.com/ajdnik/imghash/v2/similarity"
 )
 
 // HOGHash is a perceptual hash based on Histogram of Oriented Gradients.
@@ -164,4 +165,9 @@ func (hh HOGHash) computeHash(mag, orient []float64, w, h int) hashtype.UInt8 {
 		}
 	}
 	return hash
+}
+
+// Compare computes the cosine distance between two HOGHash hashes.
+func (hh HOGHash) Compare(h1, h2 hashtype.Hash) similarity.Distance {
+	return similarity.Cosine(h1, h2)
 }

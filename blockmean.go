@@ -5,6 +5,7 @@ import (
 
 	"github.com/ajdnik/imghash/v2/hashtype"
 	"github.com/ajdnik/imghash/v2/internal/imgproc"
+	"github.com/ajdnik/imghash/v2/similarity"
 )
 
 // BlockMean is a perceptual hash that uses the method described in
@@ -123,4 +124,9 @@ func (bh BlockMean) computeHash(means []float64, median float64) hashtype.Binary
 		}
 	}
 	return hash
+}
+
+// Compare computes the Hamming distance between two BlockMean hashes.
+func (bh BlockMean) Compare(h1, h2 hashtype.Hash) (similarity.Distance, error) {
+	return similarity.Hamming(h1, h2)
 }

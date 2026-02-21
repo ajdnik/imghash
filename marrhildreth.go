@@ -6,6 +6,7 @@ import (
 
 	"github.com/ajdnik/imghash/v2/hashtype"
 	"github.com/ajdnik/imghash/v2/internal/imgproc"
+	"github.com/ajdnik/imghash/v2/similarity"
 )
 
 const (
@@ -151,4 +152,9 @@ func computeMarrHildrethKernel(alpha, level float64) [][]float32 {
 		}
 	}
 	return kernel
+}
+
+// Compare computes the Hamming distance between two MarrHildreth hashes.
+func (mhh MarrHildreth) Compare(h1, h2 hashtype.Hash) (similarity.Distance, error) {
+	return similarity.Hamming(h1, h2)
 }

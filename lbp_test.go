@@ -77,11 +77,11 @@ var lbpDistanceTests = []struct {
 	gridX       uint
 	gridY       uint
 }{
-	{"assets/lena.jpg", "assets/cat.jpg", 482.6240773106953, 256, 256, Bilinear, 1, 1},
-	{"assets/lena.jpg", "assets/monarch.jpg", 148.6674140489435, 256, 256, Bilinear, 1, 1},
-	{"assets/baboon.jpg", "assets/cat.jpg", 361.8535615411295, 256, 256, Bilinear, 1, 1},
-	{"assets/peppers.jpg", "assets/baboon.jpg", 337.358859376777, 256, 256, Bilinear, 1, 1},
-	{"assets/tulips.jpg", "assets/monarch.jpg", 228.75314205492347, 256, 256, Bilinear, 1, 1},
+	{"assets/lena.jpg", "assets/cat.jpg", 1408.0953514028656, 256, 256, Bilinear, 1, 1},
+	{"assets/lena.jpg", "assets/monarch.jpg", 252.35802418352222, 256, 256, Bilinear, 1, 1},
+	{"assets/baboon.jpg", "assets/cat.jpg", 775.0799875837864, 256, 256, Bilinear, 1, 1},
+	{"assets/peppers.jpg", "assets/baboon.jpg", 783.2270861965849, 256, 256, Bilinear, 1, 1},
+	{"assets/tulips.jpg", "assets/monarch.jpg", 407.0482265310037, 256, 256, Bilinear, 1, 1},
 }
 
 func TestLBP_Distance(t *testing.T) {
@@ -107,7 +107,7 @@ func TestLBP_Distance(t *testing.T) {
 			if err != nil {
 				t.Fatalf("failed to calculate hash for %s: %v", tt.secondImage, err)
 			}
-			dist := similarity.L2(h1, h2)
+			dist := hash.Compare(h1, h2)
 			if !dist.Equal(tt.distance) {
 				t.Errorf("got %v, want %v", dist, tt.distance)
 			}

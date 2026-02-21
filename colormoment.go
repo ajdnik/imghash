@@ -5,6 +5,7 @@ import (
 
 	"github.com/ajdnik/imghash/v2/hashtype"
 	"github.com/ajdnik/imghash/v2/internal/imgproc"
+	"github.com/ajdnik/imghash/v2/similarity"
 )
 
 // ColorMoment is a perceptual hash that uses the method described in
@@ -76,4 +77,9 @@ func (ch ColorMoment) Calculate(img image.Image) (hashtype.Hash, error) {
 		hash[i] = yHuMom[i-len(hHuMom)]
 	}
 	return hash, nil
+}
+
+// Compare computes the L2 (Euclidean) distance between two ColorMoment hashes.
+func (ch ColorMoment) Compare(h1, h2 hashtype.Hash) similarity.Distance {
+	return similarity.L2(h1, h2)
 }

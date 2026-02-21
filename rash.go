@@ -7,6 +7,7 @@ import (
 
 	"github.com/ajdnik/imghash/v2/hashtype"
 	"github.com/ajdnik/imghash/v2/internal/imgproc"
+	"github.com/ajdnik/imghash/v2/similarity"
 )
 
 // RASH is a Rotation Aware Spatial Hash — a perceptual hash designed to be
@@ -143,4 +144,9 @@ func (r RASH) computeHash(means []float64) hashtype.Binary {
 		}
 	}
 	return hash
+}
+
+// Compare computes the Hamming distance between two RASH hashes.
+func (r RASH) Compare(h1, h2 hashtype.Hash) (similarity.Distance, error) {
+	return similarity.Hamming(h1, h2)
 }

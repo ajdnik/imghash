@@ -5,6 +5,7 @@ import (
 
 	"github.com/ajdnik/imghash/v2/hashtype"
 	"github.com/ajdnik/imghash/v2/internal/imgproc"
+	"github.com/ajdnik/imghash/v2/similarity"
 )
 
 // Size of the low-frequency DCT coefficient block used by PHash.
@@ -22,6 +23,8 @@ type PHash struct {
 	height uint
 	// Resize interpolation method.
 	interp Interpolation
+	// Per-byte weights for weighted Hamming distance.
+	weights []float64
 }
 
 // NewPHash creates a new PHash with the given options.
@@ -37,6 +40,12 @@ func NewPHash(opts ...PHashOption) (PHash, error) {
 	}
 	if p.width == 0 || p.height == 0 {
 		return PHash{}, ErrInvalidSize
+	}
+	if p.weights == nil {
+		p.weights = make([]float64, dctCoefSize)
+		for i := range p.weights {
+			p.weights[i] = 1
+		}
 	}
 	return p, nil
 }
@@ -107,4 +116,10 @@ func (ph PHash) compare(img [][]float32, val float32) [][]float32 {
 		}
 	}
 	return bit
+}
+
+// Compare computes the weighted Hamming distance between two PHash hashes
+// using the per-byte weights configured on this hasher.
+func (ph PHash) Compare(h1, h2 hashtype.Hash) (similarity.Distance, error) {
+	return similarity.WeightedHamming(h1, h2, ph.weights)
 }

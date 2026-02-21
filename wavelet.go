@@ -6,6 +6,7 @@ import (
 
 	"github.com/ajdnik/imghash/v2/hashtype"
 	"github.com/ajdnik/imghash/v2/internal/imgproc"
+	"github.com/ajdnik/imghash/v2/similarity"
 )
 
 // WHash is a perceptual hash based on the Haar wavelet transform.
@@ -102,6 +103,11 @@ func (wh WHash) computeHash(ll [][]float32, median float32) hashtype.Binary {
 		}
 	}
 	return hash
+}
+
+// Compare computes the Hamming distance between two WHash hashes.
+func (wh WHash) Compare(h1, h2 hashtype.Hash) (similarity.Distance, error) {
+	return similarity.Hamming(h1, h2)
 }
 
 // Ensure WHash satisfies the Hasher interface.

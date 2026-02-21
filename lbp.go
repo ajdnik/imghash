@@ -5,6 +5,7 @@ import (
 
 	"github.com/ajdnik/imghash/v2/hashtype"
 	"github.com/ajdnik/imghash/v2/internal/imgproc"
+	"github.com/ajdnik/imghash/v2/similarity"
 )
 
 // LBP is a perceptual hash based on Local Binary Patterns.
@@ -135,4 +136,9 @@ func (lh LBP) computeHash(lbpImg []uint8, w, h int) hashtype.UInt8 {
 		}
 	}
 	return hash
+}
+
+// Compare computes the chi-square distance between two LBP hashes.
+func (lh LBP) Compare(h1, h2 hashtype.Hash) similarity.Distance {
+	return similarity.ChiSquare(h1, h2)
 }

@@ -6,6 +6,7 @@ import (
 
 	"github.com/ajdnik/imghash/v2/hashtype"
 	"github.com/ajdnik/imghash/v2/internal/imgproc"
+	"github.com/ajdnik/imghash/v2/similarity"
 )
 
 // pdqDCTSize is the dimension of the DCT input buffer.
@@ -99,4 +100,9 @@ func (p PDQ) computeHash(block [][]float32, median float32) hashtype.Binary {
 		}
 	}
 	return hash
+}
+
+// Compare computes the Hamming distance between two PDQ hashes.
+func (p PDQ) Compare(h1, h2 hashtype.Hash) (similarity.Distance, error) {
+	return similarity.Hamming(h1, h2)
 }
