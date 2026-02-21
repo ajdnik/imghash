@@ -42,7 +42,10 @@ import (
 )
 
 func main() {
-  phash := imghash.NewPHash()
+  phash, err := imghash.NewPHash()
+  if err != nil {
+    panic(err)
+  }
 
   h1, err := imghash.HashFile(phash, "image1.png")
   if err != nil {
@@ -84,10 +87,10 @@ Every constructor accepts functional options. Call with no arguments for default
 
 ```go
 // Defaults
-avg := imghash.NewAverage()
+avg, err := imghash.NewAverage()
 
 // Custom parameters
-avg := imghash.NewAverage(
+avg, err := imghash.NewAverage(
   imghash.WithSize(16, 16),
   imghash.WithInterpolation(imghash.Bicubic),
 )
@@ -98,7 +101,7 @@ avg := imghash.NewAverage(
 Produces a 64-bit binary hash. Compares using Hamming distance. Based on [Looks Like It](https://www.hackerfactor.com/blog/index.php?/archives/432-Looks-Like-It.html) by Dr. Neal Krawetz.
 
 ```go
-avg := imghash.NewAverage()
+avg, err := imghash.NewAverage()
 hash, err := avg.Calculate(img)
 ```
 
@@ -112,7 +115,7 @@ hash, err := avg.Calculate(img)
 Very similar to Average but computes gradients instead of averages. Based on [Kind of Like That](https://www.hackerfactor.com/blog/index.php?/archives/529-Kind-of-Like-That.html).
 
 ```go
-diff := imghash.NewDifference()
+diff, err := imghash.NewDifference()
 hash, err := diff.Calculate(img)
 ```
 
@@ -126,7 +129,7 @@ hash, err := diff.Calculate(img)
 Almost identical to Average hash but uses the median instead of the mean.
 
 ```go
-med := imghash.NewMedian()
+med, err := imghash.NewMedian()
 hash, err := med.Calculate(img)
 ```
 
@@ -140,7 +143,7 @@ hash, err := med.Calculate(img)
 Uses a discrete cosine transform to produce a 64-bit binary hash. From [Rihamark: Perceptual image hash benchmarking](https://www.researchgate.net/publication/252340846_Rihamark_Perceptual_image_hash_benchmarking).
 
 ```go
-ph := imghash.NewPHash()
+ph, err := imghash.NewPHash()
 hash, err := ph.Calculate(img)
 ```
 
@@ -154,7 +157,7 @@ hash, err := ph.Calculate(img)
 Builds a 42-element float64 vector from YCbCr and HSV color moments. Based on [Perceptual hashing for color images using invariant moments](https://www.researchgate.net/publication/286870507_Perceptual_hashing_for_color_images_using_invariant_moments).
 
 ```go
-cm := imghash.NewColorMoment()
+cm, err := imghash.NewColorMoment()
 hash, err := cm.Calculate(img)
 ```
 
@@ -170,7 +173,7 @@ hash, err := cm.Calculate(img)
 Uses a 2D wavelet transform to produce a 576-bit binary hash. From [Rihamark: Perceptual image hash benchmarking](https://www.researchgate.net/publication/252340846_Rihamark_Perceptual_image_hash_benchmarking).
 
 ```go
-mh := imghash.NewMarrHildreth()
+mh, err := imghash.NewMarrHildreth()
 hash, err := mh.Calculate(img)
 ```
 
@@ -188,7 +191,7 @@ hash, err := mh.Calculate(img)
 Computes means using a sliding window to produce a 256-bit binary hash. Based on [Block Mean Value Based Image Perceptual Hashing](https://ieeexplore.ieee.org/document/4041692).
 
 ```go
-bm := imghash.NewBlockMean()
+bm, err := imghash.NewBlockMean()
 hash, err := bm.Calculate(img)
 ```
 
@@ -206,7 +209,7 @@ Block mean methods: `Direct`, `Overlap`, `Rotation`, `RotationOverlap`.
 Uses radial projections and feature vector computations to generate a 40-element uint8 vector. From [Robust image hashing based on radial variance of pixels](https://www.researchgate.net/publication/4186555_Robust_image_hashing_based_on_radial_variance_of_pixels).
 
 ```go
-rv := imghash.NewRadialVariance()
+rv, err := imghash.NewRadialVariance()
 hash, err := rv.Calculate(img)
 ```
 

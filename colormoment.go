@@ -26,7 +26,7 @@ type ColorMoment struct {
 
 // NewColorMoment creates a new ColorMoment hash with the given options.
 // Without options, sensible defaults are used.
-func NewColorMoment(opts ...ColorMomentOption) ColorMoment {
+func NewColorMoment(opts ...ColorMomentOption) (ColorMoment, error) {
 	c := ColorMoment{
 		width:  512,
 		height: 512,
@@ -37,7 +37,16 @@ func NewColorMoment(opts ...ColorMomentOption) ColorMoment {
 	for _, o := range opts {
 		o.applyColorMoment(&c)
 	}
-	return c
+	if c.width == 0 || c.height == 0 {
+		return ColorMoment{}, ErrInvalidSize
+	}
+	if c.kernel <= 0 {
+		return ColorMoment{}, ErrInvalidKernelSize
+	}
+	if c.sigma < 0 {
+		return ColorMoment{}, ErrInvalidSigma
+	}
+	return c, nil
 }
 
 // Calculate returns a perceptual image hash.

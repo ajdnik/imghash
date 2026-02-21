@@ -22,7 +22,7 @@ type Median struct {
 
 // NewMedian creates a new Median hash with the given options.
 // Without options, sensible defaults are used.
-func NewMedian(opts ...MedianOption) Median {
+func NewMedian(opts ...MedianOption) (Median, error) {
 	m := Median{
 		width:  8,
 		height: 8,
@@ -31,7 +31,10 @@ func NewMedian(opts ...MedianOption) Median {
 	for _, o := range opts {
 		o.applyMedian(&m)
 	}
-	return m
+	if m.width == 0 || m.height == 0 {
+		return Median{}, ErrInvalidSize
+	}
+	return m, nil
 }
 
 // Calculate returns a perceptual image hash.

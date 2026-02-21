@@ -17,7 +17,10 @@ func ExampleOpenImage() {
 }
 
 func ExampleHashFile() {
-	avg := NewAverage()
+	avg, err := NewAverage()
+	if err != nil {
+		panic(err)
+	}
 	hash, err := HashFile(avg, "assets/cat.jpg")
 	if err != nil {
 		panic(err)
@@ -33,7 +36,10 @@ func ExampleHashReader() {
 	}
 	defer func() { _ = f.Close() }()
 
-	avg := NewAverage()
+	avg, err := NewAverage()
+	if err != nil {
+		panic(err)
+	}
 	hash, err := HashReader(avg, f)
 	if err != nil {
 		panic(err)
@@ -43,7 +49,10 @@ func ExampleHashReader() {
 }
 
 func ExampleCompare() {
-	avg := NewAverage()
+	avg, err := NewAverage()
+	if err != nil {
+		panic(err)
+	}
 	h1, err := HashFile(avg, "assets/lena.jpg")
 	if err != nil {
 		panic(err)
@@ -62,7 +71,7 @@ func ExampleCompare() {
 }
 
 func ExampleNewMarrHildreth_options() {
-	mh := NewMarrHildreth(
+	mh, err := NewMarrHildreth(
 		WithScale(1),
 		WithAlpha(2),
 		WithSize(512, 512),
@@ -70,6 +79,9 @@ func ExampleNewMarrHildreth_options() {
 		WithKernelSize(7),
 		WithSigma(0),
 	)
+	if err != nil {
+		panic(err)
+	}
 	hash, err := HashFile(mh, "assets/cat.jpg")
 	if err != nil {
 		panic(err)

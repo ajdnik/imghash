@@ -30,7 +30,10 @@ var medianCalculateTests = []struct {
 func TestMedian_Calculate(t *testing.T) {
 	for _, tt := range medianCalculateTests {
 		t.Run(tt.filename, func(t *testing.T) {
-			hash := NewMedian(WithSize(tt.width, tt.height), WithInterpolation(tt.resizeType))
+			hash, err := NewMedian(WithSize(tt.width, tt.height), WithInterpolation(tt.resizeType))
+			if err != nil {
+				t.Fatalf("failed to create hasher: %v", err)
+			}
 			img, err := OpenImage(tt.filename)
 			if err != nil {
 				t.Fatalf("failed to open %s: %v", tt.filename, err)
@@ -54,7 +57,10 @@ func ExampleMedian_Calculate() {
 		panic(err)
 	}
 	// Create new Median Hash using default parameters
-	med := NewMedian()
+	med, err := NewMedian()
+	if err != nil {
+		panic(err)
+	}
 	// Calculate hash
 	hash, err := med.Calculate(img)
 	if err != nil {
@@ -83,7 +89,10 @@ var medianDistanceTests = []struct {
 func TestMedian_Distance(t *testing.T) {
 	for _, tt := range medianDistanceTests {
 		t.Run(fmt.Sprintf("%v %v", tt.firstImage, tt.secondImage), func(t *testing.T) {
-			hash := NewMedian(WithSize(tt.width, tt.height), WithInterpolation(tt.resizeType))
+			hash, err := NewMedian(WithSize(tt.width, tt.height), WithInterpolation(tt.resizeType))
+			if err != nil {
+				t.Fatalf("failed to create hasher: %v", err)
+			}
 			img1, err := OpenImage(tt.firstImage)
 			if err != nil {
 				t.Fatalf("failed to open %s: %v", tt.firstImage, err)

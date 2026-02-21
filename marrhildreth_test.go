@@ -32,7 +32,10 @@ var marrHildrethCalculateTests = []struct {
 func TestMarrHildreth_Calculate(t *testing.T) {
 	for _, tt := range marrHildrethCalculateTests {
 		t.Run(tt.filename, func(t *testing.T) {
-			hash := NewMarrHildreth(WithScale(tt.scale), WithAlpha(tt.alpha), WithSize(tt.width, tt.height), WithInterpolation(tt.resizeType), WithKernelSize(tt.kernelSize), WithSigma(tt.sigma))
+			hash, err := NewMarrHildreth(WithScale(tt.scale), WithAlpha(tt.alpha), WithSize(tt.width, tt.height), WithInterpolation(tt.resizeType), WithKernelSize(tt.kernelSize), WithSigma(tt.sigma))
+			if err != nil {
+				t.Fatalf("failed to create hasher: %v", err)
+			}
 			img, err := OpenImage(tt.filename)
 			if err != nil {
 				t.Fatalf("failed to open %s: %v", tt.filename, err)
@@ -56,7 +59,10 @@ func ExampleMarrHildreth_calculate() {
 		panic(err)
 	}
 	// Create new Marr-Hildreth Hash using default parameters
-	marr := NewMarrHildreth()
+	marr, err := NewMarrHildreth()
+	if err != nil {
+		panic(err)
+	}
 	// Calculate hash
 	hash, err := marr.Calculate(img)
 	if err != nil {
@@ -89,7 +95,10 @@ var marrHildrethDistanceTests = []struct {
 func TestMarrHildreth_Distance(t *testing.T) {
 	for _, tt := range marrHildrethDistanceTests {
 		t.Run(fmt.Sprintf("%v %v", tt.firstImage, tt.secondImage), func(t *testing.T) {
-			hash := NewMarrHildreth(WithScale(tt.scale), WithAlpha(tt.alpha), WithSize(tt.width, tt.height), WithInterpolation(tt.resizeType), WithKernelSize(tt.kernelSize), WithSigma(tt.sigma))
+			hash, err := NewMarrHildreth(WithScale(tt.scale), WithAlpha(tt.alpha), WithSize(tt.width, tt.height), WithInterpolation(tt.resizeType), WithKernelSize(tt.kernelSize), WithSigma(tt.sigma))
+			if err != nil {
+				t.Fatalf("failed to create hasher: %v", err)
+			}
 			img1, err := OpenImage(tt.firstImage)
 			if err != nil {
 				t.Fatalf("failed to open %s: %v", tt.firstImage, err)

@@ -30,7 +30,10 @@ var differenceCalculateTests = []struct {
 func TestDifference_Calculate(t *testing.T) {
 	for _, tt := range differenceCalculateTests {
 		t.Run(tt.filename, func(t *testing.T) {
-			hash := NewDifference(WithSize(tt.width, tt.height), WithInterpolation(tt.resizeType))
+			hash, err := NewDifference(WithSize(tt.width, tt.height), WithInterpolation(tt.resizeType))
+			if err != nil {
+				t.Fatalf("failed to create hasher: %v", err)
+			}
 			img, err := OpenImage(tt.filename)
 			if err != nil {
 				t.Fatalf("failed to open %s: %v", tt.filename, err)
@@ -54,7 +57,10 @@ func ExampleDifference_Calculate() {
 		panic(err)
 	}
 	// Create new Difference Hash using default parameters
-	diff := NewDifference()
+	diff, err := NewDifference()
+	if err != nil {
+		panic(err)
+	}
 	// Calculate hash
 	hash, err := diff.Calculate(img)
 	if err != nil {
@@ -83,7 +89,10 @@ var differenceDistanceTests = []struct {
 func TestDifference_Distance(t *testing.T) {
 	for _, tt := range differenceDistanceTests {
 		t.Run(fmt.Sprintf("%v %v", tt.firstImage, tt.secondImage), func(t *testing.T) {
-			hash := NewDifference(WithSize(tt.width, tt.height), WithInterpolation(tt.resizeType))
+			hash, err := NewDifference(WithSize(tt.width, tt.height), WithInterpolation(tt.resizeType))
+			if err != nil {
+				t.Fatalf("failed to create hasher: %v", err)
+			}
 			img1, err := OpenImage(tt.firstImage)
 			if err != nil {
 				t.Fatalf("failed to open %s: %v", tt.firstImage, err)

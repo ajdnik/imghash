@@ -40,7 +40,7 @@ type MarrHildreth struct {
 
 // NewMarrHildreth creates a new MarrHildreth hash with the given options.
 // Without options, sensible defaults are used.
-func NewMarrHildreth(opts ...MarrHildrethOption) MarrHildreth {
+func NewMarrHildreth(opts ...MarrHildrethOption) (MarrHildreth, error) {
 	mh := MarrHildreth{
 		scale:  1,
 		alpha:  2,
@@ -53,8 +53,23 @@ func NewMarrHildreth(opts ...MarrHildrethOption) MarrHildreth {
 	for _, o := range opts {
 		o.applyMarrHildreth(&mh)
 	}
+	if mh.width == 0 || mh.height == 0 {
+		return MarrHildreth{}, ErrInvalidSize
+	}
+	if mh.scale <= 0 {
+		return MarrHildreth{}, ErrInvalidScale
+	}
+	if mh.alpha <= 0 {
+		return MarrHildreth{}, ErrInvalidAlpha
+	}
+	if mh.kernel <= 0 {
+		return MarrHildreth{}, ErrInvalidKernelSize
+	}
+	if mh.sigma < 0 {
+		return MarrHildreth{}, ErrInvalidSigma
+	}
 	mh.kernels = computeMarrHildrethKernel(mh.alpha, mh.scale)
-	return mh
+	return mh, nil
 }
 
 // Calculate returns a perceptual image hash.

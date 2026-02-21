@@ -28,7 +28,10 @@ var pHashCalculateTests = []struct {
 func TestPHash_Calculate(t *testing.T) {
 	for _, tt := range pHashCalculateTests {
 		t.Run(tt.filename, func(t *testing.T) {
-			hash := NewPHash(WithSize(tt.width, tt.height), WithInterpolation(tt.resizeType))
+			hash, err := NewPHash(WithSize(tt.width, tt.height), WithInterpolation(tt.resizeType))
+			if err != nil {
+				t.Fatalf("failed to create hasher: %v", err)
+			}
 			img, err := OpenImage(tt.filename)
 			if err != nil {
 				t.Fatalf("failed to open %s: %v", tt.filename, err)
@@ -52,7 +55,10 @@ func ExamplePHash_Calculate() {
 		panic(err)
 	}
 	// Create new PHash using default parameters
-	ph := NewPHash()
+	ph, err := NewPHash()
+	if err != nil {
+		panic(err)
+	}
 	// Calculate hash
 	hash, err := ph.Calculate(img)
 	if err != nil {
@@ -81,7 +87,10 @@ var pHashDistanceTests = []struct {
 func TestPHash_Distance(t *testing.T) {
 	for _, tt := range pHashDistanceTests {
 		t.Run(fmt.Sprintf("%v %v", tt.firstImage, tt.secondImage), func(t *testing.T) {
-			hash := NewPHash(WithSize(tt.width, tt.height), WithInterpolation(tt.resizeType))
+			hash, err := NewPHash(WithSize(tt.width, tt.height), WithInterpolation(tt.resizeType))
+			if err != nil {
+				t.Fatalf("failed to create hasher: %v", err)
+			}
 			img1, err := OpenImage(tt.firstImage)
 			if err != nil {
 				t.Fatalf("failed to open %s: %v", tt.firstImage, err)

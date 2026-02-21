@@ -22,7 +22,7 @@ type Average struct {
 
 // NewAverage creates a new Average hash with the given options.
 // Without options, sensible defaults are used.
-func NewAverage(opts ...AverageOption) Average {
+func NewAverage(opts ...AverageOption) (Average, error) {
 	a := Average{
 		width:  8,
 		height: 8,
@@ -31,7 +31,10 @@ func NewAverage(opts ...AverageOption) Average {
 	for _, o := range opts {
 		o.applyAverage(&a)
 	}
-	return a
+	if a.width == 0 || a.height == 0 {
+		return Average{}, ErrInvalidSize
+	}
+	return a, nil
 }
 
 // Calculate returns a perceptual image hash.

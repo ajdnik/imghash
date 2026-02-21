@@ -30,7 +30,10 @@ var colorMomentCalculateTests = []struct {
 func TestColorMoment_Calculate(t *testing.T) {
 	for _, tt := range colorMomentCalculateTests {
 		t.Run(tt.filename, func(t *testing.T) {
-			hash := NewColorMoment(WithSize(tt.width, tt.height), WithInterpolation(tt.resizeType), WithKernelSize(tt.kernel), WithSigma(tt.sigma))
+			hash, err := NewColorMoment(WithSize(tt.width, tt.height), WithInterpolation(tt.resizeType), WithKernelSize(tt.kernel), WithSigma(tt.sigma))
+			if err != nil {
+				t.Fatalf("failed to create hasher: %v", err)
+			}
 			img, err := OpenImage(tt.filename)
 			if err != nil {
 				t.Fatalf("failed to open %s: %v", tt.filename, err)
@@ -54,7 +57,10 @@ func ExampleColorMoment_Calculate() {
 		panic(err)
 	}
 	// Create new Color Moment Hash using default parameters
-	color := NewColorMoment()
+	color, err := NewColorMoment()
+	if err != nil {
+		panic(err)
+	}
 	// Calculate hash
 	hash, err := color.Calculate(img)
 	if err != nil {
@@ -84,7 +90,10 @@ var colorMomentDistanceTests = []struct {
 func TestColorMoment_Distance(t *testing.T) {
 	for _, tt := range colorMomentDistanceTests {
 		t.Run(fmt.Sprintf("%v %v", tt.firstImage, tt.secondImage), func(t *testing.T) {
-			hash := NewColorMoment(WithSize(tt.width, tt.height), WithInterpolation(tt.resizeType), WithKernelSize(tt.kernel), WithSigma(tt.sigma))
+			hash, err := NewColorMoment(WithSize(tt.width, tt.height), WithInterpolation(tt.resizeType), WithKernelSize(tt.kernel), WithSigma(tt.sigma))
+			if err != nil {
+				t.Fatalf("failed to create hasher: %v", err)
+			}
 			img1, err := OpenImage(tt.firstImage)
 			if err != nil {
 				t.Fatalf("failed to open %s: %v", tt.firstImage, err)

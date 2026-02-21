@@ -28,7 +28,10 @@ var averageCalculateTests = []struct {
 func TestAverage_Calculate(t *testing.T) {
 	for _, tt := range averageCalculateTests {
 		t.Run(tt.filename, func(t *testing.T) {
-			hash := NewAverage(WithSize(tt.width, tt.height), WithInterpolation(tt.resizeType))
+			hash, err := NewAverage(WithSize(tt.width, tt.height), WithInterpolation(tt.resizeType))
+			if err != nil {
+				t.Fatalf("failed to create hasher: %v", err)
+			}
 			img, err := OpenImage(tt.filename)
 			if err != nil {
 				t.Fatalf("failed to open %s: %v", tt.filename, err)
@@ -52,7 +55,10 @@ func ExampleAverage_Calculate() {
 		panic(err)
 	}
 	// Create new Average Hash using default parameters
-	avg := NewAverage()
+	avg, err := NewAverage()
+	if err != nil {
+		panic(err)
+	}
 	// Calculate hash
 	hash, err := avg.Calculate(img)
 	if err != nil {
@@ -81,7 +87,10 @@ var averageDistanceTests = []struct {
 func TestAverage_Distance(t *testing.T) {
 	for _, tt := range averageDistanceTests {
 		t.Run(fmt.Sprintf("%v %v", tt.firstImage, tt.secondImage), func(t *testing.T) {
-			hash := NewAverage(WithSize(tt.width, tt.height), WithInterpolation(tt.resizeType))
+			hash, err := NewAverage(WithSize(tt.width, tt.height), WithInterpolation(tt.resizeType))
+			if err != nil {
+				t.Fatalf("failed to create hasher: %v", err)
+			}
 			img1, err := OpenImage(tt.firstImage)
 			if err != nil {
 				t.Fatalf("failed to open %s: %v", tt.firstImage, err)
