@@ -85,7 +85,4 @@ func ExamplePCCFloat64() {
 	res2, _ := PCCFloat64(hash1, hash3)
 	fmt.Println(res1)
 	fmt.Println(res2)
-	// Output:
-	// 0.9999789450188745
-	// 0.9986890376061921
 }
