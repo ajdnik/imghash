@@ -1,38 +1,217 @@
-name: tests-and-coverage
+name: ci
+
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
     branches:
-      - master
+      - main
 
 jobs:
-  test:
+  vet:
+    name: Go Vet
     runs-on: ubuntu-latest
-    name: tests
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.25'
-      - name: Build Binary
-        run: go build ./...
-      - name: Run Validation
-        run: go vet ./...
-      - name: Run Tests
-        run: go test -v -covermode=atomic -coverprofile=coverage.out -coverpkg=./... ./...
+          go-version: "1.25"
+      - name: Run Go Vet
         shell: bash
-      - name: Upload Artifacts
+        run: |
+          set +e
+          OUTPUT=$(go vet ./... 2>&1)
+          EXIT_CODE=$?
+          set -e
+
+          {
+            echo "## Go Vet"
+            echo ""
+            if [ $EXIT_CODE -eq 0 ]; then
+              echo "All packages pass vet checks."
+            else
+              echo "**Issues found:**"
+              echo ""
+              echo '```'
+              echo "$OUTPUT"
+              echo '```'
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          exit $EXIT_CODE
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.25"
+      - name: Install golangci-lint
+        run: curl -sSfL https://golangci-lint.run/install.sh | sh -s -- -b "$(go env GOPATH)/bin" v2.10.1
+      - name: Run Linter
+        shell: bash
+        run: |
+          set +e
+          OUTPUT=$(golangci-lint run ./... 2>&1)
+          EXIT_CODE=$?
+          set -e
+
+          {
+            echo "## Lint"
+            echo ""
+            if [ $EXIT_CODE -eq 0 ]; then
+              echo "No lint issues found."
+            else
+              echo "**Issues found:**"
+              echo ""
+              echo '```'
+              echo "$OUTPUT"
+              echo '```'
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          exit $EXIT_CODE
+
+  test:
+    name: Test & Coverage
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.25"
+      - name: Run Tests
+        shell: bash
+        run: |
+          set +e
+          go test -covermode=atomic -coverprofile=coverage.out -coverpkg=./... -json ./... > test-output.json 2>&1
+          TEST_EXIT=$?
+          set -e
+
+          MODULE=$(go list -m)
+          grep '^\{' test-output.json > test-results.json 2>/dev/null || true
+
+          TESTS_PASSED=$(jq -s '[.[] | select(.Test != null and .Action == "pass")] | length' test-results.json 2>/dev/null || echo 0)
+          TESTS_FAILED=$(jq -s '[.[] | select(.Test != null and .Action == "fail")] | length' test-results.json 2>/dev/null || echo 0)
+          TESTS_SKIPPED=$(jq -s '[.[] | select(.Test != null and .Action == "skip")] | length' test-results.json 2>/dev/null || echo 0)
+
+          {
+            echo "## Test Results"
+            echo ""
+            if [ "$TEST_EXIT" -eq 0 ]; then
+              echo "All tests passed."
+            else
+              echo "**Some tests failed.**"
+            fi
+            echo ""
+            echo "| Passed | Failed | Skipped |"
+            echo "|--------|--------|---------|"
+            echo "| $TESTS_PASSED | $TESTS_FAILED | $TESTS_SKIPPED |"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          PKG_RESULTS=$(jq -r 'select(.Test == null and (.Action == "pass" or .Action == "fail" or .Action == "skip")) | "\(.Action)\t\(.Package)\t\(.Elapsed)"' test-results.json 2>/dev/null || true)
+
+          if [ -n "$PKG_RESULTS" ]; then
+            {
+              echo ""
+              echo "### Packages"
+              echo ""
+              echo "| Package | Status | Duration |"
+              echo "|---------|--------|----------|"
+              echo "$PKG_RESULTS" | while IFS=$'\t' read -r action pkg elapsed; do
+                short_pkg=$(echo "$pkg" | sed "s|${MODULE}/|./|g; s|${MODULE}|.|g")
+                printf '| `%s` | %s | %ss |\n' "$short_pkg" "$action" "$elapsed"
+              done
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+          if [ "$TESTS_FAILED" -gt 0 ]; then
+            {
+              echo ""
+              echo "### Failed Tests"
+              echo ""
+            } >> "$GITHUB_STEP_SUMMARY"
+
+            jq -r 'select(.Test != null and .Action == "fail") | "\(.Package)\t\(.Test)"' test-results.json 2>/dev/null | while IFS=$'\t' read -r pkg test; do
+              short_pkg=$(echo "$pkg" | sed "s|${MODULE}/|./|g; s|${MODULE}|.|g")
+              OUTPUT=$(jq -rj --arg pkg "$pkg" --arg test "$test" \
+                'select(.Package == $pkg and .Test == $test and .Action == "output") | .Output // empty' \
+                test-results.json 2>/dev/null || true)
+              {
+                echo "<details>"
+                echo "<summary><code>$short_pkg :: $test</code></summary>"
+                echo ""
+                echo '```'
+                echo "$OUTPUT"
+                echo '```'
+                echo ""
+                echo "</details>"
+              } >> "$GITHUB_STEP_SUMMARY"
+            done
+          fi
+
+          exit $TEST_EXIT
+
+      - name: Coverage Report
+        if: success() || failure()
+        shell: bash
+        run: |
+          if [ ! -f coverage.out ]; then
+            {
+              echo "## Coverage"
+              echo ""
+              echo "No coverage data available."
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          COVER_OUTPUT=$(go tool cover -func=coverage.out)
+          COVERAGE=$(echo "$COVER_OUTPUT" | grep "^total:" | awk '{print $NF}' | tr -d '%')
+
+          {
+            echo "## Coverage"
+            echo ""
+            if (( $(echo "$COVERAGE >= 80" | bc -l) )); then
+              echo "**Total: ${COVERAGE}%** (threshold: 80%)"
+            else
+              echo "**Total: ${COVERAGE}% — BELOW 80% THRESHOLD**"
+            fi
+            echo ""
+            echo "<details>"
+            echo "<summary>Per-function breakdown</summary>"
+            echo ""
+            echo "| File | Function | Coverage |"
+            echo "|------|----------|----------|"
+            echo "$COVER_OUTPUT" | grep -v "^total:" | awk '{printf "| %s | %s | %s |\n", $1, $2, $NF}'
+            echo ""
+            echo "</details>"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          if (( $(echo "$COVERAGE < 80" | bc -l) )); then
+            echo "::error::Coverage ${COVERAGE}% is below the 80% threshold"
+            exit 1
+          fi
+
+      - name: Upload Coverage Artifact
+        if: github.event_name == 'push' && success()
         uses: actions/upload-artifact@v4
         with:
-          name: tests
+          name: coverage
           path: coverage.out
+
   coveralls:
+    name: Publish Coverage Report
     runs-on: ubuntu-latest
-    name: coveralls
+    if: github.event_name == 'push'
     needs: test
     steps:
       - name: Checkout Code
@@ -40,15 +219,14 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.25'
-      - name: Install Dependencies
+          go-version: "1.25"
+      - name: Install Goveralls
         run: go install github.com/mattn/goveralls@latest
-      - name: Download Artifacts
+      - name: Download Coverage Artifact
         uses: actions/download-artifact@v4
         with:
-          name: tests
-      - name: Send Coverage
+          name: coverage
+      - name: Publish to Coveralls
         env:
           COVERALLS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: goveralls -coverprofile=coverage.out -service=github
-        shell: bash
