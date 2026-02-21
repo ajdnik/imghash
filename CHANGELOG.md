@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.0](https://github.com/ajdnik/imghash/compare/imghash-v1.1.0...imghash-v2.0.0) (2026-02-21)
+
+
+### ⚠ BREAKING CHANGES
+
+* Improved Library Interface ([#7](https://github.com/ajdnik/imghash/issues/7))
+
+### Features
+
+* Improved Library Interface ([#7](https://github.com/ajdnik/imghash/issues/7)) ([d459be8](https://github.com/ajdnik/imghash/commit/d459be88aa86cce61fbb42dc8449916e57b27d54))
+
 ## [1.1.0](https://github.com/ajdnik/imghash/compare/imghash-v1.0.0...imghash-v1.1.0) (2026-02-21)
 
 
