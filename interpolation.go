@@ -1,6 +1,6 @@
 package imghash
 
-import "github.com/ajdnik/imghash/internal/imgproc"
+import "github.com/ajdnik/imghash/v2/internal/imgproc"
 
 // Interpolation specifies the resize interpolation method used during hash computation.
 type Interpolation int

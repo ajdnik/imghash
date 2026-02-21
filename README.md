@@ -2,8 +2,8 @@
 
 [![CI](https://github.com/ajdnik/imghash/workflows/ci/badge.svg "CI status")](https://github.com/ajdnik/imghash/actions?query=workflow%3Aci)
 [![Coverage Status](https://coveralls.io/repos/github/ajdnik/imghash/badge.svg?branch=main)](https://coveralls.io/github/ajdnik/imghash?branch=main)
-[![GoDoc](https://godoc.org/github.com/ajdnik/imghash?status.svg "GoDoc")](https://godoc.org/github.com/ajdnik/imghash)
-[![Go Report Card](https://goreportcard.com/badge/github.com/ajdnik/imghash)](https://goreportcard.com/report/github.com/ajdnik/imghash)
+[![Go Reference](https://pkg.go.dev/badge/github.com/ajdnik/imghash/v2.svg)](https://pkg.go.dev/github.com/ajdnik/imghash/v2)
+[![Go Report Card](https://goreportcard.com/badge/github.com/ajdnik/imghash/v2)](https://goreportcard.com/report/github.com/ajdnik/imghash/v2)
 [![License MIT](https://img.shields.io/badge/license-MIT-lightgrey.svg)](https://github.com/ajdnik/imghash/blob/main/LICENSE)
 
 Go implementation of multiple perceptual hash algorithms for images. Perceptual hash functions are analogous if features are similar, whereas cryptographic hashing relies on the avalanche effect of a small change in input value creating a drastic change in output value.
@@ -20,12 +20,12 @@ Go implementation of multiple perceptual hash algorithms for images. Perceptual 
 Using imghash is easy. First, use `go get` to install the latest version
 of the library. This command will install the library and its dependencies:
 
-    go get -u github.com/ajdnik/imghash
+    go get -u github.com/ajdnik/imghash/v2
 
 Next, include imghash in your application:
 
 ```go
-import "github.com/ajdnik/imghash"
+import "github.com/ajdnik/imghash/v2"
 ```
 
 Most consumers only need the top-level `imghash` package. The core types (`Hash`, `Binary`, `UInt8`, `Float64`, `Distance`) are re-exported there. The `similarity` sub-package is available when you need a specific metric like PCC.
@@ -38,7 +38,7 @@ package main
 import (
   "fmt"
 
-  "github.com/ajdnik/imghash"
+  "github.com/ajdnik/imghash/v2"
 )
 
 func main() {
@@ -293,7 +293,7 @@ dist, err := imghash.Compare(h1, h2)
 For advanced use cases (e.g. Pearson Correlation), use the `similarity` sub-package:
 
 ```go
-import "github.com/ajdnik/imghash/similarity"
+import "github.com/ajdnik/imghash/v2/similarity"
 
 dist := similarity.L2(h1, h2)
 dist, err := similarity.PCC(h1, h2)

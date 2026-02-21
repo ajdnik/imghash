@@ -4,7 +4,7 @@ import (
 	"errors"
 	"math"
 
-	"github.com/ajdnik/imghash/hashtype"
+	"github.com/ajdnik/imghash/v2/hashtype"
 )
 
 // ErrNotSameLength is reported when the length of hashes doesn't match.

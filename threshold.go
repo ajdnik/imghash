@@ -3,7 +3,7 @@ package imghash
 import (
 	"image"
 
-	"github.com/ajdnik/imghash/hashtype"
+	"github.com/ajdnik/imghash/v2/hashtype"
 )
 
 // thresholdHash builds a binary hash by setting a bit for every pixel

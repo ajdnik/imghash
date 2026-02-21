@@ -3,7 +3,7 @@ package similarity
 import (
 	"math"
 
-	"github.com/ajdnik/imghash/hashtype"
+	"github.com/ajdnik/imghash/v2/hashtype"
 )
 
 // L2 calculates the L2 (Euclidean) distance between two hashes.

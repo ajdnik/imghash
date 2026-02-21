@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	. "github.com/ajdnik/imghash"
+	. "github.com/ajdnik/imghash/v2"
 )
 
 func ExampleOpenImage() {

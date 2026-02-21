@@ -3,8 +3,8 @@ package imghash
 import (
 	"image"
 
-	"github.com/ajdnik/imghash/hashtype"
-	"github.com/ajdnik/imghash/internal/imgproc"
+	"github.com/ajdnik/imghash/v2/hashtype"
+	"github.com/ajdnik/imghash/v2/internal/imgproc"
 )
 
 // LBP is a perceptual hash based on Local Binary Patterns.

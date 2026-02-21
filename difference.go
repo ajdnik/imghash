@@ -3,8 +3,8 @@ package imghash
 import (
 	"image"
 
-	"github.com/ajdnik/imghash/hashtype"
-	"github.com/ajdnik/imghash/internal/imgproc"
+	"github.com/ajdnik/imghash/v2/hashtype"
+	"github.com/ajdnik/imghash/v2/internal/imgproc"
 )
 
 // Difference is a perceptual hash that uses the method described in Kinf of Like That by Dr. Neal Krawetz.

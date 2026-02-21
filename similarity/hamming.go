@@ -4,7 +4,7 @@ import (
 	"errors"
 	"math/bits"
 
-	"github.com/ajdnik/imghash/hashtype"
+	"github.com/ajdnik/imghash/v2/hashtype"
 )
 
 // ErrNotBinaryHash is reported when a non-binary hash is passed to Hamming.

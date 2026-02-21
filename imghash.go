@@ -4,8 +4,8 @@ import (
 	"errors"
 	"image"
 
-	"github.com/ajdnik/imghash/hashtype"
-	"github.com/ajdnik/imghash/similarity"
+	"github.com/ajdnik/imghash/v2/hashtype"
+	"github.com/ajdnik/imghash/v2/similarity"
 )
 
 // Hasher computes a perceptual hash from an image.

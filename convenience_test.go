@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	. "github.com/ajdnik/imghash"
+	. "github.com/ajdnik/imghash/v2"
 )
 
 func TestOpenImage_nonexistent(t *testing.T) {

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	. "github.com/ajdnik/imghash/hashtype"
+	. "github.com/ajdnik/imghash/v2/hashtype"
 )
 
 var binaryStringTests = []struct {
