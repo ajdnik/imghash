@@ -10,13 +10,17 @@ import (
 )
 
 // RASH is a Rotation Aware Spatial Hash — a perceptual hash designed to be
-// robust against image rotation. It works by sampling pixel intensities on
-// concentric rings around the image centre, then applying a 1-D DCT to the
-// ring means and binarising the low-frequency coefficients.
+// robust against image rotation. It combines concentric ring sampling for
+// rotation invariance, a 1-D DCT for frequency compaction, and median
+// thresholding for binarisation.
 //
 // Because ring-mean features are inherently rotation-invariant (rotating the
 // image only permutes pixels within a ring, leaving its mean unchanged), the
 // resulting hash stays stable under arbitrary rotations.
+//
+// Inspired by ring-partition hashing literature:
+//   - Tang et al., "Robust Image Hashing with Ring Partition and Invariant Vector Distance" (2016)
+//   - De Roover et al., "Robust image hashing based on radial variance of pixels" (2005)
 type RASH struct {
 	width  uint
 	height uint
