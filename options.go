@@ -169,7 +169,7 @@ func (o RingsOption) applyRASH(r *RASH) { r.rings = o.rings }
 // WeightsOption sets the per-byte weights for weighted distance.
 type WeightsOption struct{ weights []float64 }
 
-func (o WeightsOption) applyPHash(p *PHash) { p.weights = o.weights }
+func (o WeightsOption) applyPHash(p *PHash) { p.weights = append([]float64(nil), o.weights...) }
 
 // --- public constructors ---
 
@@ -262,7 +262,7 @@ func WithRings(rings int) RingsOption {
 // The slice length must match the number of hash bytes (8 for default PHash).
 // Applies to PHash.
 func WithWeights(weights []float64) WeightsOption {
-	return WeightsOption{weights}
+	return WeightsOption{append([]float64(nil), weights...)}
 }
 
 // WithDistance overrides the default distance function used by Compare.

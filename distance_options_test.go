@@ -304,3 +304,22 @@ func TestWithWeights_affectsPHashCompare(t *testing.T) {
 		t.Fatalf("got %v, want 4", got)
 	}
 }
+
+func TestWithWeights_clonesCallerSlice(t *testing.T) {
+	weights := []float64{2}
+	opt := imghash.WithWeights(weights)
+	weights[0] = 100
+
+	ph, err := imghash.NewPHash(opt)
+	if err != nil {
+		t.Fatalf("failed to create hasher: %v", err)
+	}
+
+	got, err := ph.Compare(hashtype.Binary{1}, hashtype.Binary{2})
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if !got.Equal(4) {
+		t.Fatalf("got %v, want 4", got)
+	}
+}
