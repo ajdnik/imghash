@@ -2,6 +2,7 @@ package imghash
 
 import (
 	"image"
+	"math"
 
 	"github.com/ajdnik/imghash/v2/hashtype"
 	"github.com/ajdnik/imghash/v2/internal/imgproc"
@@ -26,16 +27,22 @@ type BlockMean struct {
 // BlockMeanMethod represents the method used when computing the mean of blocks.
 type BlockMeanMethod int
 
-// TODO: Add support for rotation based block mean hashes.
 const (
 	// Direct method constructs blocks with no overlap or rotation.
 	Direct BlockMeanMethod = iota
 	// Overlap method constructs blocks by overlapping them, the degree of overlap is set to be half of a block.
 	Overlap
-	// Rotation method uses the same approach as Direct but also rotates blocks.
+	// Rotation method uses the same approach as Direct but also hashes 24 rotated
+	// image variants in 15-degree steps.
 	Rotation
-	// RotationOverlap uses the same approach as Overlap but also rotates blocks.
+	// RotationOverlap uses the same approach as Overlap but also hashes 24 rotated
+	// image variants in 15-degree steps.
 	RotationOverlap
+)
+
+const (
+	blockMeanRotationStepDegrees = 15
+	blockMeanRotationCount       = 360 / blockMeanRotationStepDegrees
 )
 
 // NewBlockMean creates a new BlockMean hash with the given options.
@@ -66,12 +73,65 @@ func (bh BlockMean) Calculate(img image.Image) (hashtype.Hash, error) {
 	if err != nil {
 		return nil, err
 	}
+	if bh.method == Rotation || bh.method == RotationOverlap {
+		return bh.computeRotatedHash(g)
+	}
 	mm := bh.computeMean(g)
 	med, err := imgproc.Mean(g)
 	if err != nil {
 		return nil, err
 	}
 	return bh.computeHash(mm, med), nil
+}
+
+func (bh BlockMean) computeRotatedHash(img *image.Gray) (hashtype.Binary, error) {
+	meansPerRotation := len(bh.computeMean(img))
+	totalBits := meansPerRotation * blockMeanRotationCount
+	hash := hashtype.NewBinary(uint(totalBits))
+	bitOffset := 0
+	for d := 0; d < 360; d += blockMeanRotationStepDegrees {
+		var rotated *image.Gray
+		if d == 0 {
+			rotated = img
+		} else {
+			rotated = rotateGrayCrop(img, float64(d)*math.Pi/180)
+		}
+		means := bh.computeMean(rotated)
+		med, err := imgproc.Mean(rotated)
+		if err != nil {
+			return nil, err
+		}
+		for i := 0; i < len(means); i++ {
+			if means[i] >= med {
+				_ = hash.Set(uint(bitOffset + i))
+			}
+		}
+		bitOffset += len(means)
+	}
+	return hash, nil
+}
+
+// rotateGrayCrop rotates a grayscale image around its center and keeps the
+// original image size by cropping pixels that rotate outside the bounds.
+func rotateGrayCrop(img *image.Gray, angle float64) *image.Gray {
+	bounds := img.Bounds()
+	rotated := image.NewGray(bounds)
+	cosA := math.Cos(angle)
+	sinA := math.Sin(angle)
+	cx := float64(bounds.Dx()-1) / 2
+	cy := float64(bounds.Dy()-1) / 2
+	for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
+		fy := float64(y-bounds.Min.Y) - cy
+		for x := bounds.Min.X; x < bounds.Max.X; x++ {
+			fx := float64(x-bounds.Min.X) - cx
+			srcX := int(math.Round(cosA*fx+sinA*fy+cx)) + bounds.Min.X
+			srcY := int(math.Round(-sinA*fx+cosA*fy+cy)) + bounds.Min.Y
+			if image.Pt(srcX, srcY).In(bounds) {
+				rotated.SetGray(x, y, img.GrayAt(srcX, srcY))
+			}
+		}
+	}
+	return rotated
 }
 
 // Computes mean values of constructed blocks.

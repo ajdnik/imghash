@@ -134,3 +134,111 @@ func TestBlockMean_Distance(t *testing.T) {
 		})
 	}
 }
+
+func TestBlockMean_RotationIncludesRotatedSegments(t *testing.T) {
+	img, err := imghash.OpenImage("assets/lena.jpg")
+	if err != nil {
+		t.Fatalf("failed to open image: %v", err)
+	}
+	direct, err := imghash.NewBlockMean(
+		imghash.WithSize(256, 256),
+		imghash.WithInterpolation(imghash.BilinearExact),
+		imghash.WithBlockSize(16, 16),
+		imghash.WithBlockMeanMethod(imghash.Direct),
+	)
+	if err != nil {
+		t.Fatalf("failed to create direct block mean hasher: %v", err)
+	}
+	rotation, err := imghash.NewBlockMean(
+		imghash.WithSize(256, 256),
+		imghash.WithInterpolation(imghash.BilinearExact),
+		imghash.WithBlockSize(16, 16),
+		imghash.WithBlockMeanMethod(imghash.Rotation),
+	)
+	if err != nil {
+		t.Fatalf("failed to create rotation block mean hasher: %v", err)
+	}
+
+	dh, err := direct.Calculate(img)
+	if err != nil {
+		t.Fatalf("failed to calculate direct hash: %v", err)
+	}
+	rh, err := rotation.Calculate(img)
+	if err != nil {
+		t.Fatalf("failed to calculate rotation hash: %v", err)
+	}
+
+	directHash := dh.(hashtype.Binary)
+	rotationHash := rh.(hashtype.Binary)
+	if len(rotationHash) != len(directHash)*24 {
+		t.Fatalf("rotation hash size mismatch: got %d bytes, want %d bytes", len(rotationHash), len(directHash)*24)
+	}
+	if !directHash.Equal(rotationHash[:len(directHash)]) {
+		t.Fatalf("first 0-degree rotation segment must match direct hash")
+	}
+
+	firstSegmentBits := len(directHash) * 8
+	segmentChanged := false
+	for i := 0; i < firstSegmentBits; i++ {
+		if binaryBit(rotationHash, i) != binaryBit(rotationHash, firstSegmentBits+i) {
+			segmentChanged = true
+			break
+		}
+	}
+	if !segmentChanged {
+		t.Fatalf("rotation hash second segment unexpectedly matches 0-degree segment bit-for-bit")
+	}
+}
+
+func TestBlockMean_RotationOverlapIncludesOverlapSegment(t *testing.T) {
+	img, err := imghash.OpenImage("assets/baboon.jpg")
+	if err != nil {
+		t.Fatalf("failed to open image: %v", err)
+	}
+	overlap, err := imghash.NewBlockMean(
+		imghash.WithSize(256, 256),
+		imghash.WithInterpolation(imghash.BilinearExact),
+		imghash.WithBlockSize(16, 16),
+		imghash.WithBlockMeanMethod(imghash.Overlap),
+	)
+	if err != nil {
+		t.Fatalf("failed to create overlap block mean hasher: %v", err)
+	}
+	rotationOverlap, err := imghash.NewBlockMean(
+		imghash.WithSize(256, 256),
+		imghash.WithInterpolation(imghash.BilinearExact),
+		imghash.WithBlockSize(16, 16),
+		imghash.WithBlockMeanMethod(imghash.RotationOverlap),
+	)
+	if err != nil {
+		t.Fatalf("failed to create rotation-overlap block mean hasher: %v", err)
+	}
+
+	oh, err := overlap.Calculate(img)
+	if err != nil {
+		t.Fatalf("failed to calculate overlap hash: %v", err)
+	}
+	roh, err := rotationOverlap.Calculate(img)
+	if err != nil {
+		t.Fatalf("failed to calculate rotation-overlap hash: %v", err)
+	}
+
+	overlapHash := oh.(hashtype.Binary)
+	rotationOverlapHash := roh.(hashtype.Binary)
+
+	overlapBits := (int(256/16)*2 - 1) * (int(256/16)*2 - 1)
+	expectedRotationOverlapBytes := (overlapBits*24 + 7) / 8
+	if len(rotationOverlapHash) != expectedRotationOverlapBytes {
+		t.Fatalf("rotation-overlap hash size mismatch: got %d bytes, want %d bytes", len(rotationOverlapHash), expectedRotationOverlapBytes)
+	}
+
+	for i := 0; i < overlapBits; i++ {
+		if binaryBit(rotationOverlapHash, i) != binaryBit(overlapHash, i) {
+			t.Fatalf("overlap bit mismatch at index %d in 0-degree rotation-overlap segment", i)
+		}
+	}
+}
+
+func binaryBit(hash hashtype.Binary, bit int) bool {
+	return hash[bit/8]&(1<<uint(bit%8)) != 0
+}
