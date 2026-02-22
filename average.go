@@ -50,6 +50,9 @@ func (ah Average) Calculate(img image.Image) (hashtype.Hash, error) {
 
 // Compare computes the Hamming distance between two Average hashes.
 func (ah Average) Compare(h1, h2 hashtype.Hash) (similarity.Distance, error) {
+	if err := validateBinaryCompareInputs(h1, h2); err != nil {
+		return 0, err
+	}
 	if ah.distFunc != nil {
 		return ah.distFunc(h1, h2)
 	}

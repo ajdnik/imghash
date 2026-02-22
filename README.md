@@ -342,6 +342,11 @@ h2, _ := imghash.HashFile(pdq, "image2.png")
 dist, err := pdq.Compare(h1, h2)
 ```
 
+Algorithm `Compare` methods validate inputs before computing distance:
+- hash values must be the expected type for that algorithm
+- hash lengths must match
+- otherwise they return `ErrIncompatibleHash` or `ErrHashLengthMismatch`
+
 The default metric per algorithm:
 
 | Algorithm | Hash type | Default `Compare` metric |
@@ -373,6 +378,8 @@ Use `imghash.Compare(h1, h2)` for generic comparison based on hash type:
 ```go
 dist, err := imghash.Compare(h1, h2)
 ```
+
+`imghash.Compare` returns `ErrIncompatibleHash` when one hash is `Binary` and the other is not.
 
 ### Available metrics
 

@@ -8,6 +8,190 @@ import (
 	"github.com/ajdnik/imghash/v2/hashtype"
 )
 
+type compareCase struct {
+	name              string
+	buildDefault      func() (imghash.Comparer, error)
+	buildWithDistance func(imghash.DistanceFunc) (imghash.Comparer, error)
+	valid1            hashtype.Hash
+	valid2            hashtype.Hash
+	invalidType1      hashtype.Hash
+	invalidType2      hashtype.Hash
+	invalidLen1       hashtype.Hash
+	invalidLen2       hashtype.Hash
+}
+
+var compareCases = []compareCase{
+	{
+		name:         "Average",
+		buildDefault: func() (imghash.Comparer, error) { return imghash.NewAverage() },
+		buildWithDistance: func(fn imghash.DistanceFunc) (imghash.Comparer, error) {
+			return imghash.NewAverage(imghash.WithDistance(fn))
+		},
+		valid1:       hashtype.Binary{0x00, 0xFF},
+		valid2:       hashtype.Binary{0xFF, 0x00},
+		invalidType1: hashtype.UInt8{1, 2},
+		invalidType2: hashtype.UInt8{3, 4},
+		invalidLen1:  hashtype.Binary{0x00},
+		invalidLen2:  hashtype.Binary{0x00, 0xFF},
+	},
+	{
+		name:         "Difference",
+		buildDefault: func() (imghash.Comparer, error) { return imghash.NewDifference() },
+		buildWithDistance: func(fn imghash.DistanceFunc) (imghash.Comparer, error) {
+			return imghash.NewDifference(imghash.WithDistance(fn))
+		},
+		valid1:       hashtype.Binary{0x00, 0xFF},
+		valid2:       hashtype.Binary{0xFF, 0x00},
+		invalidType1: hashtype.UInt8{1, 2},
+		invalidType2: hashtype.UInt8{3, 4},
+		invalidLen1:  hashtype.Binary{0x00},
+		invalidLen2:  hashtype.Binary{0x00, 0xFF},
+	},
+	{
+		name:         "Median",
+		buildDefault: func() (imghash.Comparer, error) { return imghash.NewMedian() },
+		buildWithDistance: func(fn imghash.DistanceFunc) (imghash.Comparer, error) {
+			return imghash.NewMedian(imghash.WithDistance(fn))
+		},
+		valid1:       hashtype.Binary{0x00, 0xFF},
+		valid2:       hashtype.Binary{0xFF, 0x00},
+		invalidType1: hashtype.UInt8{1, 2},
+		invalidType2: hashtype.UInt8{3, 4},
+		invalidLen1:  hashtype.Binary{0x00},
+		invalidLen2:  hashtype.Binary{0x00, 0xFF},
+	},
+	{
+		name:         "PHash",
+		buildDefault: func() (imghash.Comparer, error) { return imghash.NewPHash() },
+		buildWithDistance: func(fn imghash.DistanceFunc) (imghash.Comparer, error) {
+			return imghash.NewPHash(imghash.WithDistance(fn))
+		},
+		valid1:       hashtype.Binary{0x00, 0xFF},
+		valid2:       hashtype.Binary{0xFF, 0x00},
+		invalidType1: hashtype.UInt8{1, 2},
+		invalidType2: hashtype.UInt8{3, 4},
+		invalidLen1:  hashtype.Binary{0x00},
+		invalidLen2:  hashtype.Binary{0x00, 0xFF},
+	},
+	{
+		name:         "WHash",
+		buildDefault: func() (imghash.Comparer, error) { return imghash.NewWHash() },
+		buildWithDistance: func(fn imghash.DistanceFunc) (imghash.Comparer, error) {
+			return imghash.NewWHash(imghash.WithDistance(fn))
+		},
+		valid1:       hashtype.Binary{0x00, 0xFF},
+		valid2:       hashtype.Binary{0xFF, 0x00},
+		invalidType1: hashtype.UInt8{1, 2},
+		invalidType2: hashtype.UInt8{3, 4},
+		invalidLen1:  hashtype.Binary{0x00},
+		invalidLen2:  hashtype.Binary{0x00, 0xFF},
+	},
+	{
+		name:         "BlockMean",
+		buildDefault: func() (imghash.Comparer, error) { return imghash.NewBlockMean() },
+		buildWithDistance: func(fn imghash.DistanceFunc) (imghash.Comparer, error) {
+			return imghash.NewBlockMean(imghash.WithDistance(fn))
+		},
+		valid1:       hashtype.Binary{0x00, 0xFF},
+		valid2:       hashtype.Binary{0xFF, 0x00},
+		invalidType1: hashtype.UInt8{1, 2},
+		invalidType2: hashtype.UInt8{3, 4},
+		invalidLen1:  hashtype.Binary{0x00},
+		invalidLen2:  hashtype.Binary{0x00, 0xFF},
+	},
+	{
+		name:         "MarrHildreth",
+		buildDefault: func() (imghash.Comparer, error) { return imghash.NewMarrHildreth() },
+		buildWithDistance: func(fn imghash.DistanceFunc) (imghash.Comparer, error) {
+			return imghash.NewMarrHildreth(imghash.WithDistance(fn))
+		},
+		valid1:       hashtype.Binary{0x00, 0xFF},
+		valid2:       hashtype.Binary{0xFF, 0x00},
+		invalidType1: hashtype.UInt8{1, 2},
+		invalidType2: hashtype.UInt8{3, 4},
+		invalidLen1:  hashtype.Binary{0x00},
+		invalidLen2:  hashtype.Binary{0x00, 0xFF},
+	},
+	{
+		name:         "PDQ",
+		buildDefault: func() (imghash.Comparer, error) { return imghash.NewPDQ() },
+		buildWithDistance: func(fn imghash.DistanceFunc) (imghash.Comparer, error) {
+			return imghash.NewPDQ(imghash.WithDistance(fn))
+		},
+		valid1:       hashtype.Binary{0x00, 0xFF},
+		valid2:       hashtype.Binary{0xFF, 0x00},
+		invalidType1: hashtype.UInt8{1, 2},
+		invalidType2: hashtype.UInt8{3, 4},
+		invalidLen1:  hashtype.Binary{0x00},
+		invalidLen2:  hashtype.Binary{0x00, 0xFF},
+	},
+	{
+		name:         "RASH",
+		buildDefault: func() (imghash.Comparer, error) { return imghash.NewRASH() },
+		buildWithDistance: func(fn imghash.DistanceFunc) (imghash.Comparer, error) {
+			return imghash.NewRASH(imghash.WithDistance(fn))
+		},
+		valid1:       hashtype.Binary{0x00, 0xFF},
+		valid2:       hashtype.Binary{0xFF, 0x00},
+		invalidType1: hashtype.UInt8{1, 2},
+		invalidType2: hashtype.UInt8{3, 4},
+		invalidLen1:  hashtype.Binary{0x00},
+		invalidLen2:  hashtype.Binary{0x00, 0xFF},
+	},
+	{
+		name:         "RadialVariance",
+		buildDefault: func() (imghash.Comparer, error) { return imghash.NewRadialVariance() },
+		buildWithDistance: func(fn imghash.DistanceFunc) (imghash.Comparer, error) {
+			return imghash.NewRadialVariance(imghash.WithDistance(fn))
+		},
+		valid1:       hashtype.UInt8{1, 2, 3},
+		valid2:       hashtype.UInt8{3, 2, 1},
+		invalidType1: hashtype.Binary{0x00, 0xFF},
+		invalidType2: hashtype.Binary{0xFF, 0x00},
+		invalidLen1:  hashtype.UInt8{1, 2},
+		invalidLen2:  hashtype.UInt8{1, 2, 3},
+	},
+	{
+		name:         "LBP",
+		buildDefault: func() (imghash.Comparer, error) { return imghash.NewLBP() },
+		buildWithDistance: func(fn imghash.DistanceFunc) (imghash.Comparer, error) {
+			return imghash.NewLBP(imghash.WithDistance(fn))
+		},
+		valid1:       hashtype.UInt8{1, 2, 3},
+		valid2:       hashtype.UInt8{3, 2, 1},
+		invalidType1: hashtype.Binary{0x00, 0xFF},
+		invalidType2: hashtype.Binary{0xFF, 0x00},
+		invalidLen1:  hashtype.UInt8{1, 2},
+		invalidLen2:  hashtype.UInt8{1, 2, 3},
+	},
+	{
+		name:         "HOGHash",
+		buildDefault: func() (imghash.Comparer, error) { return imghash.NewHOGHash() },
+		buildWithDistance: func(fn imghash.DistanceFunc) (imghash.Comparer, error) {
+			return imghash.NewHOGHash(imghash.WithDistance(fn))
+		},
+		valid1:       hashtype.UInt8{1, 2, 3},
+		valid2:       hashtype.UInt8{3, 2, 1},
+		invalidType1: hashtype.Binary{0x00, 0xFF},
+		invalidType2: hashtype.Binary{0xFF, 0x00},
+		invalidLen1:  hashtype.UInt8{1, 2},
+		invalidLen2:  hashtype.UInt8{1, 2, 3},
+	},
+	{
+		name:         "ColorMoment",
+		buildDefault: func() (imghash.Comparer, error) { return imghash.NewColorMoment() },
+		buildWithDistance: func(fn imghash.DistanceFunc) (imghash.Comparer, error) {
+			return imghash.NewColorMoment(imghash.WithDistance(fn))
+		},
+		valid1:       hashtype.Float64{1.0, 2.0},
+		valid2:       hashtype.Float64{3.0, 4.0},
+		invalidType1: hashtype.UInt8{1, 2},
+		invalidType2: hashtype.UInt8{3, 4},
+		invalidLen1:  hashtype.Float64{1.0, 2.0},
+		invalidLen2:  hashtype.Float64{1.0, 2.0, 3.0},
+	},
+}
+
 func TestWithDistance_overrideAcrossHashers(t *testing.T) {
 	want := imghash.Distance(123.456)
 	calls := 0
@@ -16,59 +200,14 @@ func TestWithDistance_overrideAcrossHashers(t *testing.T) {
 		return want, nil
 	}
 
-	cases := []struct {
-		name  string
-		build func(imghash.DistanceFunc) (imghash.Comparer, error)
-	}{
-		{"Average", func(fn imghash.DistanceFunc) (imghash.Comparer, error) {
-			return imghash.NewAverage(imghash.WithDistance(fn))
-		}},
-		{"Difference", func(fn imghash.DistanceFunc) (imghash.Comparer, error) {
-			return imghash.NewDifference(imghash.WithDistance(fn))
-		}},
-		{"Median", func(fn imghash.DistanceFunc) (imghash.Comparer, error) {
-			return imghash.NewMedian(imghash.WithDistance(fn))
-		}},
-		{"PHash", func(fn imghash.DistanceFunc) (imghash.Comparer, error) {
-			return imghash.NewPHash(imghash.WithDistance(fn))
-		}},
-		{"WHash", func(fn imghash.DistanceFunc) (imghash.Comparer, error) {
-			return imghash.NewWHash(imghash.WithDistance(fn))
-		}},
-		{"BlockMean", func(fn imghash.DistanceFunc) (imghash.Comparer, error) {
-			return imghash.NewBlockMean(imghash.WithDistance(fn))
-		}},
-		{"MarrHildreth", func(fn imghash.DistanceFunc) (imghash.Comparer, error) {
-			return imghash.NewMarrHildreth(imghash.WithDistance(fn))
-		}},
-		{"RadialVariance", func(fn imghash.DistanceFunc) (imghash.Comparer, error) {
-			return imghash.NewRadialVariance(imghash.WithDistance(fn))
-		}},
-		{"ColorMoment", func(fn imghash.DistanceFunc) (imghash.Comparer, error) {
-			return imghash.NewColorMoment(imghash.WithDistance(fn))
-		}},
-		{"LBP", func(fn imghash.DistanceFunc) (imghash.Comparer, error) {
-			return imghash.NewLBP(imghash.WithDistance(fn))
-		}},
-		{"HOGHash", func(fn imghash.DistanceFunc) (imghash.Comparer, error) {
-			return imghash.NewHOGHash(imghash.WithDistance(fn))
-		}},
-		{"PDQ", func(fn imghash.DistanceFunc) (imghash.Comparer, error) {
-			return imghash.NewPDQ(imghash.WithDistance(fn))
-		}},
-		{"RASH", func(fn imghash.DistanceFunc) (imghash.Comparer, error) {
-			return imghash.NewRASH(imghash.WithDistance(fn))
-		}},
-	}
-
-	for _, tc := range cases {
+	for _, tc := range compareCases {
 		t.Run(tc.name, func(t *testing.T) {
-			cmp, err := tc.build(custom)
+			cmp, err := tc.buildWithDistance(custom)
 			if err != nil {
 				t.Fatalf("failed to create hasher: %v", err)
 			}
 
-			got, err := cmp.Compare(hashtype.UInt8{1, 2, 3}, hashtype.UInt8{4, 5, 6})
+			got, err := cmp.Compare(tc.valid1, tc.valid2)
 			if err != nil {
 				t.Fatalf("unexpected error: %v", err)
 			}
@@ -78,8 +217,59 @@ func TestWithDistance_overrideAcrossHashers(t *testing.T) {
 		})
 	}
 
-	if calls != len(cases) {
-		t.Fatalf("custom distance called %d times, want %d", calls, len(cases))
+	if calls != len(compareCases) {
+		t.Fatalf("custom distance called %d times, want %d", calls, len(compareCases))
+	}
+}
+
+func TestWithDistance_validatesInputsBeforeOverride(t *testing.T) {
+	for _, tc := range compareCases {
+		t.Run(tc.name, func(t *testing.T) {
+			calls := 0
+			custom := func(_, _ hashtype.Hash) (imghash.Distance, error) {
+				calls++
+				return 1, nil
+			}
+			cmp, err := tc.buildWithDistance(custom)
+			if err != nil {
+				t.Fatalf("failed to create hasher: %v", err)
+			}
+
+			_, err = cmp.Compare(tc.invalidType1, tc.invalidType2)
+			if !errors.Is(err, imghash.ErrIncompatibleHash) {
+				t.Fatalf("type mismatch: got %v, want %v", err, imghash.ErrIncompatibleHash)
+			}
+
+			_, err = cmp.Compare(tc.invalidLen1, tc.invalidLen2)
+			if !errors.Is(err, imghash.ErrHashLengthMismatch) {
+				t.Fatalf("length mismatch: got %v, want %v", err, imghash.ErrHashLengthMismatch)
+			}
+
+			if calls != 0 {
+				t.Fatalf("custom distance called %d times, want 0", calls)
+			}
+		})
+	}
+}
+
+func TestCompare_defaultValidatesInputsAcrossHashers(t *testing.T) {
+	for _, tc := range compareCases {
+		t.Run(tc.name, func(t *testing.T) {
+			cmp, err := tc.buildDefault()
+			if err != nil {
+				t.Fatalf("failed to create hasher: %v", err)
+			}
+
+			_, err = cmp.Compare(tc.invalidType1, tc.invalidType2)
+			if !errors.Is(err, imghash.ErrIncompatibleHash) {
+				t.Fatalf("type mismatch: got %v, want %v", err, imghash.ErrIncompatibleHash)
+			}
+
+			_, err = cmp.Compare(tc.invalidLen1, tc.invalidLen2)
+			if !errors.Is(err, imghash.ErrHashLengthMismatch) {
+				t.Fatalf("length mismatch: got %v, want %v", err, imghash.ErrHashLengthMismatch)
+			}
+		})
 	}
 }
 

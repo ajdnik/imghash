@@ -150,6 +150,9 @@ func computeMarrHildrethKernel(alpha, level float64) [][]float32 {
 
 // Compare computes the Hamming distance between two MarrHildreth hashes.
 func (mhh MarrHildreth) Compare(h1, h2 hashtype.Hash) (similarity.Distance, error) {
+	if err := validateBinaryCompareInputs(h1, h2); err != nil {
+		return 0, err
+	}
 	if mhh.distFunc != nil {
 		return mhh.distFunc(h1, h2)
 	}

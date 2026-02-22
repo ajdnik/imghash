@@ -145,6 +145,9 @@ func (r RASH) computeHash(means []float64) hashtype.Binary {
 
 // Compare computes the Hamming distance between two RASH hashes.
 func (r RASH) Compare(h1, h2 hashtype.Hash) (similarity.Distance, error) {
+	if err := validateBinaryCompareInputs(h1, h2); err != nil {
+		return 0, err
+	}
 	if r.distFunc != nil {
 		return r.distFunc(h1, h2)
 	}

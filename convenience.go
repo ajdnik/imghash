@@ -59,7 +59,12 @@ func Compare(h1, h2 hashtype.Hash, fn ...DistanceFunc) (similarity.Distance, err
 	if len(fn) > 0 && fn[0] != nil {
 		return fn[0](h1, h2)
 	}
-	if _, ok := h1.(hashtype.Binary); ok {
+	_, h1Binary := h1.(hashtype.Binary)
+	_, h2Binary := h2.(hashtype.Binary)
+	if h1Binary || h2Binary {
+		if !h1Binary || !h2Binary {
+			return 0, ErrIncompatibleHash
+		}
 		return similarity.Hamming(h1, h2)
 	}
 	return similarity.L2(h1, h2)

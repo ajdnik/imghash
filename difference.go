@@ -62,6 +62,9 @@ func (dh Difference) computeHash(img *image.Gray) hashtype.Binary {
 
 // Compare computes the Hamming distance between two Difference hashes.
 func (dh Difference) Compare(h1, h2 hashtype.Hash) (similarity.Distance, error) {
+	if err := validateBinaryCompareInputs(h1, h2); err != nil {
+		return 0, err
+	}
 	if dh.distFunc != nil {
 		return dh.distFunc(h1, h2)
 	}

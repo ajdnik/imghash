@@ -95,6 +95,9 @@ func (p PDQ) computeHash(block [][]float32, median float32) hashtype.Binary {
 
 // Compare computes the Hamming distance between two PDQ hashes.
 func (p PDQ) Compare(h1, h2 hashtype.Hash) (similarity.Distance, error) {
+	if err := validateBinaryCompareInputs(h1, h2); err != nil {
+		return 0, err
+	}
 	if p.distFunc != nil {
 		return p.distFunc(h1, h2)
 	}

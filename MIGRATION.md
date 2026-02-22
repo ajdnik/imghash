@@ -137,6 +137,18 @@ h2, _ := pdq.Calculate(img2)
 dist, err := pdq.Compare(h1, h2)
 ```
 
+`Compare` input validation is strict:
+- hash values must be the expected concrete type for that algorithm
+- hash lengths must match
+- validation runs for both default metric and `WithDistance(...)` overrides
+
+Comparison sentinel errors:
+
+| Error | Meaning |
+|---|---|
+| `ErrIncompatibleHash` | hash type is incompatible for the selected compare path |
+| `ErrHashLengthMismatch` | hashes have different lengths |
+
 The generic top-level helper and the `similarity` sub-package remain available
 for callers who need a specific metric regardless of algorithm:
 
@@ -150,6 +162,9 @@ dist, err = similarity.Cosine(h1, h2)
 dist, err = similarity.L1(h1, h2)
 dist, err = similarity.WeightedHamming(h1, h2, weights)
 ```
+
+Note: `imghash.Compare` returns `ErrIncompatibleHash` when one hash is `Binary`
+and the other is not.
 
 ## 7. Optional: adopt new convenience helpers
 
