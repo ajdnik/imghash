@@ -49,6 +49,10 @@ var _ CLDOption = WithSize(0, 0)
 var _ CLDOption = WithInterpolation(Bilinear)
 var _ CLDOption = WithDistance(nil)
 
+var _ EHDOption = WithSize(0, 0)
+var _ EHDOption = WithInterpolation(Bilinear)
+var _ EHDOption = WithDistance(nil)
+
 var _ WHashOption = WithSize(0, 0)
 var _ WHashOption = WithInterpolation(Bilinear)
 var _ WHashOption = WithLevel(0)

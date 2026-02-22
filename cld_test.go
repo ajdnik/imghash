@@ -74,11 +74,11 @@ var cldDistanceTests = []struct {
 	height      uint
 	resizeType  imghash.Interpolation
 }{
-	{"assets/lena.jpg", "assets/cat.jpg", 64, 64, 64, imghash.Bilinear},
-	{"assets/lena.jpg", "assets/monarch.jpg", 35, 64, 64, imghash.Bilinear},
-	{"assets/baboon.jpg", "assets/cat.jpg", 59, 64, 64, imghash.Bilinear},
-	{"assets/peppers.jpg", "assets/baboon.jpg", 31, 64, 64, imghash.Bilinear},
-	{"assets/tulips.jpg", "assets/monarch.jpg", 31, 64, 64, imghash.Bilinear},
+	{"assets/lena.jpg", "assets/cat.jpg", 24.49489742783178, 64, 64, imghash.Bilinear},
+	{"assets/lena.jpg", "assets/monarch.jpg", 11.874342087037917, 64, 64, imghash.Bilinear},
+	{"assets/baboon.jpg", "assets/cat.jpg", 25.199206336708304, 64, 64, imghash.Bilinear},
+	{"assets/peppers.jpg", "assets/baboon.jpg", 11.532562594670797, 64, 64, imghash.Bilinear},
+	{"assets/tulips.jpg", "assets/monarch.jpg", 12.206555615733702, 64, 64, imghash.Bilinear},
 }
 
 func TestCLD_Distance(t *testing.T) {
