@@ -33,6 +33,9 @@ Default metric per algorithm:
 | ColorMoment | `Float64` | L2 (Euclidean) |
 | Zernike | `Float64` | L2 (Euclidean) |
 | GIST | `Float64` | Cosine |
+| BoVW (Histogram) | `Float64` | Cosine |
+| BoVW (MinHash) | `Float64` | Jaccard |
+| BoVW (SimHash) | `Binary` | Jaccard |
 | CLD | `UInt8` | L2 (Euclidean) |
 | EHD | `UInt8` | L1 (Manhattan) |
 | LBP | `UInt8` | Chi-Square |
@@ -69,4 +72,10 @@ dist, err = similarity.L2(h1, h2)                       // Euclidean distance
 dist, err = similarity.ChiSquare(h1, h2)                // Chi-square distance
 dist, err = similarity.Cosine(h1, h2)                   // Cosine distance (1 - cos similarity)
 dist, err = similarity.PCC(h1, h2)                      // Peak cross-correlation
+dist, err = similarity.Jaccard(h1, h2)                  // Jaccard distance
 ```
+
+`similarity.Jaccard` supports:
+
+- `Binary` hashes as bitsets (`1 - |A∩B|/|A∪B|`)
+- `UInt8` and `Float64` MinHash-style signatures (`1 - matching_positions/length`)

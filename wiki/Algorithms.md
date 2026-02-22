@@ -1,6 +1,6 @@
 # Algorithms
 
-imghash supports 17 perceptual hashing algorithms. Most are ported from [OpenCV Contrib](https://github.com/opencv/opencv_contrib) and tested against its implementations.
+imghash supports 18 perceptual hashing algorithms. Most are ported from [OpenCV Contrib](https://github.com/opencv/opencv_contrib) and tested against its implementations.
 
 Every constructor accepts functional options. Call with no arguments for defaults, or pass `With*` options to customize:
 
@@ -151,6 +151,27 @@ Based on [Histograms of Oriented Gradients for Human Detection](https://ieeexplo
 | `WithNumBins(n)` | 9 |
 
 With defaults, output is a 9216-element vector (32x32 cells x 9 bins). `WithSize(32, 32)` produces a 144-element hash (4x4 cells x 9 bins).
+
+## BoVW (Bag of Visual Words) Hash
+
+Builds a bag-of-visual-words representation from local binary descriptors using either ORB-like or AKAZE-like keypoints/features.
+
+Storage mode controls hash type and default metric:
+
+- `BoVWHistogram` -> `Float64` histogram, compared with cosine distance
+- `BoVWMinHash` -> `Float64` MinHash signature, compared with Jaccard distance
+- `BoVWSimHash` -> `Binary` SimHash signature, compared with Jaccard distance
+
+| Option | Default |
+|--------|---------|
+| `WithSize(w, h)` | 256, 256 |
+| `WithInterpolation(i)` | `Bilinear` |
+| `WithBoVWFeature(f)` | `BoVWORB` |
+| `WithBoVWStorage(s)` | `BoVWHistogram` |
+| `WithVocabularySize(n)` | 256 |
+| `WithMaxKeypoints(n)` | 500 |
+| `WithMinHashSize(n)` | 64 |
+| `WithSimHashBits(n)` | 128 |
 
 ## GIST Descriptor Hash
 

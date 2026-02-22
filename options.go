@@ -69,6 +69,9 @@ type ZernikeOption interface{ applyZernike(*Zernike) }
 // GISTOption configures the GIST hash algorithm.
 type GISTOption interface{ applyGIST(*GIST) }
 
+// BoVWOption configures the BoVW hash algorithm.
+type BoVWOption interface{ applyBoVW(*BoVW) }
+
 // Option interfaces returned by With* constructors.
 // Concrete implementations are intentionally unexported.
 
@@ -91,6 +94,7 @@ type DistanceOption interface {
 	RASHOption
 	ZernikeOption
 	GISTOption
+	BoVWOption
 }
 
 type distanceOption struct{ fn DistanceFunc }
@@ -112,6 +116,7 @@ func (o distanceOption) applyPDQ(p *PDQ)                       { p.distFunc = o.
 func (o distanceOption) applyRASH(r *RASH)                     { r.distFunc = o.fn }
 func (o distanceOption) applyZernike(z *Zernike)               { z.distFunc = o.fn }
 func (o distanceOption) applyGIST(g *GIST)                     { g.distFunc = o.fn }
+func (o distanceOption) applyBoVW(b *BoVW)                     { b.distFunc = o.fn }
 
 // --- concrete option implementations ---
 
@@ -132,6 +137,7 @@ type SizeOption interface {
 	RASHOption
 	ZernikeOption
 	GISTOption
+	BoVWOption
 }
 
 type sizeOption struct{ width, height uint }
@@ -152,6 +158,7 @@ func (o sizeOption) applyHOGHash(h *HOGHash)           { o.applyBase(&h.baseConf
 func (o sizeOption) applyRASH(r *RASH)                 { o.applyBase(&r.baseConfig) }
 func (o sizeOption) applyZernike(z *Zernike)           { o.applyBase(&z.baseConfig) }
 func (o sizeOption) applyGIST(g *GIST)                 { o.applyBase(&g.baseConfig) }
+func (o sizeOption) applyBoVW(b *BoVW)                 { o.applyBase(&b.baseConfig) }
 
 // InterpolationOption sets the resize interpolation method.
 type InterpolationOption interface {
@@ -171,6 +178,7 @@ type InterpolationOption interface {
 	RASHOption
 	ZernikeOption
 	GISTOption
+	BoVWOption
 }
 
 type interpolationOption struct{ interp Interpolation }
@@ -192,6 +200,7 @@ func (o interpolationOption) applyPDQ(p *PDQ)                   { p.interp = o.i
 func (o interpolationOption) applyRASH(r *RASH)                 { o.applyBase(&r.baseConfig) }
 func (o interpolationOption) applyZernike(z *Zernike)           { o.applyBase(&z.baseConfig) }
 func (o interpolationOption) applyGIST(g *GIST)                 { o.applyBase(&g.baseConfig) }
+func (o interpolationOption) applyBoVW(b *BoVW)                 { o.applyBase(&b.baseConfig) }
 
 // KernelSizeOption sets the Gaussian kernel size.
 type KernelSizeOption interface {
@@ -331,16 +340,70 @@ type weightsOption struct{ weights []float64 }
 
 func (o weightsOption) applyPHash(p *PHash) { p.weights = append([]float64(nil), o.weights...) }
 
+// BoVWFeatureOption sets the local feature extractor for BoVW.
+type BoVWFeatureOption interface {
+	BoVWOption
+}
+
+type bovwFeatureOption struct{ feature BoVWFeatureType }
+
+func (o bovwFeatureOption) applyBoVW(b *BoVW) { b.featureType = o.feature }
+
+// BoVWStorageOption sets the output storage type for BoVW.
+type BoVWStorageOption interface {
+	BoVWOption
+}
+
+type bovwStorageOption struct{ storage BoVWStorageType }
+
+func (o bovwStorageOption) applyBoVW(b *BoVW) { b.storageType = o.storage }
+
+// VocabularySizeOption sets the visual vocabulary size used by BoVW.
+type VocabularySizeOption interface {
+	BoVWOption
+}
+
+type vocabularySizeOption struct{ size uint }
+
+func (o vocabularySizeOption) applyBoVW(b *BoVW) { b.vocabularySize = o.size }
+
+// MaxKeypointsOption sets the maximum number of BoVW keypoints.
+type MaxKeypointsOption interface {
+	BoVWOption
+}
+
+type maxKeypointsOption struct{ count uint }
+
+func (o maxKeypointsOption) applyBoVW(b *BoVW) { b.maxKeypoints = o.count }
+
+// MinHashSizeOption sets the MinHash signature size used by BoVW.
+type MinHashSizeOption interface {
+	BoVWOption
+}
+
+type minHashSizeOption struct{ size uint }
+
+func (o minHashSizeOption) applyBoVW(b *BoVW) { b.minHashSize = o.size }
+
+// SimHashBitsOption sets the SimHash bit length used by BoVW.
+type SimHashBitsOption interface {
+	BoVWOption
+}
+
+type simHashBitsOption struct{ bits uint }
+
+func (o simHashBitsOption) applyBoVW(b *BoVW) { b.simHashBits = o.bits }
+
 // --- public constructors ---
 
 // WithSize sets the resize dimensions used during hash computation.
-// Applies to Average, Difference, Median, PHash, BlockMean, MarrHildreth, ColorMoment, CLD, EHD, WHash, LBP, HOGHash, RASH, Zernike, and GIST.
+// Applies to Average, Difference, Median, PHash, BlockMean, MarrHildreth, ColorMoment, CLD, EHD, WHash, LBP, HOGHash, BoVW, RASH, Zernike, and GIST.
 func WithSize(width, height uint) SizeOption {
 	return sizeOption{width, height}
 }
 
 // WithInterpolation sets the resize interpolation method.
-// Applies to Average, Difference, Median, PHash, BlockMean, MarrHildreth, ColorMoment, CLD, EHD, WHash, LBP, HOGHash, PDQ, RASH, Zernike, and GIST.
+// Applies to Average, Difference, Median, PHash, BlockMean, MarrHildreth, ColorMoment, CLD, EHD, WHash, LBP, HOGHash, BoVW, PDQ, RASH, Zernike, and GIST.
 func WithInterpolation(interp Interpolation) InterpolationOption {
 	return interpolationOption{interp}
 }
@@ -431,9 +494,45 @@ func WithWeights(weights []float64) WeightsOption {
 	return weightsOption{append([]float64(nil), weights...)}
 }
 
+// WithBoVWFeature sets the local feature extractor used by BoVW.
+// Applies to BoVW.
+func WithBoVWFeature(feature BoVWFeatureType) BoVWFeatureOption {
+	return bovwFeatureOption{feature: feature}
+}
+
+// WithBoVWStorage sets the BoVW output storage representation.
+// Applies to BoVW.
+func WithBoVWStorage(storage BoVWStorageType) BoVWStorageOption {
+	return bovwStorageOption{storage: storage}
+}
+
+// WithVocabularySize sets the visual vocabulary size used by BoVW.
+// Applies to BoVW.
+func WithVocabularySize(size uint) VocabularySizeOption {
+	return vocabularySizeOption{size: size}
+}
+
+// WithMaxKeypoints sets the maximum number of BoVW keypoints.
+// Applies to BoVW.
+func WithMaxKeypoints(count uint) MaxKeypointsOption {
+	return maxKeypointsOption{count: count}
+}
+
+// WithMinHashSize sets the MinHash signature length used by BoVW.
+// Applies to BoVW.
+func WithMinHashSize(size uint) MinHashSizeOption {
+	return minHashSizeOption{size: size}
+}
+
+// WithSimHashBits sets the SimHash bit length used by BoVW.
+// Applies to BoVW.
+func WithSimHashBits(bits uint) SimHashBitsOption {
+	return simHashBitsOption{bits: bits}
+}
+
 // WithDistance overrides the default distance function used by Compare.
 // All functions in the similarity package (Hamming, L1, L2, Cosine,
-// ChiSquare, PCC) satisfy DistanceFunc and can be passed directly.
+// ChiSquare, PCC, Jaccard) satisfy DistanceFunc and can be passed directly.
 // Applies to all algorithms.
 func WithDistance(fn DistanceFunc) DistanceOption {
 	return distanceOption{fn}

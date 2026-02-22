@@ -10,14 +10,14 @@ import (
 
 // DistanceFunc computes a distance between two hashes.
 // All functions in the similarity package (Hamming, L1, L2, Cosine,
-// ChiSquare, PCC) satisfy this signature and can be passed directly
+// ChiSquare, PCC, Jaccard) satisfy this signature and can be passed directly
 // to WithDistance.
 type DistanceFunc func(hashtype.Hash, hashtype.Hash) (similarity.Distance, error)
 
 // Hasher computes a perceptual hash from an image.
 // It is implemented by all hash algorithms in this package:
 // Average, Difference, PHash, Median, BlockMean, MarrHildreth,
-// RadialVariance, ColorMoment, CLD, EHD, WHash, LBP, HOGHash, PDQ, RASH, Zernike, and GIST.
+// RadialVariance, ColorMoment, CLD, EHD, WHash, LBP, HOGHash, BoVW, PDQ, RASH, Zernike, and GIST.
 type Hasher interface {
 	Calculate(image.Image) (hashtype.Hash, error)
 }
@@ -51,6 +51,7 @@ var (
 	_ HasherComparer = WHash{}
 	_ HasherComparer = LBP{}
 	_ HasherComparer = HOGHash{}
+	_ HasherComparer = BoVW{}
 	_ HasherComparer = PDQ{}
 	_ HasherComparer = RASH{}
 	_ HasherComparer = Zernike{}
@@ -112,4 +113,14 @@ var (
 	ErrInvalidRings = errors.New("imghash: rings must be greater than zero")
 	// ErrInvalidDegree is returned when the maximum Zernike degree is not positive.
 	ErrInvalidDegree = errors.New("imghash: degree must be greater than zero")
+	// ErrInvalidBoVWFeatureType is returned when an unknown BoVW feature extractor enum is supplied.
+	ErrInvalidBoVWFeatureType = errors.New("imghash: invalid BoVW feature type")
+	// ErrInvalidBoVWStorageType is returned when an unknown BoVW storage enum is supplied.
+	ErrInvalidBoVWStorageType = errors.New("imghash: invalid BoVW storage type")
+	// ErrInvalidVocabularySize is returned when BoVW vocabulary size is zero.
+	ErrInvalidVocabularySize = errors.New("imghash: vocabulary size must be greater than zero")
+	// ErrInvalidKeypoints is returned when the maximum keypoint count is zero.
+	ErrInvalidKeypoints = errors.New("imghash: max keypoints must be greater than zero")
+	// ErrInvalidSignatureSize is returned when MinHash or SimHash size is zero.
+	ErrInvalidSignatureSize = errors.New("imghash: signature size must be greater than zero")
 )

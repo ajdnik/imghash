@@ -178,6 +178,19 @@ var compareCases = []compareCase{
 		invalidLen2:  hashtype.UInt8{1, 2, 3},
 	},
 	{
+		name:         "BoVW",
+		buildDefault: func() (imghash.Comparer, error) { return imghash.NewBoVW() },
+		buildWithDistance: func(fn imghash.DistanceFunc) (imghash.Comparer, error) {
+			return imghash.NewBoVW(imghash.WithDistance(fn))
+		},
+		valid1:       hashtype.Float64{1.0, 2.0},
+		valid2:       hashtype.Float64{3.0, 4.0},
+		invalidType1: hashtype.UInt8{1, 2},
+		invalidType2: hashtype.UInt8{3, 4},
+		invalidLen1:  hashtype.Float64{1.0, 2.0},
+		invalidLen2:  hashtype.Float64{1.0, 2.0, 3.0},
+	},
+	{
 		name:         "ColorMoment",
 		buildDefault: func() (imghash.Comparer, error) { return imghash.NewColorMoment() },
 		buildWithDistance: func(fn imghash.DistanceFunc) (imghash.Comparer, error) {

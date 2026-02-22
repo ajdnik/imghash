@@ -89,6 +89,9 @@ func main() {
 | ColorMoment | `Float64` | L2 (Euclidean) |
 | Zernike | `Float64` | L2 (Euclidean) |
 | GIST | `Float64` | Cosine |
+| BoVW (Histogram) | `Float64` | Cosine |
+| BoVW (MinHash) | `Float64` | Jaccard |
+| BoVW (SimHash) | `Binary` | Jaccard |
 | CLD | `UInt8` | L2 (Euclidean) |
 | EHD | `UInt8` | L1 (Manhattan) |
 | LBP | `UInt8` | Chi-Square |
