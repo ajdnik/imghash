@@ -37,6 +37,8 @@ Computes gradients instead of averages. Compares using Hamming distance. Based o
 
 Like average hash but uses the median threshold. Compares using Hamming distance.
 
+Whitepaper context: [Implementation and Benchmarking of Perceptual Image Hash Functions (Zauner, 2010)](https://www.phash.org/docs/pubs/thesis_zauner.pdf).
+
 | Option | Default |
 |--------|---------|
 | `WithSize(w, h)` | 8, 8 |
@@ -99,6 +101,8 @@ Whitepaper: [MPEG-7 Texture Descriptors (Wu et al., 2001)](https://doi.org/10.11
 
 Uses a 2D wavelet transform and produces a binary hash. Compares using Hamming distance.
 
+Whitepaper: [Rihamark: Perceptual image hash benchmarking (Zauner et al., 2011)](https://doi.org/10.1117/12.876617).
+
 | Option | Default |
 |--------|---------|
 | `WithSize(w, h)` | 512, 512 |
@@ -155,6 +159,8 @@ With defaults, output is a 9216-element vector (32x32 cells x 9 bins). `WithSize
 ## BoVW (Bag of Visual Words) Hash
 
 Builds a bag-of-visual-words representation from local binary descriptors using either ORB-like or AKAZE-like keypoints/features.
+
+Whitepaper: [Video Google: A Text Retrieval Approach to Object Matching in Videos (Sivic and Zisserman, 2003)](https://doi.org/10.1109/ICCV.2003.1238663).
 
 Storage mode controls hash type and default metric:
 
