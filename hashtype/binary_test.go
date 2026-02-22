@@ -219,3 +219,25 @@ func TestBinary_ValueAt(t *testing.T) {
 		})
 	}
 }
+
+func TestNewBinary(t *testing.T) {
+	tests := []struct {
+		name string
+		bits uint
+		want int
+	}{
+		{"zero bits", 0, 0},
+		{"8 bits", 8, 1},
+		{"9 bits", 9, 2},
+		{"63 bits", 63, 8},
+		{"64 bits", 64, 8},
+		{"65 bits", 65, 9},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := hashtype.NewBinary(tt.bits).Len(); got != tt.want {
+				t.Errorf("got %d, want %d", got, tt.want)
+			}
+		})
+	}
+}

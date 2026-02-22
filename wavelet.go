@@ -57,7 +57,7 @@ func (wh WHash) Calculate(img image.Image) (hashtype.Hash, error) {
 
 	ll := wh.extractLL(mat)
 	med := wh.median(ll)
-	return wh.computeHash(ll, med), nil
+	return wh.computeHash(ll, med)
 }
 
 func (wh WHash) extractLL(mat [][]float32) [][]float32 {
@@ -73,18 +73,20 @@ func (wh WHash) median(mat [][]float32) float32 {
 	return imgproc.MedianF32(mat)
 }
 
-func (wh WHash) computeHash(ll [][]float32, median float32) hashtype.Binary {
-	hash := make(hashtype.Binary, wh.width*wh.height/8)
+func (wh WHash) computeHash(ll [][]float32, median float32) (hashtype.Binary, error) {
+	hash := hashtype.NewBinary(wh.width * wh.height)
 	var c uint
 	for _, row := range ll {
 		for _, v := range row {
 			if v > median {
-				_ = hash.Set(c)
+				if err := hash.Set(c); err != nil {
+					return nil, err
+				}
 			}
 			c++
 		}
 	}
-	return hash
+	return hash, nil
 }
 
 // Compare computes the Hamming distance between two WHash hashes.

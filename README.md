@@ -296,7 +296,7 @@ dist, err := rv.Compare(h1, h2) // L1 distance
 
 #### RASH (Rotation Aware Spatial Hash)
 
-Produces a 64-bit binary hash designed to be robust against image rotation. Compares using Hamming distance. This is a custom algorithm that combines concentric ring sampling for rotation invariance, a 1-D DCT for frequency compaction, and median thresholding for binarisation. The algorithm resizes the image, converts to grayscale, applies Gaussian blur, then samples pixel intensities on concentric rings around the image centre. Because ring-mean features are inherently rotation-invariant (rotating the image only permutes pixels within a ring, leaving its mean unchanged), the resulting hash stays stable under arbitrary rotations. Inspired by ring-partition hashing literature such as [Robust Image Hashing with Ring Partition and Invariant Vector Distance](https://ieeexplore.ieee.org/document/7368930) by Tang et al. and [Robust image hashing based on radial variance of pixels](https://www.researchgate.net/publication/4186555_Robust_image_hashing_based_on_radial_variance_of_pixels) by De Roover et al.
+Produces a binary hash (64 bits with default settings) designed to be robust against image rotation. Compares using Hamming distance. This is a custom algorithm that combines concentric ring sampling for rotation invariance, a 1-D DCT for frequency compaction, and median thresholding for binarisation. The algorithm resizes the image, converts to grayscale, applies Gaussian blur, then samples pixel intensities on concentric rings around the image centre. Because ring-mean features are inherently rotation-invariant (rotating the image only permutes pixels within a ring, leaving its mean unchanged), the resulting hash stays stable under arbitrary rotations. Inspired by ring-partition hashing literature such as [Robust Image Hashing with Ring Partition and Invariant Vector Distance](https://ieeexplore.ieee.org/document/7368930) by Tang et al. and [Robust image hashing based on radial variance of pixels](https://www.researchgate.net/publication/4186555_Robust_image_hashing_based_on_radial_variance_of_pixels) by De Roover et al.
 
 ```go
 rash, err := imghash.NewRASH()
@@ -328,6 +328,16 @@ dist, err := pdq.Compare(h1, h2) // Hamming distance
 | `WithInterpolation(i)` | `Bilinear` |
 
 The input size is fixed at 64×64 per the algorithm specification and is not configurable.
+
+### Binary hash size with custom options
+
+For binary hashers with configurable dimensions, the bit count may not be a multiple of 8. In that case:
+- the `Binary` value stores `ceil(bits/8)` bytes
+- unused bit positions in the last byte remain zero
+
+Examples:
+- `WithSize(3, 3)` for Average/Median/Difference/WHash yields 9 bits stored in 2 bytes
+- `RASH` uses `min(64, rings-1)` bits, so `WithRings(5)` yields 4 bits stored in 1 byte
 
 ## Similarity Metrics
 

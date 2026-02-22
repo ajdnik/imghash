@@ -45,7 +45,7 @@ func (ah Average) Calculate(img image.Image) (hashtype.Hash, error) {
 	if err != nil {
 		return nil, err
 	}
-	return thresholdHash(g, uint(math.Round(m))), nil
+	return thresholdHash(g, uint(math.Round(m)))
 }
 
 // Compare computes the Hamming distance between two Average hashes.

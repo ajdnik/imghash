@@ -43,7 +43,7 @@ func (mh Median) Calculate(img image.Image) (hashtype.Hash, error) {
 	if err != nil {
 		return nil, err
 	}
-	return thresholdHash(g, uint(math.Round(med))), nil
+	return thresholdHash(g, uint(math.Round(med)))
 }
 
 // Compare computes the Hamming distance between two Median hashes.
