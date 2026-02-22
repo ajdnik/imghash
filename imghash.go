@@ -74,6 +74,10 @@ type Distance = similarity.Distance
 // is used with incompatible hash types.
 var ErrIncompatibleHash = hashtype.ErrIncompatibleHash
 
+// ErrHashLengthMismatch is reported when two hashes of the expected type
+// have different lengths and cannot be compared safely.
+var ErrHashLengthMismatch = errors.New("imghash: hash lengths must match")
+
 // Constructor validation errors.
 var (
 	// ErrInvalidSize is returned when width or height is zero.

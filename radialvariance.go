@@ -175,6 +175,9 @@ func (rv RadialVariance) computeHash(feat []float64) hashtype.UInt8 {
 
 // Compare computes the L1 (Manhattan) distance between two RadialVariance hashes.
 func (rv RadialVariance) Compare(h1, h2 hashtype.Hash) (similarity.Distance, error) {
+	if err := validateUInt8CompareInputs(h1, h2); err != nil {
+		return 0, err
+	}
 	if rv.distFunc != nil {
 		return rv.distFunc(h1, h2)
 	}

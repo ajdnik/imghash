@@ -122,6 +122,9 @@ func (bh BlockMean) computeHash(means []float64, median float64) hashtype.Binary
 
 // Compare computes the Hamming distance between two BlockMean hashes.
 func (bh BlockMean) Compare(h1, h2 hashtype.Hash) (similarity.Distance, error) {
+	if err := validateBinaryCompareInputs(h1, h2); err != nil {
+		return 0, err
+	}
 	if bh.distFunc != nil {
 		return bh.distFunc(h1, h2)
 	}

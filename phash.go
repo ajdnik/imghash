@@ -115,6 +115,9 @@ func (ph PHash) compare(img [][]float32, val float32) [][]float32 {
 // Compare computes the weighted Hamming distance between two PHash hashes
 // using the per-byte weights configured on this hasher.
 func (ph PHash) Compare(h1, h2 hashtype.Hash) (similarity.Distance, error) {
+	if err := validateBinaryCompareInputs(h1, h2); err != nil {
+		return 0, err
+	}
 	if ph.distFunc != nil {
 		return ph.distFunc(h1, h2)
 	}
