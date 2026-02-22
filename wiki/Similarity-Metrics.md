@@ -32,6 +32,7 @@ Default metric per algorithm:
 | RASH | `Binary` | Hamming |
 | ColorMoment | `Float64` | L2 (Euclidean) |
 | Zernike | `Float64` | L2 (Euclidean) |
+| GIST | `Float64` | Cosine |
 | CLD | `UInt8` | L2 (Euclidean) |
 | EHD | `UInt8` | L1 (Manhattan) |
 | LBP | `UInt8` | Chi-Square |

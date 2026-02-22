@@ -66,6 +66,9 @@ type RASHOption interface{ applyRASH(*RASH) }
 // ZernikeOption configures the Zernike hash algorithm.
 type ZernikeOption interface{ applyZernike(*Zernike) }
 
+// GISTOption configures the GIST hash algorithm.
+type GISTOption interface{ applyGIST(*GIST) }
+
 // Option interfaces returned by With* constructors.
 // Concrete implementations are intentionally unexported.
 
@@ -87,6 +90,7 @@ type DistanceOption interface {
 	PDQOption
 	RASHOption
 	ZernikeOption
+	GISTOption
 }
 
 type distanceOption struct{ fn DistanceFunc }
@@ -107,6 +111,7 @@ func (o distanceOption) applyHOGHash(h *HOGHash)               { h.distFunc = o.
 func (o distanceOption) applyPDQ(p *PDQ)                       { p.distFunc = o.fn }
 func (o distanceOption) applyRASH(r *RASH)                     { r.distFunc = o.fn }
 func (o distanceOption) applyZernike(z *Zernike)               { z.distFunc = o.fn }
+func (o distanceOption) applyGIST(g *GIST)                     { g.distFunc = o.fn }
 
 // --- concrete option implementations ---
 
@@ -126,6 +131,7 @@ type SizeOption interface {
 	HOGHashOption
 	RASHOption
 	ZernikeOption
+	GISTOption
 }
 
 type sizeOption struct{ width, height uint }
@@ -145,6 +151,7 @@ func (o sizeOption) applyLBP(l *LBP)                   { o.applyBase(&l.baseConf
 func (o sizeOption) applyHOGHash(h *HOGHash)           { o.applyBase(&h.baseConfig) }
 func (o sizeOption) applyRASH(r *RASH)                 { o.applyBase(&r.baseConfig) }
 func (o sizeOption) applyZernike(z *Zernike)           { o.applyBase(&z.baseConfig) }
+func (o sizeOption) applyGIST(g *GIST)                 { o.applyBase(&g.baseConfig) }
 
 // InterpolationOption sets the resize interpolation method.
 type InterpolationOption interface {
@@ -163,6 +170,7 @@ type InterpolationOption interface {
 	PDQOption
 	RASHOption
 	ZernikeOption
+	GISTOption
 }
 
 type interpolationOption struct{ interp Interpolation }
@@ -183,6 +191,7 @@ func (o interpolationOption) applyHOGHash(h *HOGHash)           { o.applyBase(&h
 func (o interpolationOption) applyPDQ(p *PDQ)                   { p.interp = o.interp }
 func (o interpolationOption) applyRASH(r *RASH)                 { o.applyBase(&r.baseConfig) }
 func (o interpolationOption) applyZernike(z *Zernike)           { o.applyBase(&z.baseConfig) }
+func (o interpolationOption) applyGIST(g *GIST)                 { o.applyBase(&g.baseConfig) }
 
 // KernelSizeOption sets the Gaussian kernel size.
 type KernelSizeOption interface {
@@ -267,11 +276,15 @@ func (o levelOption) applyWHash(w *WHash) { w.level = o.level }
 // GridSizeOption sets the grid cell count for spatial histograms.
 type GridSizeOption interface {
 	LBPOption
+	GISTOption
 }
 
 type gridSizeOption struct{ x, y uint }
 
 func (o gridSizeOption) applyLBP(l *LBP) { l.gridX, l.gridY = o.x, o.y }
+func (o gridSizeOption) applyGIST(g *GIST) {
+	g.gridX, g.gridY = o.x, o.y
+}
 
 // CellSizeOption sets the cell size in pixels for HOG computation.
 type CellSizeOption interface {
@@ -321,13 +334,13 @@ func (o weightsOption) applyPHash(p *PHash) { p.weights = append([]float64(nil),
 // --- public constructors ---
 
 // WithSize sets the resize dimensions used during hash computation.
-// Applies to Average, Difference, Median, PHash, BlockMean, MarrHildreth, ColorMoment, CLD, EHD, WHash, LBP, HOGHash, RASH, and Zernike.
+// Applies to Average, Difference, Median, PHash, BlockMean, MarrHildreth, ColorMoment, CLD, EHD, WHash, LBP, HOGHash, RASH, Zernike, and GIST.
 func WithSize(width, height uint) SizeOption {
 	return sizeOption{width, height}
 }
 
 // WithInterpolation sets the resize interpolation method.
-// Applies to Average, Difference, Median, PHash, BlockMean, MarrHildreth, ColorMoment, CLD, EHD, WHash, LBP, HOGHash, PDQ, RASH, and Zernike.
+// Applies to Average, Difference, Median, PHash, BlockMean, MarrHildreth, ColorMoment, CLD, EHD, WHash, LBP, HOGHash, PDQ, RASH, Zernike, and GIST.
 func WithInterpolation(interp Interpolation) InterpolationOption {
 	return interpolationOption{interp}
 }
@@ -382,7 +395,7 @@ func WithLevel(level int) LevelOption {
 
 // WithGridSize sets the number of grid cells used to divide the image for
 // spatial histogram computation.
-// Applies to LBP.
+// Applies to LBP and GIST.
 func WithGridSize(x, y uint) GridSizeOption {
 	return gridSizeOption{x, y}
 }

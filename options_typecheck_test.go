@@ -82,3 +82,8 @@ var _ ZernikeOption = WithSize(0, 0)
 var _ ZernikeOption = WithInterpolation(Bilinear)
 var _ ZernikeOption = WithDegree(0)
 var _ ZernikeOption = WithDistance(nil)
+
+var _ GISTOption = WithSize(0, 0)
+var _ GISTOption = WithInterpolation(Bilinear)
+var _ GISTOption = WithGridSize(0, 0)
+var _ GISTOption = WithDistance(nil)
