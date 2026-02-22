@@ -1,5 +1,27 @@
 # Changelog
 
+## [2.3.0](https://github.com/ajdnik/imghash/compare/v2.2.0...v2.3.0) (2026-02-22)
+
+
+### Features
+
+* Bag-of-visual-words Hash ([#32](https://github.com/ajdnik/imghash/issues/32)) ([ffac54e](https://github.com/ajdnik/imghash/commit/ffac54e78c6f9e2a0121424c2a5a42e04e94b143))
+* Color Layout Descriptor Hash ([#28](https://github.com/ajdnik/imghash/issues/28)) ([3f8b59c](https://github.com/ajdnik/imghash/commit/3f8b59cfcacc75ca7cf9fcbe3a5107ccf49dd604))
+* Edge Histogram Descriptor Hash ([#29](https://github.com/ajdnik/imghash/issues/29)) ([e704de5](https://github.com/ajdnik/imghash/commit/e704de5c2e83282ed28f8162565c55679ea77803))
+* GIST Hash ([#31](https://github.com/ajdnik/imghash/issues/31)) ([b72cbaa](https://github.com/ajdnik/imghash/commit/b72cbaae7d6501be26cddef2e901e9138e4fe741))
+* Robust Hash Compare ([#21](https://github.com/ajdnik/imghash/issues/21)) ([6d8e858](https://github.com/ajdnik/imghash/commit/6d8e8589f6987101aee392bfce43c54a344d8c10))
+* Rotation and RotationOverlap Variants ([#24](https://github.com/ajdnik/imghash/issues/24)) ([f65d73e](https://github.com/ajdnik/imghash/commit/f65d73e410384fc81e19a2f96fabe8226e8e1f0d))
+* Zernike Moments Hash ([#30](https://github.com/ajdnik/imghash/issues/30)) ([b34f602](https://github.com/ajdnik/imghash/commit/b34f602fb0cc042a589cc7f487e36f0c87182d6b))
+
+
+### Bug Fixes
+
+* Invalid Interpolation Values ([#26](https://github.com/ajdnik/imghash/issues/26)) ([f1a1364](https://github.com/ajdnik/imghash/commit/f1a1364fc297e0d966a4ae1a88470474ca5e21bb))
+* Non Byte-aligned Hashes ([#23](https://github.com/ajdnik/imghash/issues/23)) ([12bb75d](https://github.com/ajdnik/imghash/commit/12bb75d6f876f3340ff9e962dcb184cedf2a654d))
+* release-please PR checks issue ([adf11aa](https://github.com/ajdnik/imghash/commit/adf11aa3afda24e3ffd1a9383ca4bb17c8ef80bf))
+* Restructure Options ([#27](https://github.com/ajdnik/imghash/issues/27)) ([30a100f](https://github.com/ajdnik/imghash/commit/30a100f8b3bd2207a97fb6957b877414166a530e))
+* Weight Mutation ([#25](https://github.com/ajdnik/imghash/issues/25)) ([3a6009e](https://github.com/ajdnik/imghash/commit/3a6009ee1ffa9990394d2674ba690cbd7593f1c0))
+
 ## [2.2.0](https://github.com/ajdnik/imghash/compare/v2.1.0...v2.2.0) (2026-02-21)
 
 
