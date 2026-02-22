@@ -22,12 +22,25 @@ jobs:
 
       - name: Sync wiki markdown pages
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WIKI_TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN }}
         shell: bash
         run: |
           set -euo pipefail
 
-          git clone "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.wiki.git" wiki-repo
+          if [ -z "${WIKI_TOKEN:-}" ]; then
+            echo "::error::Missing required secret RELEASE_PLEASE_TOKEN."
+            echo "::error::Add a PAT with repo scope as RELEASE_PLEASE_TOKEN in repository secrets."
+            exit 1
+          fi
+
+          WIKI_URL="https://x-access-token:${WIKI_TOKEN}@github.com/${GITHUB_REPOSITORY}.wiki.git"
+          if ! git ls-remote "${WIKI_URL}" >/dev/null 2>&1; then
+            echo "::error::Cannot access ${GITHUB_REPOSITORY}.wiki.git."
+            echo "::error::Ensure Wiki is enabled and initialized with at least one page, and RELEASE_PLEASE_TOKEN has repo access."
+            exit 1
+          fi
+
+          git clone "${WIKI_URL}" wiki-repo
 
           # Keep the wiki source in this repo authoritative for top-level markdown pages.
           find wiki-repo -maxdepth 1 -type f -name '*.md' -delete

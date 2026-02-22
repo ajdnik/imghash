@@ -1,5 +1,3 @@
-<h1 align="center">imghash</h1>
-
 <p align="center">
   <img src="assets/logo.png" alt="imghash logo" width="220">
 </p>
@@ -24,18 +22,6 @@ Detailed documentation has moved to the Wiki:
 - [Convenience Functions](https://github.com/ajdnik/imghash/wiki/Convenience-Functions)
 - [Interpolation Methods](https://github.com/ajdnik/imghash/wiki/Interpolation-Methods)
 - [Migration Guide](https://github.com/ajdnik/imghash/wiki/Migration-Guide)
-
-This repo also includes matching source pages under `wiki/` so docs can be edited in PRs and then copied/synced into the GitHub Wiki.
-
-Local source pages:
-
-- [wiki/Home.md](wiki/Home.md)
-- [wiki/Algorithms.md](wiki/Algorithms.md)
-- [wiki/Similarity-Metrics.md](wiki/Similarity-Metrics.md)
-- [wiki/Convenience-Functions.md](wiki/Convenience-Functions.md)
-- [wiki/Interpolation-Methods.md](wiki/Interpolation-Methods.md)
-- [wiki/Migration-Guide.md](wiki/Migration-Guide.md)
-- [wiki/README.md](wiki/README.md)
 
 ## Installing
 
