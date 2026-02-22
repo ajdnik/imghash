@@ -87,6 +87,7 @@ func main() {
 | PDQ | `Binary` | Hamming |
 | RASH | `Binary` | Hamming |
 | ColorMoment | `Float64` | L2 (Euclidean) |
+| Zernike | `Float64` | L2 (Euclidean) |
 | CLD | `UInt8` | L2 (Euclidean) |
 | EHD | `UInt8` | L1 (Manhattan) |
 | LBP | `UInt8` | Chi-Square |

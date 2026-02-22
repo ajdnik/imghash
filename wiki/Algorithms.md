@@ -1,6 +1,6 @@
 # Algorithms
 
-imghash supports 15 perceptual hashing algorithms. Most are ported from [OpenCV Contrib](https://github.com/opencv/opencv_contrib) and tested against its implementations.
+imghash supports 16 perceptual hashing algorithms. Most are ported from [OpenCV Contrib](https://github.com/opencv/opencv_contrib) and tested against its implementations.
 
 Every constructor accepts functional options. Call with no arguments for defaults, or pass `With*` options to customize:
 
@@ -162,6 +162,20 @@ From [Robust image hashing based on radial variance of pixels](https://www.resea
 |--------|---------|
 | `WithSigma(s)` | 1 |
 | `WithAngles(n)` | 180 |
+
+## Zernike Moments Hash
+
+Computes magnitude-only Zernike moments into a `float64` vector. Compares using L2 distance.
+
+Magnitude makes the descriptor rotation-invariant while preserving low-order shape structure.
+
+Whitepaper: [Invariant Image Recognition by Zernike Moments (Khotanzad and Hong, 1990)](https://doi.org/10.1109/34.55109).
+
+| Option | Default |
+|--------|---------|
+| `WithSize(w, h)` | 64, 64 |
+| `WithInterpolation(i)` | `Bilinear` |
+| `WithDegree(d)` | 8 |
 
 ## RASH (Rotation Aware Spatial Hash)
 

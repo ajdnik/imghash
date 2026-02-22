@@ -63,6 +63,9 @@ type PDQOption interface{ applyPDQ(*PDQ) }
 // RASHOption configures the RASH hash algorithm.
 type RASHOption interface{ applyRASH(*RASH) }
 
+// ZernikeOption configures the Zernike hash algorithm.
+type ZernikeOption interface{ applyZernike(*Zernike) }
+
 // Option interfaces returned by With* constructors.
 // Concrete implementations are intentionally unexported.
 
@@ -83,6 +86,7 @@ type DistanceOption interface {
 	HOGHashOption
 	PDQOption
 	RASHOption
+	ZernikeOption
 }
 
 type distanceOption struct{ fn DistanceFunc }
@@ -102,6 +106,7 @@ func (o distanceOption) applyLBP(l *LBP)                       { l.distFunc = o.
 func (o distanceOption) applyHOGHash(h *HOGHash)               { h.distFunc = o.fn }
 func (o distanceOption) applyPDQ(p *PDQ)                       { p.distFunc = o.fn }
 func (o distanceOption) applyRASH(r *RASH)                     { r.distFunc = o.fn }
+func (o distanceOption) applyZernike(z *Zernike)               { z.distFunc = o.fn }
 
 // --- concrete option implementations ---
 
@@ -120,6 +125,7 @@ type SizeOption interface {
 	LBPOption
 	HOGHashOption
 	RASHOption
+	ZernikeOption
 }
 
 type sizeOption struct{ width, height uint }
@@ -138,6 +144,7 @@ func (o sizeOption) applyWHash(w *WHash)               { o.applyBase(&w.baseConf
 func (o sizeOption) applyLBP(l *LBP)                   { o.applyBase(&l.baseConfig) }
 func (o sizeOption) applyHOGHash(h *HOGHash)           { o.applyBase(&h.baseConfig) }
 func (o sizeOption) applyRASH(r *RASH)                 { o.applyBase(&r.baseConfig) }
+func (o sizeOption) applyZernike(z *Zernike)           { o.applyBase(&z.baseConfig) }
 
 // InterpolationOption sets the resize interpolation method.
 type InterpolationOption interface {
@@ -155,6 +162,7 @@ type InterpolationOption interface {
 	HOGHashOption
 	PDQOption
 	RASHOption
+	ZernikeOption
 }
 
 type interpolationOption struct{ interp Interpolation }
@@ -174,6 +182,7 @@ func (o interpolationOption) applyLBP(l *LBP)                   { o.applyBase(&l
 func (o interpolationOption) applyHOGHash(h *HOGHash)           { o.applyBase(&h.baseConfig) }
 func (o interpolationOption) applyPDQ(p *PDQ)                   { p.interp = o.interp }
 func (o interpolationOption) applyRASH(r *RASH)                 { o.applyBase(&r.baseConfig) }
+func (o interpolationOption) applyZernike(z *Zernike)           { o.applyBase(&z.baseConfig) }
 
 // KernelSizeOption sets the Gaussian kernel size.
 type KernelSizeOption interface {
@@ -291,6 +300,15 @@ type ringsOption struct{ rings int }
 
 func (o ringsOption) applyRASH(r *RASH) { r.rings = o.rings }
 
+// DegreeOption sets the maximum Zernike degree.
+type DegreeOption interface {
+	ZernikeOption
+}
+
+type degreeOption struct{ degree int }
+
+func (o degreeOption) applyZernike(z *Zernike) { z.degree = o.degree }
+
 // WeightsOption sets the per-byte weights for weighted distance.
 type WeightsOption interface {
 	PHashOption
@@ -303,13 +321,13 @@ func (o weightsOption) applyPHash(p *PHash) { p.weights = append([]float64(nil),
 // --- public constructors ---
 
 // WithSize sets the resize dimensions used during hash computation.
-// Applies to Average, Difference, Median, PHash, BlockMean, MarrHildreth, ColorMoment, CLD, EHD, WHash, LBP, HOGHash, and RASH.
+// Applies to Average, Difference, Median, PHash, BlockMean, MarrHildreth, ColorMoment, CLD, EHD, WHash, LBP, HOGHash, RASH, and Zernike.
 func WithSize(width, height uint) SizeOption {
 	return sizeOption{width, height}
 }
 
 // WithInterpolation sets the resize interpolation method.
-// Applies to Average, Difference, Median, PHash, BlockMean, MarrHildreth, ColorMoment, CLD, EHD, WHash, LBP, HOGHash, PDQ, and RASH.
+// Applies to Average, Difference, Median, PHash, BlockMean, MarrHildreth, ColorMoment, CLD, EHD, WHash, LBP, HOGHash, PDQ, RASH, and Zernike.
 func WithInterpolation(interp Interpolation) InterpolationOption {
 	return interpolationOption{interp}
 }
@@ -385,6 +403,12 @@ func WithNumBins(bins uint) NumBinsOption {
 // Applies to RASH.
 func WithRings(rings int) RingsOption {
 	return ringsOption{rings}
+}
+
+// WithDegree sets the maximum Zernike degree.
+// Applies to Zernike.
+func WithDegree(degree int) DegreeOption {
+	return degreeOption{degree}
 }
 
 // WithWeights sets the per-byte weights used for weighted Hamming distance.
