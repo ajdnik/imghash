@@ -63,7 +63,7 @@ func (r RASH) Calculate(img image.Image) (hashtype.Hash, error) {
 	}
 	blurred := imgproc.GaussianBlur(g, 0, r.sigma)
 	means := r.ringMeans(blurred.(*image.Gray))
-	return r.computeHash(means), nil
+	return r.computeHash(means)
 }
 
 // ringMeans computes the mean pixel intensity for each concentric ring.
@@ -106,7 +106,7 @@ func (r RASH) ringMeans(img *image.Gray) []float64 {
 // computeHash applies a 1-D DCT to the ring means, keeps the first
 // rashHashBits low-frequency coefficients (skipping DC), and binarises
 // them against the median.
-func (r RASH) computeHash(means []float64) hashtype.Binary {
+func (r RASH) computeHash(means []float64) (hashtype.Binary, error) {
 	n := len(means)
 	dct := make([]float64, n)
 	c0 := math.Sqrt(1.0 / float64(n))
@@ -127,6 +127,9 @@ func (r RASH) computeHash(means []float64) hashtype.Binary {
 	if n-1 < hashBits {
 		hashBits = n - 1
 	}
+	if hashBits <= 0 {
+		return hashtype.NewBinary(0), nil
+	}
 	coeffs := dct[1 : hashBits+1]
 
 	sorted := make([]float64, len(coeffs))
@@ -134,13 +137,15 @@ func (r RASH) computeHash(means []float64) hashtype.Binary {
 	sort.Float64s(sorted)
 	median := sorted[len(sorted)/2]
 
-	hash := make(hashtype.Binary, hashBits/8)
+	hash := hashtype.NewBinary(uint(hashBits))
 	for i, c := range coeffs {
 		if c > median {
-			_ = hash.Set(uint(i))
+			if err := hash.Set(uint(i)); err != nil {
+				return nil, err
+			}
 		}
 	}
-	return hash
+	return hash, nil
 }
 
 // Compare computes the Hamming distance between two RASH hashes.

@@ -16,6 +16,11 @@ import (
 // Binary represents a hash type where the smallest hash element is a bit.
 type Binary []byte
 
+// NewBinary allocates a binary hash with enough bytes to store bits.
+func NewBinary(bits uint) Binary {
+	return make(Binary, (bits+7)/8)
+}
+
 // String returns a string representation of the binary hash.
 // It is formatted as an array of bytes.
 func (h Binary) String() string {

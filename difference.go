@@ -38,13 +38,12 @@ func (dh Difference) Calculate(img image.Image) (hashtype.Hash, error) {
 	if err != nil {
 		return nil, err
 	}
-	return dh.computeHash(g), nil
+	return dh.computeHash(g)
 }
 
 // Computes the binary hash based on the gradients in the resized image.
-func (dh Difference) computeHash(img *image.Gray) hashtype.Binary {
-	size := dh.width * dh.height / 8
-	hash := make(hashtype.Binary, size)
+func (dh Difference) computeHash(img *image.Gray) (hashtype.Binary, error) {
+	hash := hashtype.NewBinary(dh.width * dh.height)
 	bnds := img.Bounds()
 	var c uint
 	for i := bnds.Min.Y; i < bnds.Max.Y; i++ {
@@ -52,12 +51,14 @@ func (dh Difference) computeHash(img *image.Gray) hashtype.Binary {
 			lft := img.GrayAt(j-1, i).Y
 			pix := img.GrayAt(j, i).Y
 			if pix > lft {
-				_ = hash.Set(c)
+				if err := hash.Set(c); err != nil {
+					return nil, err
+				}
 			}
 			c++
 		}
 	}
-	return hash
+	return hash, nil
 }
 
 // Compare computes the Hamming distance between two Difference hashes.
