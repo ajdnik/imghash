@@ -168,7 +168,7 @@ func clampInt(v, lo, hi int) int {
 	return v
 }
 
-// Compare computes the L1 (Manhattan) distance between two CLD hashes.
+// Compare computes the L2 (Euclidean) distance between two CLD hashes.
 func (c CLD) Compare(h1, h2 hashtype.Hash) (similarity.Distance, error) {
 	if err := validateUInt8CompareInputs(h1, h2); err != nil {
 		return 0, err
@@ -176,5 +176,5 @@ func (c CLD) Compare(h1, h2 hashtype.Hash) (similarity.Distance, error) {
 	if c.distFunc != nil {
 		return c.distFunc(h1, h2)
 	}
-	return similarity.L1(h1, h2)
+	return similarity.L2(h1, h2)
 }

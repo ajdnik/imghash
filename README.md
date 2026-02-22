@@ -84,7 +84,7 @@ Use the algorithm's `Compare` method for its recommended metric, or call top-lev
 
 ## Perceptual Hash Algorithms
 
-The library supports 14 perceptual hashing algorithms. Most are ported from [OpenCV Contrib](https://github.com/opencv/opencv_contrib) and tested against its implementations.
+The library supports 15 perceptual hashing algorithms. Most are ported from [OpenCV Contrib](https://github.com/opencv/opencv_contrib) and tested against its implementations.
 
 Every constructor accepts functional options. Call with no arguments for defaults, or pass `With*` options to customize:
 
@@ -201,18 +201,36 @@ dist, err := cm.Compare(h1, h2) // L2 distance
 
 #### MPEG-7 Color Layout Descriptor (CLD)
 
-Builds a compact 12-element uint8 descriptor (6 Y coefficients + 3 Cb + 3 Cr) from an 8x8 color layout in YCbCr space. The image is resized, partitioned into an 8x8 grid, transformed with a 2D DCT per channel, and low-frequency coefficients are sampled in zig-zag order with CLD-style quantization. Compares using L1 (Manhattan) distance.
+Builds a compact 12-element uint8 descriptor (6 Y coefficients + 3 Cb + 3 Cr) from an 8x8 color layout in YCbCr space. The image is resized, partitioned into an 8x8 grid, transformed with a 2D DCT per channel, and low-frequency coefficients are sampled in zig-zag order with CLD-style quantization. Compares using L2 (Euclidean) distance.
+Whitepaper: [Color and Texture Descriptors (Manjunath et al., 2001)](https://doi.org/10.1109/76.927424).
 
 ```go
 cld, err := imghash.NewCLD()
 h1, err := cld.Calculate(img1)
 h2, err := cld.Calculate(img2)
-dist, err := cld.Compare(h1, h2) // L1 distance
+dist, err := cld.Compare(h1, h2) // L2 distance
 ```
 
 | Option | Default |
 |--------|---------|
 | `WithSize(w, h)` | 64, 64 |
+| `WithInterpolation(i)` | `Bilinear` |
+
+#### MPEG-7 Edge Histogram Descriptor (EHD)
+
+Builds a compact 80-element uint8 descriptor (4x4 local regions x 5 edge bins) from grayscale edge structure. The image is resized, partitioned into a 4x4 grid, and each region accumulates local edge responses into MPEG-7 edge categories (vertical, horizontal, 45-degree, 135-degree, non-directional). Histogram bins are quantized with MPEG-7 EHD tables. Compares using L1 (Manhattan) distance.
+Whitepaper: [MPEG-7 Texture Descriptors (Wu et al., 2001)](https://doi.org/10.1142/S0219467801000311).
+
+```go
+ehd, err := imghash.NewEHD()
+h1, err := ehd.Calculate(img1)
+h2, err := ehd.Calculate(img2)
+dist, err := ehd.Compare(h1, h2) // L1 distance
+```
+
+| Option | Default |
+|--------|---------|
+| `WithSize(w, h)` | 256, 256 |
 | `WithInterpolation(i)` | `Bilinear` |
 
 #### Marr-Hildreth Hash
@@ -388,6 +406,8 @@ The default metric per algorithm:
 | PDQ | `Binary` | Hamming |
 | RASH | `Binary` | Hamming |
 | ColorMoment | `Float64` | L2 (Euclidean) |
+| CLD | `UInt8` | L2 (Euclidean) |
+| EHD | `UInt8` | L1 (Manhattan) |
 | LBP | `UInt8` | Chi-Square |
 | HOGHash | `UInt8` | Cosine |
 | RadialVariance | `UInt8` | L1 (Manhattan) |

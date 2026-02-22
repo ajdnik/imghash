@@ -70,6 +70,13 @@ func TestWithInterpolation_invalidValue(t *testing.T) {
 			},
 		},
 		{
+			name: "EHD",
+			new: func() error {
+				_, err := imghash.NewEHD(imghash.WithInterpolation(invalid))
+				return err
+			},
+		},
+		{
 			name: "WHash",
 			new: func() error {
 				_, err := imghash.NewWHash(imghash.WithInterpolation(invalid))
