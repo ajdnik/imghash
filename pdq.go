@@ -45,6 +45,9 @@ func NewPDQ(opts ...PDQOption) (PDQ, error) {
 	for _, o := range opts {
 		o.applyPDQ(&p)
 	}
+	if err := p.interp.validate(); err != nil {
+		return PDQ{}, err
+	}
 	return p, nil
 }
 

@@ -37,8 +37,8 @@ func NewLBP(opts ...LBPOption) (LBP, error) {
 	for _, o := range opts {
 		o.applyLBP(&l)
 	}
-	if l.width == 0 || l.height == 0 {
-		return LBP{}, ErrInvalidSize
+	if err := l.validate(); err != nil {
+		return LBP{}, err
 	}
 	if l.gridX == 0 || l.gridY == 0 {
 		return LBP{}, ErrInvalidGridSize

@@ -38,8 +38,8 @@ func NewHOGHash(opts ...HOGHashOption) (HOGHash, error) {
 	for _, o := range opts {
 		o.applyHOGHash(&h)
 	}
-	if h.width == 0 || h.height == 0 {
-		return HOGHash{}, ErrInvalidSize
+	if err := h.validate(); err != nil {
+		return HOGHash{}, err
 	}
 	if h.cellSize == 0 {
 		return HOGHash{}, ErrInvalidCellSize

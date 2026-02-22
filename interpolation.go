@@ -26,14 +26,28 @@ var interpolationNames = [...]string{
 	BilinearExact:     "BilinearExact",
 }
 
+func (i Interpolation) valid() bool {
+	return int(i) >= 0 && int(i) < len(interpolationNames)
+}
+
 // String returns the name of the interpolation method.
 func (i Interpolation) String() string {
-	if int(i) >= 0 && int(i) < len(interpolationNames) {
+	if i.valid() {
 		return interpolationNames[i]
 	}
 	return "Unknown"
 }
 
+func (i Interpolation) validate() error {
+	if !i.valid() {
+		return ErrInvalidInterpolation
+	}
+	return nil
+}
+
 func (i Interpolation) resizeType() imgproc.ResizeType {
+	if !i.valid() {
+		panic("imghash: invalid interpolation value")
+	}
 	return imgproc.ResizeType(i)
 }

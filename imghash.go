@@ -82,6 +82,8 @@ var ErrHashLengthMismatch = errors.New("imghash: hash lengths must match")
 var (
 	// ErrInvalidSize is returned when width or height is zero.
 	ErrInvalidSize = errors.New("imghash: size dimensions must be greater than zero")
+	// ErrInvalidInterpolation is returned when an unsupported interpolation enum is supplied.
+	ErrInvalidInterpolation = errors.New("imghash: invalid interpolation method")
 	// ErrInvalidBlockSize is returned when block width or height is zero.
 	ErrInvalidBlockSize = errors.New("imghash: block size dimensions must be greater than zero")
 	// ErrInvalidAngles is returned when the number of projection angles is not positive.
