@@ -238,6 +238,7 @@ dist, err := bm.Compare(h1, h2) // Hamming distance
 | `WithBlockMeanMethod(m)` | `Direct` |
 
 Block mean methods: `Direct`, `Overlap`, `Rotation`, `RotationOverlap`.
+`Rotation` and `RotationOverlap` compute and concatenate hashes for 24 rotations (0 to 345 degrees in 15-degree steps), so the resulting hash is 24x larger than the corresponding non-rotational mode.
 
 #### Local Binary Pattern (LBP) Hash
 
