@@ -1,6 +1,6 @@
 # Algorithms
 
-imghash supports 16 perceptual hashing algorithms. Most are ported from [OpenCV Contrib](https://github.com/opencv/opencv_contrib) and tested against its implementations.
+imghash supports 17 perceptual hashing algorithms. Most are ported from [OpenCV Contrib](https://github.com/opencv/opencv_contrib) and tested against its implementations.
 
 Every constructor accepts functional options. Call with no arguments for defaults, or pass `With*` options to customize:
 
@@ -151,6 +151,20 @@ Based on [Histograms of Oriented Gradients for Human Detection](https://ieeexplo
 | `WithNumBins(n)` | 9 |
 
 With defaults, output is a 9216-element vector (32x32 cells x 9 bins). `WithSize(32, 32)` produces a 144-element hash (4x4 cells x 9 bins).
+
+## GIST Descriptor Hash
+
+Computes an Oliva-Torralba style holistic descriptor by applying an oriented Gabor filter bank and pooling responses over a spatial grid. Compares using cosine distance.
+
+Based on [Modeling the Shape of the Scene: A Holistic Representation of the Spatial Envelope](https://people.csail.mit.edu/torralba/code/spatialenvelope/).
+
+| Option | Default |
+|--------|---------|
+| `WithSize(w, h)` | 64, 64 |
+| `WithInterpolation(i)` | `Bilinear` |
+| `WithGridSize(x, y)` | 4, 4 |
+
+With defaults, output is a 320-element descriptor (`4x4` cells x `20` filter channels). `WithGridSize(2, 2)` produces an 80-element hash.
 
 ## Radial Variance Hash
 
