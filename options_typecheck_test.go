@@ -77,3 +77,8 @@ var _ RASHOption = WithInterpolation(Bilinear)
 var _ RASHOption = WithSigma(0)
 var _ RASHOption = WithRings(0)
 var _ RASHOption = WithDistance(nil)
+
+var _ ZernikeOption = WithSize(0, 0)
+var _ ZernikeOption = WithInterpolation(Bilinear)
+var _ ZernikeOption = WithDegree(0)
+var _ ZernikeOption = WithDistance(nil)
