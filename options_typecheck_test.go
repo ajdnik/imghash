@@ -45,6 +45,10 @@ var _ ColorMomentOption = WithKernelSize(0)
 var _ ColorMomentOption = WithSigma(0)
 var _ ColorMomentOption = WithDistance(nil)
 
+var _ CLDOption = WithSize(0, 0)
+var _ CLDOption = WithInterpolation(Bilinear)
+var _ CLDOption = WithDistance(nil)
+
 var _ WHashOption = WithSize(0, 0)
 var _ WHashOption = WithInterpolation(Bilinear)
 var _ WHashOption = WithLevel(0)

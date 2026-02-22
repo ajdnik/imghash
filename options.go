@@ -42,6 +42,9 @@ type RadialVarianceOption interface{ applyRadialVariance(*RadialVariance) }
 // ColorMomentOption configures the ColorMoment hash algorithm.
 type ColorMomentOption interface{ applyColorMoment(*ColorMoment) }
 
+// CLDOption configures the CLD hash algorithm.
+type CLDOption interface{ applyCLD(*CLD) }
+
 // WHashOption configures the WHash algorithm.
 type WHashOption interface{ applyWHash(*WHash) }
 
@@ -70,6 +73,7 @@ type DistanceOption interface {
 	MarrHildrethOption
 	RadialVarianceOption
 	ColorMomentOption
+	CLDOption
 	WHashOption
 	LBPOption
 	HOGHashOption
@@ -87,6 +91,7 @@ func (o distanceOption) applyBlockMean(b *BlockMean)           { b.distFunc = o.
 func (o distanceOption) applyMarrHildreth(m *MarrHildreth)     { m.distFunc = o.fn }
 func (o distanceOption) applyRadialVariance(r *RadialVariance) { r.distFunc = o.fn }
 func (o distanceOption) applyColorMoment(c *ColorMoment)       { c.distFunc = o.fn }
+func (o distanceOption) applyCLD(c *CLD)                       { c.distFunc = o.fn }
 func (o distanceOption) applyWHash(w *WHash)                   { w.distFunc = o.fn }
 func (o distanceOption) applyLBP(l *LBP)                       { l.distFunc = o.fn }
 func (o distanceOption) applyHOGHash(h *HOGHash)               { h.distFunc = o.fn }
@@ -104,6 +109,7 @@ type SizeOption interface {
 	BlockMeanOption
 	MarrHildrethOption
 	ColorMomentOption
+	CLDOption
 	WHashOption
 	LBPOption
 	HOGHashOption
@@ -120,6 +126,7 @@ func (o sizeOption) applyPHash(p *PHash)               { o.applyBase(&p.baseConf
 func (o sizeOption) applyBlockMean(b *BlockMean)       { o.applyBase(&b.baseConfig) }
 func (o sizeOption) applyMarrHildreth(m *MarrHildreth) { o.applyBase(&m.baseConfig) }
 func (o sizeOption) applyColorMoment(c *ColorMoment)   { o.applyBase(&c.baseConfig) }
+func (o sizeOption) applyCLD(c *CLD)                   { o.applyBase(&c.baseConfig) }
 func (o sizeOption) applyWHash(w *WHash)               { o.applyBase(&w.baseConfig) }
 func (o sizeOption) applyLBP(l *LBP)                   { o.applyBase(&l.baseConfig) }
 func (o sizeOption) applyHOGHash(h *HOGHash)           { o.applyBase(&h.baseConfig) }
@@ -134,6 +141,7 @@ type InterpolationOption interface {
 	BlockMeanOption
 	MarrHildrethOption
 	ColorMomentOption
+	CLDOption
 	WHashOption
 	LBPOption
 	HOGHashOption
@@ -151,6 +159,7 @@ func (o interpolationOption) applyPHash(p *PHash)               { o.applyBase(&p
 func (o interpolationOption) applyBlockMean(b *BlockMean)       { o.applyBase(&b.baseConfig) }
 func (o interpolationOption) applyMarrHildreth(m *MarrHildreth) { o.applyBase(&m.baseConfig) }
 func (o interpolationOption) applyColorMoment(c *ColorMoment)   { o.applyBase(&c.baseConfig) }
+func (o interpolationOption) applyCLD(c *CLD)                   { o.applyBase(&c.baseConfig) }
 func (o interpolationOption) applyWHash(w *WHash)               { o.applyBase(&w.baseConfig) }
 func (o interpolationOption) applyLBP(l *LBP)                   { o.applyBase(&l.baseConfig) }
 func (o interpolationOption) applyHOGHash(h *HOGHash)           { o.applyBase(&h.baseConfig) }
@@ -285,13 +294,13 @@ func (o weightsOption) applyPHash(p *PHash) { p.weights = append([]float64(nil),
 // --- public constructors ---
 
 // WithSize sets the resize dimensions used during hash computation.
-// Applies to Average, Difference, Median, PHash, BlockMean, MarrHildreth, ColorMoment, WHash, LBP, HOGHash, and RASH.
+// Applies to Average, Difference, Median, PHash, BlockMean, MarrHildreth, ColorMoment, CLD, WHash, LBP, HOGHash, and RASH.
 func WithSize(width, height uint) SizeOption {
 	return sizeOption{width, height}
 }
 
 // WithInterpolation sets the resize interpolation method.
-// Applies to Average, Difference, Median, PHash, BlockMean, MarrHildreth, ColorMoment, WHash, LBP, HOGHash, PDQ, and RASH.
+// Applies to Average, Difference, Median, PHash, BlockMean, MarrHildreth, ColorMoment, CLD, WHash, LBP, HOGHash, PDQ, and RASH.
 func WithInterpolation(interp Interpolation) InterpolationOption {
 	return interpolationOption{interp}
 }

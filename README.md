@@ -84,7 +84,7 @@ Use the algorithm's `Compare` method for its recommended metric, or call top-lev
 
 ## Perceptual Hash Algorithms
 
-The library supports 13 perceptual hashing algorithms. Most are ported from [OpenCV Contrib](https://github.com/opencv/opencv_contrib) and tested against its implementations.
+The library supports 14 perceptual hashing algorithms. Most are ported from [OpenCV Contrib](https://github.com/opencv/opencv_contrib) and tested against its implementations.
 
 Every constructor accepts functional options. Call with no arguments for defaults, or pass `With*` options to customize:
 
@@ -198,6 +198,22 @@ dist, err := cm.Compare(h1, h2) // L2 distance
 | `WithInterpolation(i)` | `Bicubic` |
 | `WithKernelSize(k)` | 3 |
 | `WithSigma(s)` | 0 |
+
+#### MPEG-7 Color Layout Descriptor (CLD)
+
+Builds a compact 12-element uint8 descriptor (6 Y coefficients + 3 Cb + 3 Cr) from an 8x8 color layout in YCbCr space. The image is resized, partitioned into an 8x8 grid, transformed with a 2D DCT per channel, and low-frequency coefficients are sampled in zig-zag order with CLD-style quantization. Compares using L1 (Manhattan) distance.
+
+```go
+cld, err := imghash.NewCLD()
+h1, err := cld.Calculate(img1)
+h2, err := cld.Calculate(img2)
+dist, err := cld.Compare(h1, h2) // L1 distance
+```
+
+| Option | Default |
+|--------|---------|
+| `WithSize(w, h)` | 64, 64 |
+| `WithInterpolation(i)` | `Bilinear` |
 
 #### Marr-Hildreth Hash
 
