@@ -190,6 +190,19 @@ var compareCases = []compareCase{
 		invalidLen1:  hashtype.Float64{1.0, 2.0},
 		invalidLen2:  hashtype.Float64{1.0, 2.0, 3.0},
 	},
+	{
+		name:         "CLD",
+		buildDefault: func() (imghash.Comparer, error) { return imghash.NewCLD() },
+		buildWithDistance: func(fn imghash.DistanceFunc) (imghash.Comparer, error) {
+			return imghash.NewCLD(imghash.WithDistance(fn))
+		},
+		valid1:       hashtype.UInt8{1, 2, 3},
+		valid2:       hashtype.UInt8{3, 2, 1},
+		invalidType1: hashtype.Binary{0x00, 0xFF},
+		invalidType2: hashtype.Binary{0xFF, 0x00},
+		invalidLen1:  hashtype.UInt8{1, 2},
+		invalidLen2:  hashtype.UInt8{1, 2, 3},
+	},
 }
 
 func TestWithDistance_overrideAcrossHashers(t *testing.T) {
