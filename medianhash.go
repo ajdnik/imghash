@@ -26,8 +26,8 @@ func NewMedian(opts ...MedianOption) (Median, error) {
 	for _, o := range opts {
 		o.applyMedian(&m)
 	}
-	if m.width == 0 || m.height == 0 {
-		return Median{}, ErrInvalidSize
+	if err := m.validate(); err != nil {
+		return Median{}, err
 	}
 	return m, nil
 }

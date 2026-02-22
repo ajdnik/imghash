@@ -32,8 +32,8 @@ func NewPHash(opts ...PHashOption) (PHash, error) {
 	for _, o := range opts {
 		o.applyPHash(&p)
 	}
-	if p.width == 0 || p.height == 0 {
-		return PHash{}, ErrInvalidSize
+	if err := p.validate(); err != nil {
+		return PHash{}, err
 	}
 	if p.weights == nil {
 		p.weights = make([]float64, dctCoefSize)

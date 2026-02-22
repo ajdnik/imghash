@@ -1,6 +1,7 @@
 package imgproc
 
 import (
+	"fmt"
 	"image"
 	"math"
 
@@ -69,7 +70,7 @@ func interpolatorFor(typ ResizeType) draw.Interpolator {
 	case Lanczos3:
 		return lanczos3
 	default:
-		return draw.NearestNeighbor
+		panic(fmt.Sprintf("imgproc: invalid resize type %d", typ))
 	}
 }
 

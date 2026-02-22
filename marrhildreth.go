@@ -48,8 +48,8 @@ func NewMarrHildreth(opts ...MarrHildrethOption) (MarrHildreth, error) {
 	for _, o := range opts {
 		o.applyMarrHildreth(&mh)
 	}
-	if mh.width == 0 || mh.height == 0 {
-		return MarrHildreth{}, ErrInvalidSize
+	if err := mh.validate(); err != nil {
+		return MarrHildreth{}, err
 	}
 	if mh.scale <= 0 {
 		return MarrHildreth{}, ErrInvalidScale

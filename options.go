@@ -8,6 +8,13 @@ type baseConfig struct {
 	interp        Interpolation
 }
 
+func (b baseConfig) validate() error {
+	if b.width == 0 || b.height == 0 {
+		return ErrInvalidSize
+	}
+	return b.interp.validate()
+}
+
 // Algorithm-specific option interfaces. Each uses an unexported method
 // so that only option types in this package can implement them.
 

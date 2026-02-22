@@ -30,8 +30,8 @@ func NewWHash(opts ...WHashOption) (WHash, error) {
 	for _, o := range opts {
 		o.applyWHash(&w)
 	}
-	if w.width == 0 || w.height == 0 {
-		return WHash{}, ErrInvalidSize
+	if err := w.validate(); err != nil {
+		return WHash{}, err
 	}
 	if w.level <= 0 {
 		return WHash{}, ErrInvalidLevel

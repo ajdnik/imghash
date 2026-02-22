@@ -28,8 +28,8 @@ func NewAverage(opts ...AverageOption) (Average, error) {
 	for _, o := range opts {
 		o.applyAverage(&a)
 	}
-	if a.width == 0 || a.height == 0 {
-		return Average{}, ErrInvalidSize
+	if err := a.validate(); err != nil {
+		return Average{}, err
 	}
 	return a, nil
 }

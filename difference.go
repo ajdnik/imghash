@@ -25,8 +25,8 @@ func NewDifference(opts ...DifferenceOption) (Difference, error) {
 	for _, o := range opts {
 		o.applyDifference(&d)
 	}
-	if d.width == 0 || d.height == 0 {
-		return Difference{}, ErrInvalidSize
+	if err := d.validate(); err != nil {
+		return Difference{}, err
 	}
 	return d, nil
 }

@@ -57,8 +57,8 @@ func NewBlockMean(opts ...BlockMeanOption) (BlockMean, error) {
 	for _, o := range opts {
 		o.applyBlockMean(&b)
 	}
-	if b.width == 0 || b.height == 0 {
-		return BlockMean{}, ErrInvalidSize
+	if err := b.validate(); err != nil {
+		return BlockMean{}, err
 	}
 	if b.bWidth == 0 || b.bHeight == 0 {
 		return BlockMean{}, ErrInvalidBlockSize

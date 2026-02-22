@@ -32,8 +32,8 @@ func NewColorMoment(opts ...ColorMomentOption) (ColorMoment, error) {
 	for _, o := range opts {
 		o.applyColorMoment(&c)
 	}
-	if c.width == 0 || c.height == 0 {
-		return ColorMoment{}, ErrInvalidSize
+	if err := c.validate(); err != nil {
+		return ColorMoment{}, err
 	}
 	if c.kernel <= 0 {
 		return ColorMoment{}, ErrInvalidKernelSize

@@ -42,8 +42,8 @@ func NewRASH(opts ...RASHOption) (RASH, error) {
 	for _, o := range opts {
 		o.applyRASH(&r)
 	}
-	if r.width == 0 || r.height == 0 {
-		return RASH{}, ErrInvalidSize
+	if err := r.validate(); err != nil {
+		return RASH{}, err
 	}
 	if r.sigma < 0 {
 		return RASH{}, ErrInvalidSigma

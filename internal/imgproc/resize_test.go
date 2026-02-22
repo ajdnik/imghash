@@ -59,13 +59,14 @@ func TestResize(t *testing.T) {
 	}
 }
 
-func TestResize_defaultInterpolator(t *testing.T) {
+func TestResize_invalidInterpolatorPanics(t *testing.T) {
 	img := makeTestImage(8, 8)
-	result := Resize(4, 4, img, ResizeType(99))
-	bounds := result.Bounds()
-	if bounds.Dx() != 4 || bounds.Dy() != 4 {
-		t.Errorf("got %dx%d, want 4x4", bounds.Dx(), bounds.Dy())
-	}
+	defer func() {
+		if r := recover(); r == nil {
+			t.Fatal("expected panic for invalid resize type")
+		}
+	}()
+	_ = Resize(4, 4, img, ResizeType(99))
 }
 
 func TestMitchellNetravaliAt(t *testing.T) {
