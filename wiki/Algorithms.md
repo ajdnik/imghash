@@ -58,6 +58,8 @@ Uses DCT and produces a binary hash. Compares using weighted Hamming distance. F
 
 Uses a multi-level Haar DWT and median thresholding. Compares using Hamming distance.
 
+Reference: [Wavelet Image Hash in Python](https://fullstackml.com/wavelet-image-hash-in-python-3504571f3b08).
+
 | Option | Default |
 |--------|---------|
 | `WithSize(w, h)` | 8, 8 |
@@ -222,7 +224,7 @@ Whitepaper: [Invariant Image Recognition by Zernike Moments (Khotanzad and Hong,
 
 Produces a rotation-robust binary hash and compares with Hamming distance.
 
-This custom algorithm combines concentric ring sampling, 1-D DCT compaction, and median thresholding. It is inspired by [Robust Image Hashing with Ring Partition and Invariant Vector Distance](https://ieeexplore.ieee.org/document/7368930) and radial variance hashing literature.
+This custom algorithm combines concentric ring sampling, 1-D DCT compaction, and median thresholding. It is inspired by [Robust Image Hashing with Ring Partition and Invariant Vector Distance](https://doi.org/10.1109/TIFS.2015.2485163) and radial variance hashing literature.
 
 | Option | Default |
 |--------|---------|
