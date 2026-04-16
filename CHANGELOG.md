@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.1](https://github.com/ajdnik/imghash/compare/v2.3.0...v2.3.1) (2026-04-16)
+
+
+### Bug Fixes
+
+* **deps:** bump golang.org/x/image from 0.36.0 to 0.38.0 ([4157ed9](https://github.com/ajdnik/imghash/commit/4157ed9171fce5dc32fe3f14e0a475d16b7a3645))
+
 ## [2.3.0](https://github.com/ajdnik/imghash/compare/v2.2.0...v2.3.0) (2026-02-22)
 
 
