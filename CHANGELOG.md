@@ -5,7 +5,7 @@
 
 ### Bug Fixes
 
-* **deps:** bump golang.org/x/image from 0.36.0 to 0.38.0 ([4157ed9](https://github.com/ajdnik/imghash/commit/4157ed9171fce5dc32fe3f14e0a475d16b7a3645))
+* **deps:** bump golang.org/x/image from 0.36.0 to 0.38.0 ([9828889](https://github.com/ajdnik/imghash/commit/98288896cd8a0ded45064a549ef15c9efeef6263))
 
 ## [2.3.0](https://github.com/ajdnik/imghash/compare/v2.2.0...v2.3.0) (2026-02-22)
 
