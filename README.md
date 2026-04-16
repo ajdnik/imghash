@@ -110,3 +110,4 @@ See [Algorithms](https://github.com/ajdnik/imghash/wiki/Algorithms) for options,
 ## License
 
 Imghash is released under the MIT license. See [LICENSE](LICENSE).
+
