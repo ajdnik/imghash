@@ -27,8 +27,15 @@ You should receive an initial acknowledgement within 72 hours. From there the
 maintainers will work with you to understand the issue, confirm it, and
 coordinate a fix and disclosure timeline.
 
-## Dependency Scanning
+## Automated Security Scanning
 
-This project runs [govulncheck](https://pkg.go.dev/golang.org/x/vuln/cmd/govulncheck)
-in CI on every pull request and push to `main` to catch known vulnerabilities in
-dependencies.
+This project employs several automated tools to catch vulnerabilities early:
+
+- **[govulncheck](https://pkg.go.dev/golang.org/x/vuln/cmd/govulncheck)** runs
+  in CI on every pull request and push to `main` to catch known vulnerabilities
+  in dependencies.
+- **[CodeQL](https://codeql.github.com/)** performs static application security
+  testing (SAST) on every pull request, push to `main`, and on a weekly schedule.
+- **[Dependabot](https://docs.github.com/en/code-security/dependabot)** monitors
+  Go module dependencies and GitHub Actions for available updates and opens pull
+  requests automatically.
