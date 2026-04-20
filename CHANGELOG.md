@@ -1,7 +1,15 @@
 # Changelog
 
-## [2.3.1](https://github.com/ajdnik/imghash/compare/v2.3.0...v2.3.1) (2026-04-16)
+## [2.3.2](https://github.com/ajdnik/imghash/compare/v2.3.1...v2.3.2) (2026-04-20)
 
+
+### Bug Fixes
+
+* Border reflection overflow on small images ([#44](https://github.com/ajdnik/imghash/issues/44)) ([331d1ce](https://github.com/ajdnik/imghash/commit/331d1ce19e9d358adb6932742997b7b66b38b7fe))
+
+* **deps:** bump golang.org/x/image from 0.38.0 to 0.39.0 ([#36](https://github.com/ajdnik/imghash/issues/36)) ([be6edd5](https://github.com/ajdnik/imghash/commit/be6edd59f9911b16d7d434407071d3e38ac8290f))
+
+## [2.3.1](https://github.com/ajdnik/imghash/compare/v2.3.0...v2.3.1) (2026-04-16)
 
 ### Bug Fixes
 
