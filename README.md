@@ -10,6 +10,7 @@
   <a href="https://pkg.go.dev/github.com/ajdnik/imghash/v2"><img src="https://pkg.go.dev/badge/github.com/ajdnik/imghash/v2.svg" alt="Go reference"></a>
   <a href="https://goreportcard.com/report/github.com/ajdnik/imghash/v2"><img src="https://goreportcard.com/badge/github.com/ajdnik/imghash/v2" alt="Go report card"></a>
   <a href="https://github.com/ajdnik/imghash/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-lightgrey.svg" alt="MIT license"></a>
+  <a href="https://www.bestpractices.dev/projects/12605"><img src="https://www.bestpractices.dev/projects/12605/badge"></a>
 </p>
 
 ## Documentation
