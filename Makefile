@@ -1,6 +1,8 @@
 GOLANGCI_LINT_VERSION := v2.10.1
 
-.PHONY: fmt vet test coverage lint lint-install vulncheck vulncheck-install all
+.PHONY: fmt vet test fuzz coverage lint lint-install vulncheck vulncheck-install all
+
+FUZZ_TIME ?= 10s
 
 all: fmt vet lint vulncheck test
 
@@ -12,6 +14,12 @@ vet:
 
 test:
 	go test ./...
+
+fuzz:
+	@grep -o 'func Fuzz[A-Za-z0-9_]*' fuzz_test.go | sed 's/^func //' | while read -r target; do \
+		echo "Fuzzing $$target for $(FUZZ_TIME)..."; \
+		go test -run='^$$' -fuzz="^$${target}$$" -fuzztime=$(FUZZ_TIME) || exit 1; \
+	done
 
 coverage:
 	go test ./... -coverprofile=coverage.out -covermode=atomic
