@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.2](https://github.com/ajdnik/imghash/compare/v2.3.1...v2.3.2) (2026-04-20)
+
+
+### Bug Fixes
+
+* Border reflection overflow on small images ([#44](https://github.com/ajdnik/imghash/issues/44)) ([331d1ce](https://github.com/ajdnik/imghash/commit/331d1ce19e9d358adb6932742997b7b66b38b7fe))
+
 ## [2.3.1](https://github.com/ajdnik/imghash/compare/v2.3.0...v2.3.1) (2026-04-16)
 
 
