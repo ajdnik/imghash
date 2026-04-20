@@ -37,11 +37,21 @@ func borderReflect101(x, y int, bounds image.Rectangle) (int, int) {
 	if rX >= bounds.Max.X {
 		rX = bounds.Max.X - 1 - (x - bounds.Max.X + 1)
 	}
+	if rX < bounds.Min.X {
+		rX = bounds.Min.X
+	} else if rX >= bounds.Max.X {
+		rX = bounds.Max.X - 1
+	}
 	if rY < bounds.Min.Y {
 		rY = bounds.Min.Y + (bounds.Min.Y - y)
 	}
 	if rY >= bounds.Max.Y {
 		rY = bounds.Max.Y - 1 - (y - bounds.Max.Y + 1)
+	}
+	if rY < bounds.Min.Y {
+		rY = bounds.Min.Y
+	} else if rY >= bounds.Max.Y {
+		rY = bounds.Max.Y - 1
 	}
 	return rX, rY
 }
@@ -61,11 +71,17 @@ func sepFilter2DGray(img *image.Gray, kernel []int) image.Image {
 				iX := x - i
 				if iX < bounds.Min.X {
 					iX = bounds.Min.X + i
+					if iX >= bounds.Max.X {
+						iX = bounds.Max.X - 1
+					}
 				}
 				gP := img.GrayAt(iX, y).Y
 				iX = x + i
 				if iX >= bounds.Max.X {
 					iX = bounds.Max.X - 1 - i
+					if iX < bounds.Min.X {
+						iX = bounds.Min.X
+					}
 				}
 				gN := img.GrayAt(iX, y).Y
 				sG += int(gP)*kernel[mid-i] + int(gN)*kernel[mid+i]
@@ -81,11 +97,17 @@ func sepFilter2DGray(img *image.Gray, kernel []int) image.Image {
 				iY := y - i
 				if iY < bounds.Min.Y {
 					iY = bounds.Min.Y + i
+					if iY >= bounds.Max.Y {
+						iY = bounds.Max.Y - 1
+					}
 				}
 				gP := buff[iY*width+x]
 				iY = y + i
 				if iY >= bounds.Max.Y {
 					iY = bounds.Max.Y - 1 - i
+					if iY < bounds.Min.Y {
+						iY = bounds.Min.Y
+					}
 				}
 				gN := buff[iY*width+x]
 				sG += gP*kernel[mid-i] + gN*kernel[mid+i]
@@ -123,11 +145,17 @@ func sepFilter2D(img image.Image, kernel []int) image.Image {
 				iX := x - i
 				if iX < bounds.Min.X {
 					iX = bounds.Min.X + i
+					if iX >= bounds.Max.X {
+						iX = bounds.Max.X - 1
+					}
 				}
 				rP, gP, bP, _ := img.At(iX, y).RGBA()
 				iX = x + i
 				if iX >= bounds.Max.X {
 					iX = bounds.Max.X - 1 - i
+					if iX < bounds.Min.X {
+						iX = bounds.Min.X
+					}
 				}
 				rN, gN, bN, _ := img.At(iX, y).RGBA()
 				sR += int(rP/0x101)*kernel[mid-i] + int(rN/0x101)*kernel[mid+i]
@@ -149,11 +177,17 @@ func sepFilter2D(img image.Image, kernel []int) image.Image {
 				iY := y - i
 				if iY < bounds.Min.Y {
 					iY = bounds.Min.Y + i
+					if iY >= bounds.Max.Y {
+						iY = bounds.Max.Y - 1
+					}
 				}
 				rP, gP, bP := buffR[iY*width+x], buffG[iY*width+x], buffB[iY*width+x]
 				iY = y + i
 				if iY >= bounds.Max.Y {
 					iY = bounds.Max.Y - 1 - i
+					if iY < bounds.Min.Y {
+						iY = bounds.Min.Y
+					}
 				}
 				rN, gN, bN := buffR[iY*width+x], buffG[iY*width+x], buffB[iY*width+x]
 				sR += rP*kernel[mid-i] + rN*kernel[mid+i]
