@@ -8,7 +8,7 @@ a pull request.
 
 | Tool | Minimum version | Install |
 |------|----------------|---------|
-| Go | 1.16+ | [go.dev/dl](https://go.dev/dl/) |
+| Go | 1.25+ | [go.dev/dl](https://go.dev/dl/) |
 | golangci-lint | v2.10.1 | Installed automatically by `make lint` |
 | govulncheck | latest | Installed automatically by `make vulncheck` |
 | GNU Make | any | Pre-installed on most systems |
@@ -71,6 +71,7 @@ must pass.
    - **Go Vet** — `go vet ./...`
    - **Lint** — `golangci-lint run ./...`
    - **Vulnerability Check** — `govulncheck ./...`
+   - **CodeQL** — static application security testing
    - **Test & Coverage** — `go test` with an 80 % minimum coverage threshold
 
 5. A maintainer will review your PR. Please be responsive to feedback — small

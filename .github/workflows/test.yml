@@ -9,15 +9,17 @@ on:
     branches:
       - main
 
+permissions: read-all
+
 jobs:
   vet:
     name: Go Vet
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
       - name: Setup Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5.6.0
         with:
           go-version: "1.25"
       - name: Run Go Vet
@@ -49,49 +51,29 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
       - name: Setup Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5.6.0
         with:
           go-version: "1.25"
-      - name: Install golangci-lint
-        run: curl -sSfL https://golangci-lint.run/install.sh | sh -s -- -b "$(go env GOPATH)/bin" v2.10.1
       - name: Run Linter
-        shell: bash
-        run: |
-          set +e
-          OUTPUT=$(golangci-lint run ./... 2>&1)
-          EXIT_CODE=$?
-          set -e
-
-          {
-            echo "## Lint"
-            echo ""
-            if [ $EXIT_CODE -eq 0 ]; then
-              echo "No lint issues found."
-            else
-              echo "**Issues found:**"
-              echo ""
-              echo '```'
-              echo "$OUTPUT"
-              echo '```'
-            fi
-          } >> "$GITHUB_STEP_SUMMARY"
-
-          exit $EXIT_CODE
+        uses: golangci/golangci-lint-action@9fae48acfc02a90574d7c304a1758ef9895495fa # v7.0.1
+        with:
+          version: v2.10.1
+          args: ./...
 
   vulncheck:
     name: Vulnerability Check
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
       - name: Setup Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5.6.0
         with:
           go-version: "1.25"
       - name: Install govulncheck
-        run: go install golang.org/x/vuln/cmd/govulncheck@latest
+        run: go install golang.org/x/vuln/cmd/govulncheck@v1.1.4
       - name: Run govulncheck
         shell: bash
         run: |
@@ -121,9 +103,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
       - name: Setup Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5.6.0
         with:
           go-version: "1.25"
       - name: Run Tests
@@ -240,7 +222,7 @@ jobs:
 
       - name: Upload Coverage Artifact
         if: github.event_name == 'push' && github.ref == 'refs/heads/main' && success()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: coverage
           path: coverage.out
@@ -252,15 +234,15 @@ jobs:
     needs: test
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
       - name: Setup Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5.6.0
         with:
           go-version: "1.25"
       - name: Install Goveralls
-        run: go install github.com/mattn/goveralls@latest
+        run: go install github.com/mattn/goveralls@v0.0.12
       - name: Download Coverage Artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           name: coverage
       - name: Publish to Coveralls
