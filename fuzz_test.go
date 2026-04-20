@@ -85,3 +85,171 @@ func FuzzMedianCalculate(f *testing.F) {
 		h.Calculate(img) //nolint:errcheck
 	})
 }
+
+func FuzzBlockMeanCalculate(f *testing.F) {
+	f.Add([]byte{8, 8, 0xFF, 0xAA, 0x55, 0x00})
+	f.Fuzz(func(_ *testing.T, data []byte) {
+		img := imageFromBytes(data)
+		if img == nil {
+			return
+		}
+		h, _ := NewBlockMean()
+		h.Calculate(img) //nolint:errcheck
+	})
+}
+
+func FuzzMarrHildrethCalculate(f *testing.F) {
+	f.Add([]byte{8, 8, 0xFF, 0xAA, 0x55, 0x00})
+	f.Fuzz(func(_ *testing.T, data []byte) {
+		img := imageFromBytes(data)
+		if img == nil {
+			return
+		}
+		h, _ := NewMarrHildreth()
+		h.Calculate(img) //nolint:errcheck
+	})
+}
+
+func FuzzRadialVarianceCalculate(f *testing.F) {
+	f.Add([]byte{8, 8, 0xFF, 0xAA, 0x55, 0x00})
+	f.Fuzz(func(_ *testing.T, data []byte) {
+		img := imageFromBytes(data)
+		if img == nil {
+			return
+		}
+		h, _ := NewRadialVariance()
+		h.Calculate(img) //nolint:errcheck
+	})
+}
+
+func FuzzColorMomentCalculate(f *testing.F) {
+	f.Add([]byte{8, 8, 0xFF, 0xAA, 0x55, 0x00})
+	f.Fuzz(func(_ *testing.T, data []byte) {
+		img := imageFromBytes(data)
+		if img == nil {
+			return
+		}
+		h, _ := NewColorMoment()
+		h.Calculate(img) //nolint:errcheck
+	})
+}
+
+func FuzzCLDCalculate(f *testing.F) {
+	f.Add([]byte{8, 8, 0xFF, 0xAA, 0x55, 0x00})
+	f.Fuzz(func(_ *testing.T, data []byte) {
+		img := imageFromBytes(data)
+		if img == nil {
+			return
+		}
+		h, _ := NewCLD()
+		h.Calculate(img) //nolint:errcheck
+	})
+}
+
+func FuzzEHDCalculate(f *testing.F) {
+	f.Add([]byte{8, 8, 0xFF, 0xAA, 0x55, 0x00})
+	f.Fuzz(func(_ *testing.T, data []byte) {
+		img := imageFromBytes(data)
+		if img == nil {
+			return
+		}
+		h, _ := NewEHD()
+		h.Calculate(img) //nolint:errcheck
+	})
+}
+
+func FuzzWHashCalculate(f *testing.F) {
+	f.Add([]byte{8, 8, 0xFF, 0xAA, 0x55, 0x00})
+	f.Fuzz(func(_ *testing.T, data []byte) {
+		img := imageFromBytes(data)
+		if img == nil {
+			return
+		}
+		h, _ := NewWHash()
+		h.Calculate(img) //nolint:errcheck
+	})
+}
+
+func FuzzLBPCalculate(f *testing.F) {
+	f.Add([]byte{8, 8, 0xFF, 0xAA, 0x55, 0x00})
+	f.Fuzz(func(_ *testing.T, data []byte) {
+		img := imageFromBytes(data)
+		if img == nil {
+			return
+		}
+		h, _ := NewLBP()
+		h.Calculate(img) //nolint:errcheck
+	})
+}
+
+func FuzzHOGHashCalculate(f *testing.F) {
+	f.Add([]byte{8, 8, 0xFF, 0xAA, 0x55, 0x00})
+	f.Fuzz(func(_ *testing.T, data []byte) {
+		img := imageFromBytes(data)
+		if img == nil {
+			return
+		}
+		h, _ := NewHOGHash()
+		h.Calculate(img) //nolint:errcheck
+	})
+}
+
+func FuzzBoVWCalculate(f *testing.F) {
+	f.Add([]byte{8, 8, 0xFF, 0xAA, 0x55, 0x00})
+	f.Fuzz(func(_ *testing.T, data []byte) {
+		img := imageFromBytes(data)
+		if img == nil {
+			return
+		}
+		h, _ := NewBoVW()
+		h.Calculate(img) //nolint:errcheck
+	})
+}
+
+func FuzzPDQCalculate(f *testing.F) {
+	f.Add([]byte{8, 8, 0xFF, 0xAA, 0x55, 0x00})
+	f.Fuzz(func(_ *testing.T, data []byte) {
+		img := imageFromBytes(data)
+		if img == nil {
+			return
+		}
+		h, _ := NewPDQ()
+		h.Calculate(img) //nolint:errcheck
+	})
+}
+
+func FuzzRASHCalculate(f *testing.F) {
+	f.Add([]byte{8, 8, 0xFF, 0xAA, 0x55, 0x00})
+	f.Fuzz(func(_ *testing.T, data []byte) {
+		img := imageFromBytes(data)
+		if img == nil {
+			return
+		}
+		h, _ := NewRASH()
+		h.Calculate(img) //nolint:errcheck
+	})
+}
+
+func FuzzZernikeCalculate(f *testing.F) {
+	f.Add([]byte{8, 8, 0xFF, 0xAA, 0x55, 0x00})
+	f.Fuzz(func(_ *testing.T, data []byte) {
+		img := imageFromBytes(data)
+		if img == nil {
+			return
+		}
+		h, _ := NewZernike()
+		h.Calculate(img) //nolint:errcheck
+	})
+}
+
+func FuzzGISTCalculate(f *testing.F) {
+	f.Add([]byte{8, 8, 0xFF, 0xAA, 0x55, 0x00})
+	f.Fuzz(func(_ *testing.T, data []byte) {
+		img := imageFromBytes(data)
+		if img == nil {
+			return
+		}
+		h, _ := NewGIST()
+		h.Calculate(img) //nolint:errcheck
+	})
+}

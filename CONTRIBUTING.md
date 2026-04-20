@@ -31,6 +31,7 @@ make vet        # Run go vet
 make lint       # Run golangci-lint (installs it if missing)
 make vulncheck  # Run govulncheck (installs it if missing)
 make test       # Run the test suite
+make fuzz       # Run all fuzz targets (default 10s each, override with FUZZ_TIME=30s)
 make coverage   # Run tests with coverage and print a summary
 make all        # fmt + vet + lint + vulncheck + test (recommended before pushing)
 ```
@@ -73,6 +74,7 @@ must pass.
    - **Vulnerability Check** — `govulncheck ./...`
    - **CodeQL** — static application security testing
    - **Test & Coverage** — `go test` with an 80 % minimum coverage threshold
+   - **Fuzz** — every `Fuzz*` target in `fuzz_test.go` is run for 10 s each
 
 5. A maintainer will review your PR. Please be responsive to feedback — small
    follow-up commits are fine; they get squash-merged.
@@ -98,6 +100,9 @@ you agree to uphold these standards.
   functional options (`With*` pattern) over new struct fields.
 - **Test coverage.** New code should be accompanied by tests. The CI enforces an
   80 % minimum coverage threshold — aim to stay above it.
+- **Fuzz tests.** Every hash algorithm has a corresponding `Fuzz*Calculate`
+  target in `fuzz_test.go`. When adding a new algorithm, add a fuzz test
+  following the same pattern.
 
 ## License
 
