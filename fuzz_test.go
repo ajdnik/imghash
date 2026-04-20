@@ -40,7 +40,7 @@ func imageFromBytes(data []byte) image.Image {
 
 func FuzzAverageCalculate(f *testing.F) {
 	f.Add([]byte{8, 8, 0xFF, 0xAA, 0x55, 0x00})
-	f.Fuzz(func(t *testing.T, data []byte) {
+	f.Fuzz(func(_ *testing.T, data []byte) {
 		img := imageFromBytes(data)
 		if img == nil {
 			return
@@ -52,7 +52,7 @@ func FuzzAverageCalculate(f *testing.F) {
 
 func FuzzDifferenceCalculate(f *testing.F) {
 	f.Add([]byte{8, 8, 0xFF, 0xAA, 0x55, 0x00})
-	f.Fuzz(func(t *testing.T, data []byte) {
+	f.Fuzz(func(_ *testing.T, data []byte) {
 		img := imageFromBytes(data)
 		if img == nil {
 			return
@@ -64,7 +64,7 @@ func FuzzDifferenceCalculate(f *testing.F) {
 
 func FuzzPHashCalculate(f *testing.F) {
 	f.Add([]byte{8, 8, 0xFF, 0xAA, 0x55, 0x00})
-	f.Fuzz(func(t *testing.T, data []byte) {
+	f.Fuzz(func(_ *testing.T, data []byte) {
 		img := imageFromBytes(data)
 		if img == nil {
 			return
@@ -76,7 +76,7 @@ func FuzzPHashCalculate(f *testing.F) {
 
 func FuzzMedianCalculate(f *testing.F) {
 	f.Add([]byte{8, 8, 0xFF, 0xAA, 0x55, 0x00})
-	f.Fuzz(func(t *testing.T, data []byte) {
+	f.Fuzz(func(_ *testing.T, data []byte) {
 		img := imageFromBytes(data)
 		if img == nil {
 			return
