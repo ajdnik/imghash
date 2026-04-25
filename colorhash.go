@@ -142,8 +142,8 @@ func pilLuma(r, g, b uint8) uint8 {
 }
 
 func pilHSV(r, g, b uint8) (uint8, uint8) {
-	maxc := max3(r, g, b)
-	minc := min3(r, g, b)
+	maxc := max(r, g, b)
+	minc := min(r, g, b)
 	if maxc == minc {
 		return 0, 0
 	}
@@ -170,22 +170,3 @@ func pilHSV(r, g, b uint8) (uint8, uint8) {
 	return uint8(hue * 255), uint8(saturation * 255)
 }
 
-func max3(a, b, c uint8) uint8 {
-	if b > a {
-		a = b
-	}
-	if c > a {
-		a = c
-	}
-	return a
-}
-
-func min3(a, b, c uint8) uint8 {
-	if b < a {
-		a = b
-	}
-	if c < a {
-		a = c
-	}
-	return a
-}

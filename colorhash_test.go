@@ -84,3 +84,41 @@ func TestNewColorHash_InvalidBinBits(t *testing.T) {
 		t.Fatalf("got %v, want %v", err, imghash.ErrInvalidNumBins)
 	}
 }
+
+// ExampleColorHash_Calculate demonstrates how to use the ColorHash Calculate() method.
+// It shows the typical workflow: create a ColorHash instance, open an image,
+// compute its color hash, and verify the result.
+func ExampleColorHash_Calculate() {
+	// Create a new ColorHash instance with default settings (binBits=3)
+	hash, err := imghash.NewColorHash()
+	if err != nil {
+		fmt.Printf("failed to create hasher: %v\n", err)
+		return
+	}
+
+	// Load an image from file
+	img, err := imghash.OpenImage("assets/lena.jpg")
+	if err != nil {
+		fmt.Printf("failed to open image: %v\n", err)
+		return
+	}
+
+	// Calculate the color hash
+	result, err := hash.Calculate(img)
+	if err != nil {
+		fmt.Printf("failed to calculate hash: %v\n", err)
+		return
+	}
+
+	// Type assert to Binary to inspect or compare the hash
+	binaryHash, ok := result.(hashtype.Binary)
+	if !ok {
+		fmt.Printf("unexpected hash type\n")
+		return
+	}
+
+	fmt.Printf("Color hash: %v\n", binaryHash)
+
+	// Output:
+	// Color hash: [1 128 3 0 0 64]
+}
