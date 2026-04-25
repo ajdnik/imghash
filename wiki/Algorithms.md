@@ -129,6 +129,54 @@ Block mean methods: `Direct`, `Overlap`, `Rotation`, `RotationOverlap`.
 
 `Rotation` and `RotationOverlap` compute and concatenate hashes for 24 rotations (0 to 345 degrees in 15-degree steps), so the result is 24x larger than non-rotational mode.
 
+## ColorHash
+
+Encodes black, gray, faint-color hue, and bright-color hue fractions into 14 bins. Compares using Hamming distance. Compatible with [Johannes Buchner's Python imagehash.colorhash](https://github.com/JohannesBuchner/imagehash).
+
+The algorithm categorizes each pixel into one of several categories:
+- **Black**: intensity < 32 (256/8)
+- **Gray**: saturation < 85 (256/3)
+- **Faint color**: saturation between 85 and 170 with hue divided into 6 bins
+- **Bright color**: saturation > 170 with hue divided into 6 bins
+
+The histogram is encoded into 14 bins: 1 for black pixels, 1 for gray pixels, 6 for faint colors, 6 for bright colors. Each bin uses `binBits` bits (default 3), producing a hash of length 14 × binBits bits (default 42 bits).
+
+| Option | Default |
+|--------|---------|
+| `WithBinBits(n)` | 3 |
+
+Example usage:
+
+```go
+package main
+
+import (
+  "fmt"
+
+  "github.com/ajdnik/imghash/v2"
+)
+
+func main() {
+  // Default color hash (binBits=3)
+  hash, err := imghash.NewColorHash()
+  if err != nil {
+    panic(err)
+  }
+
+  img, err := imghash.OpenImage("image.jpg")
+  if err != nil {
+    panic(err)
+  }
+
+  h, err := hash.Calculate(img)
+  if err != nil {
+    panic(err)
+  }
+
+  fmt.Printf("Color hash: %v\n", h)
+}
+```
+
 ## Local Binary Pattern (LBP) Hash
 
 Computes LBP codes and builds normalized histograms into a `uint8` vector. Compares using chi-square distance.

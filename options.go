@@ -42,6 +42,9 @@ type RadialVarianceOption interface{ applyRadialVariance(*RadialVariance) }
 // ColorMomentOption configures the ColorMoment hash algorithm.
 type ColorMomentOption interface{ applyColorMoment(*ColorMoment) }
 
+// ColorHashOption configures the ColorHash algorithm.
+type ColorHashOption interface{ applyColorHash(*ColorHash) }
+
 // CLDOption configures the CLD hash algorithm.
 type CLDOption interface{ applyCLD(*CLD) }
 
@@ -85,6 +88,7 @@ type DistanceOption interface {
 	MarrHildrethOption
 	RadialVarianceOption
 	ColorMomentOption
+	ColorHashOption
 	CLDOption
 	EHDOption
 	WHashOption
@@ -107,6 +111,7 @@ func (o distanceOption) applyBlockMean(b *BlockMean)           { b.distFunc = o.
 func (o distanceOption) applyMarrHildreth(m *MarrHildreth)     { m.distFunc = o.fn }
 func (o distanceOption) applyRadialVariance(r *RadialVariance) { r.distFunc = o.fn }
 func (o distanceOption) applyColorMoment(c *ColorMoment)       { c.distFunc = o.fn }
+func (o distanceOption) applyColorHash(c *ColorHash)           { c.distFunc = o.fn }
 func (o distanceOption) applyCLD(c *CLD)                       { c.distFunc = o.fn }
 func (o distanceOption) applyEHD(e *EHD)                       { e.distFunc = o.fn }
 func (o distanceOption) applyWHash(w *WHash)                   { w.distFunc = o.fn }
@@ -139,6 +144,15 @@ type SizeOption interface {
 	GISTOption
 	BoVWOption
 }
+
+// BinBitsOption sets the number of bits used to encode each ColorHash bin.
+type BinBitsOption interface {
+	ColorHashOption
+}
+
+type binBitsOption struct{ bits uint }
+
+func (o binBitsOption) applyColorHash(c *ColorHash) { c.binBits = o.bits }
 
 type sizeOption struct{ width, height uint }
 
@@ -528,6 +542,12 @@ func WithMinHashSize(size uint) MinHashSizeOption {
 // Applies to BoVW.
 func WithSimHashBits(bits uint) SimHashBitsOption {
 	return simHashBitsOption{bits: bits}
+}
+
+// WithBinBits sets the number of bits used to encode each ColorHash bin.
+// Applies to ColorHash.
+func WithBinBits(bits uint) BinBitsOption {
+	return binBitsOption{bits: bits}
 }
 
 // WithDistance overrides the default distance function used by Compare.
