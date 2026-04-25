@@ -169,4 +169,3 @@ func pilHSV(r, g, b uint8) (uint8, uint8) {
 
 	return uint8(hue * 255), uint8(saturation * 255)
 }
-
