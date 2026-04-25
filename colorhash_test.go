@@ -1,6 +1,7 @@
 package imghash_test
 
 import (
+	"errors"
 	"fmt"
 	"testing"
 
@@ -79,7 +80,7 @@ func TestColorHash_Distance(t *testing.T) {
 }
 
 func TestNewColorHash_InvalidBinBits(t *testing.T) {
-	if _, err := imghash.NewColorHash(imghash.WithBinBits(0)); err != imghash.ErrInvalidNumBins {
+	if _, err := imghash.NewColorHash(imghash.WithBinBits(0)); !errors.Is(err, imghash.ErrInvalidNumBins) {
 		t.Fatalf("got %v, want %v", err, imghash.ErrInvalidNumBins)
 	}
 }
