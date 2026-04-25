@@ -85,6 +85,7 @@ func main() {
 | WHash | `Binary` | Hamming |
 | MarrHildreth | `Binary` | Hamming |
 | BlockMean | `Binary` | Hamming |
+| ColorHash | `Binary` | Hamming |
 | PDQ | `Binary` | Hamming |
 | RASH | `Binary` | Hamming |
 | ColorMoment | `Float64` | L2 (Euclidean) |
