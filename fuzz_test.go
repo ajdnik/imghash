@@ -253,3 +253,15 @@ func FuzzGISTCalculate(f *testing.F) {
 		h.Calculate(img) //nolint:errcheck
 	})
 }
+
+func FuzzColorHashCalculate(f *testing.F) {
+	f.Add([]byte{8, 8, 0xFF, 0xAA, 0x55, 0x00})
+	f.Fuzz(func(_ *testing.T, data []byte) {
+		img := imageFromBytes(data)
+		if img == nil {
+			return
+		}
+		h, _ := NewColorHash()
+		h.Calculate(img) //nolint:errcheck
+	})
+}
