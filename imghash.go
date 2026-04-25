@@ -17,7 +17,7 @@ type DistanceFunc func(hashtype.Hash, hashtype.Hash) (similarity.Distance, error
 // Hasher computes a perceptual hash from an image.
 // It is implemented by all hash algorithms in this package:
 // Average, Difference, PHash, Median, BlockMean, MarrHildreth,
-// RadialVariance, ColorMoment, CLD, EHD, WHash, LBP, HOGHash, BoVW, PDQ, RASH, Zernike, and GIST.
+// RadialVariance, ColorMoment, ColorHash, CLD, EHD, WHash, LBP, HOGHash, BoVW, PDQ, RASH, Zernike, and GIST.
 type Hasher interface {
 	Calculate(image.Image) (hashtype.Hash, error)
 }
@@ -46,6 +46,7 @@ var (
 	_ HasherComparer = MarrHildreth{}
 	_ HasherComparer = RadialVariance{}
 	_ HasherComparer = ColorMoment{}
+	_ HasherComparer = ColorHash{}
 	_ HasherComparer = CLD{}
 	_ HasherComparer = EHD{}
 	_ HasherComparer = WHash{}
