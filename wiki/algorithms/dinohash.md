@@ -28,12 +28,12 @@ Avoid DINOHash when:
 
 ## Weights
 
-This package ships no model weights. The canonical blob lives in a sibling module `github.com/ajdnik/imghash/v2/dinoweights`:
+This package ships no model weights. The canonical blob lives in a sibling module `github.com/ajdnik/imghash/dinoweights`:
 
 ```go
 import (
   "github.com/ajdnik/imghash/v2"
-  "github.com/ajdnik/imghash/v2/dinoweights"
+  "github.com/ajdnik/imghash/dinoweights"
 )
 
 d, err := imghash.NewDINOHash(imghash.WithSafetensorsBlob(dinoweights.Blob))
@@ -67,7 +67,7 @@ import (
   "fmt"
 
   "github.com/ajdnik/imghash/v2"
-  "github.com/ajdnik/imghash/v2/dinoweights"
+  "github.com/ajdnik/imghash/dinoweights"
 )
 
 func main() {

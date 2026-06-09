@@ -1,5 +1,5 @@
 // Package dinoweights ships the default model weights used by
-// github.com/ajdnik/imghash/v2/dinohash. The blob is the fused 96-bit ONNX
+// github.com/ajdnik/imghash/v2. The blob is the fused 96-bit ONNX
 // checkpoint dinov2_vits14_reg_96bit.onnx published by
 // https://github.com/proteus-photos/dinohash-perceptual-hash, converted to
 // safetensors fp32. fp32 is preserved on purpose so the embedded values are
@@ -13,11 +13,11 @@
 // Usage:
 //
 //	import (
-//	    "github.com/ajdnik/imghash/v2/dinohash"
-//	    "github.com/ajdnik/imghash/v2/dinoweights"
+//	    "github.com/ajdnik/imghash/v2"
+//	    "github.com/ajdnik/imghash/dinoweights"
 //	)
 //
-//	d, err := dinohash.NewDINOHash(dinohash.WithSafetensorsBlob(dinoweights.Blob))
+//	d, err := imghash.NewDINOHash(imghash.WithSafetensorsBlob(dinoweights.Blob))
 package dinoweights
 
 import _ "embed"
