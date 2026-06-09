@@ -128,7 +128,7 @@ DINOHash ships its model weights in a sibling Go module so importers of `imghash
 ### Install dinoweights
 
 ```bash
-go get -u github.com/ajdnik/imghash/v2/dinoweights
+go get -u github.com/ajdnik/imghash/dinoweights
 ```
 
 This adds the module to your `go.mod` and pulls down the embedded safetensors blob (~85 MB) once.
@@ -138,7 +138,7 @@ This adds the module to your `go.mod` and pulls down the embedded safetensors bl
 ```go
 import (
     "github.com/ajdnik/imghash/v2"
-    "github.com/ajdnik/imghash/v2/dinoweights"
+    "github.com/ajdnik/imghash/dinoweights"
 )
 
 d, err := imghash.NewDINOHash(imghash.WithSafetensorsBlob(dinoweights.Blob))
@@ -223,7 +223,7 @@ If you also use DINOHash, your `go.mod` will include the `dinoweights` module:
 ```go
 require (
     github.com/ajdnik/imghash/v2 v2.x.x
-    github.com/ajdnik/imghash/v2/dinoweights v1.x.x
+    github.com/ajdnik/imghash/dinoweights v1.x.x
     golang.org/x/image v0.41.0 // indirect
     gonum.org/v1/gonum v0.17.0 // indirect
 )

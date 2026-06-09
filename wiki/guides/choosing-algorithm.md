@@ -297,7 +297,7 @@ When inputs may be deliberately edited to defeat classical hashes (e.g. heavy cr
 ```go
 import (
     "github.com/ajdnik/imghash/v2"
-    "github.com/ajdnik/imghash/v2/dinoweights"
+    "github.com/ajdnik/imghash/dinoweights"
 )
 
 pdq, _ := imghash.NewPDQ()

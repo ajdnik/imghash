@@ -1,3 +1,3 @@
-module github.com/ajdnik/imghash/v2/dinoweights
+module github.com/ajdnik/imghash/dinoweights
 
 go 1.25.0

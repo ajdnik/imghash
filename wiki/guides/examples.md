@@ -525,7 +525,7 @@ package main
 import (
     "fmt"
     "github.com/ajdnik/imghash/v2"
-    "github.com/ajdnik/imghash/v2/dinoweights"
+    "github.com/ajdnik/imghash/dinoweights"
 )
 
 type TwoStageModerator struct {

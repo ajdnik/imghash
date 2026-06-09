@@ -346,7 +346,7 @@ func main() {
 DINOHash requires the sibling `dinoweights` module for its embedded DINOv2 ViT-S/14+reg model weights (~85 MB):
 
 ```bash
-go get -u github.com/ajdnik/imghash/v2/dinoweights
+go get -u github.com/ajdnik/imghash/dinoweights
 ```
 
 ```go
@@ -355,7 +355,7 @@ package main
 import (
     "fmt"
     "github.com/ajdnik/imghash/v2"
-    "github.com/ajdnik/imghash/v2/dinoweights"
+    "github.com/ajdnik/imghash/dinoweights"
 )
 
 func main() {
