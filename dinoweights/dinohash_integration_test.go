@@ -5,8 +5,8 @@ import (
 	"math/bits"
 	"testing"
 
-	imghash "github.com/ajdnik/imghash/v2"
 	"github.com/ajdnik/imghash/dinoweights"
+	"github.com/ajdnik/imghash/v2"
 	"github.com/ajdnik/imghash/v2/hashtype"
 )
 
