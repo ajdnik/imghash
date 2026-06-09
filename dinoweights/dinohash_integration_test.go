@@ -1,12 +1,12 @@
-package imghash_test
+package dinoweights_test
 
 import (
 	"encoding/hex"
 	"math/bits"
 	"testing"
 
+	"github.com/ajdnik/imghash/dinoweights"
 	"github.com/ajdnik/imghash/v2"
-	"github.com/ajdnik/imghash/v2/dinoweights"
 	"github.com/ajdnik/imghash/v2/hashtype"
 )
 
@@ -25,12 +25,12 @@ import (
 // allows up to 1 bit of distance against the Python reference. Add a
 // PIL-replica resize and tighten this to zero once parity is required.
 var pythonONNXRef = map[string]string{
-	"assets/lena.jpg":    "4c3b42ddaec814d3734a9b4f",
-	"assets/baboon.jpg":  "e14526f50f4e2f0fce94a7ef",
-	"assets/cat.jpg":     "cc5328a6e80a178637ee4314",
-	"assets/monarch.jpg": "cc2c35035351b8e5a1023d35",
-	"assets/peppers.jpg": "fc6f91748c81c07d7ca370d6",
-	"assets/tulips.jpg":  "ec2cba311f4d21a2cd334df6",
+	"../assets/lena.jpg":    "4c3b42ddaec814d3734a9b4f",
+	"../assets/baboon.jpg":  "e14526f50f4e2f0fce94a7ef",
+	"../assets/cat.jpg":     "cc5328a6e80a178637ee4314",
+	"../assets/monarch.jpg": "cc2c35035351b8e5a1023d35",
+	"../assets/peppers.jpg": "fc6f91748c81c07d7ca370d6",
+	"../assets/tulips.jpg":  "ec2cba311f4d21a2cd334df6",
 }
 
 func TestDINOHash_Calculate_AgainstPythonONNX(t *testing.T) {
@@ -102,7 +102,7 @@ func TestDINOWeightsBlob_Parseable(t *testing.T) {
 }
 
 func ExampleDINOHash_Calculate() {
-	img, err := imghash.OpenImage("assets/cat.jpg")
+	img, err := imghash.OpenImage("../assets/cat.jpg")
 	if err != nil {
 		panic(err)
 	}
