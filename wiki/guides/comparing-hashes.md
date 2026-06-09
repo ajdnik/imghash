@@ -307,6 +307,23 @@ if dist <= 5.0 {
 }
 ```
 
+**DINOHash (96-bit)**
+
+```go
+if dist <= 15 {
+    // Very likely semantic duplicate (high confidence)
+} else if dist <= 25 {
+    // Probably the same scene or subject
+} else if dist <= 40 {
+    // Loosely related; check use case
+} else {
+    // Unrelated
+}
+```
+
+> [!NOTE]
+> DINOHash distances cluster near the binomial null (~48 bits) for unrelated images. Sub-25 distances usually indicate semantic relatedness even when no classical hash agrees, since the underlying ViT embedding captures scene content rather than pixel structure.
+
 </details>
 
 <details>

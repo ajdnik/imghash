@@ -44,6 +44,7 @@ All hash algorithms in imghash implement the `Hasher` interface:
 * **RASH** - Robust Affine-invariant Spatial Hash
 * **Zernike** - Zernike moments hash
 * **GIST** - GIST descriptor hash
+* **DINOHash** - DINOv2 ViT-S/14+reg deep perceptual hash (96 bits, adversarial-robust)
 
 ## Usage Example
 

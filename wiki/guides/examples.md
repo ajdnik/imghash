@@ -515,6 +515,106 @@ func main() {
 }
 ```
 
+### Adversarial-Robust Verification with DINOHash
+
+PDQ pre-filters at sub-millisecond throughput; DINOHash confirms survivors with deep semantic features that resist crops, recolors, and adversarial perturbations:
+
+```go
+package main
+
+import (
+    "fmt"
+    "github.com/ajdnik/imghash/v2"
+    "github.com/ajdnik/imghash/v2/dinoweights"
+)
+
+type TwoStageModerator struct {
+    pdq        imghash.HasherComparer
+    dino       imghash.HasherComparer
+    pdqBlock   map[string]imghash.Binary
+    dinoBlock  map[string]imghash.Binary
+    pdqLoose   int
+    dinoStrict int
+}
+
+func NewTwoStageModerator() *TwoStageModerator {
+    pdq, _ := imghash.NewPDQ()
+    dn, _ := imghash.NewDINOHash(imghash.WithSafetensorsBlob(dinoweights.Blob))
+    return &TwoStageModerator{
+        pdq:        pdq,
+        dino:       dn,
+        pdqBlock:   make(map[string]imghash.Binary),
+        dinoBlock:  make(map[string]imghash.Binary),
+        pdqLoose:   100, // generous pre-filter
+        dinoStrict: 25,  // semantic confirmation
+    }
+}
+
+func (m *TwoStageModerator) AddToBlocklist(id, path string) error {
+    ph, err := imghash.HashFile(m.pdq, path)
+    if err != nil {
+        return err
+    }
+    dh, err := imghash.HashFile(m.dino, path)
+    if err != nil {
+        return err
+    }
+    m.pdqBlock[id] = ph.(imghash.Binary)
+    m.dinoBlock[id] = dh.(imghash.Binary)
+    return nil
+}
+
+func (m *TwoStageModerator) Check(path string) (bool, string, error) {
+    candPDQ, err := imghash.HashFile(m.pdq, path)
+    if err != nil {
+        return false, "", err
+    }
+
+    // Stage 1: cheap PDQ pre-filter to narrow candidates.
+    var dinoCandidates []string
+    for id, ph := range m.pdqBlock {
+        dist, _ := m.pdq.Compare(candPDQ, ph)
+        if int(dist) <= m.pdqLoose {
+            dinoCandidates = append(dinoCandidates, id)
+        }
+    }
+    if len(dinoCandidates) == 0 {
+        return false, "", nil
+    }
+
+    // Stage 2: DINOHash on survivors only.
+    candDINO, err := imghash.HashFile(m.dino, path)
+    if err != nil {
+        return false, "", err
+    }
+    for _, id := range dinoCandidates {
+        dist, _ := m.dino.Compare(candDINO, m.dinoBlock[id])
+        if int(dist) <= m.dinoStrict {
+            return true, id, nil
+        }
+    }
+    return false, "", nil
+}
+
+func main() {
+    mod := NewTwoStageModerator()
+    mod.AddToBlocklist("harmful-001", "blocklist/image1.jpg")
+
+    blocked, matchID, err := mod.Check("uploads/new_image.jpg")
+    if err != nil {
+        panic(err)
+    }
+    if blocked {
+        fmt.Printf("⛔ Content blocked - matches %s\n", matchID)
+    } else {
+        fmt.Println("✅ Content approved")
+    }
+}
+```
+
+> [!TIP]
+> The two-stage layout keeps throughput close to PDQ on the bulk of traffic while catching adversarial near-duplicates the classical hash misses. Loosen the PDQ threshold and tighten the DINOHash threshold to trade recall for precision.
+
 ## Working with Different Image Sources
 
 ### Reading from File

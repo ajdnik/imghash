@@ -29,6 +29,7 @@ hash, err := imghash.HashFile(pdq, "image.jpg")
 * Use **PDQ** for general-purpose deduplication
 * Use **Average** or **Difference** for simple, fast duplicate detection
 * Use **RASH** for rotation-invariant duplicate detection
+* Use **DINOHash** when adversarial robustness or semantic-level matching matters (~1s/image CPU cost)
 
 **Visual Similarity Search**
 
@@ -65,6 +66,7 @@ hash, err := imghash.HashFile(pdq, "image.jpg")
 * **GIST**: Rich scene descriptor
 * **BoVW**: Feature-based, highly configurable
 * **Zernike**: Moment-based, rotation invariant
+* **DINOHash**: Deep semantic perceptual hash; highest robustness but ~1s/image
 
 ### Step 3: Consider Image Characteristics
 
@@ -113,6 +115,7 @@ Binary hashes are compact, fast to compare, and work well for duplicate detectio
 | **PDQ**            | Binary (256-bit) | Production duplicate detection | ⚡️⚡️ Fast        | ⭐️⭐️⭐️⭐️⭐️ Best    |
 | **RASH**           | Binary           | Rotation + scale invariant     | ⚡️ Moderate      | ⭐️⭐️⭐️⭐️ Excellent |
 | **BoVW (SimHash)** | Binary           | Feature-based vocabulary       | ⚡️ Slow          | ⭐️⭐️⭐️⭐️ Excellent |
+| **DINOHash**       | Binary (96-bit)  | Adversarial-robust matching    | 🐢 ~1s/image     | ⭐️⭐️⭐️⭐️⭐️ Best    |
 
 ### Float64 Hash Algorithms
 
@@ -284,6 +287,40 @@ for _, knownHash := range blocklist {
 
 </details>
 
+<details>
+<summary>Adversarial / Semantic Near-Duplicate Detection</summary>
+
+**Best Choice**: DINOHash (with PDQ pre-filter)
+
+When inputs may be deliberately edited to defeat classical hashes (e.g. heavy crops, recolors, watermarks, adversarial noise), the deep semantic features of DINOv2 hold up far better than DCT-based hashes. Pair with a faster pre-filter to amortize the per-image cost:
+
+```go
+import (
+    "github.com/ajdnik/imghash/v2"
+    "github.com/ajdnik/imghash/v2/dinoweights"
+)
+
+pdq, _ := imghash.NewPDQ()
+dn, _  := imghash.NewDINOHash(imghash.WithSafetensorsBlob(dinoweights.Blob))
+
+refPDQ, _  := imghash.HashFile(pdq, "reference.jpg")
+refDINO, _ := imghash.HashFile(dn, "reference.jpg")
+
+candPDQ, _ := imghash.HashFile(pdq, "candidate.jpg")
+pdqDist, _ := pdq.Compare(refPDQ, candPDQ)
+
+// Cheap PDQ pre-filter, then expensive DINOHash verify on survivors.
+if pdqDist < 100 {
+    candDINO, _ := imghash.HashFile(dn, "candidate.jpg")
+    dnDist, _ := dn.Compare(refDINO, candDINO)
+    if dnDist < 25 {
+        // Confirmed adversarial / semantic near-duplicate.
+    }
+}
+```
+
+</details>
+
 ## Algorithm Characteristics
 
 ### Simple Threshold-Based Algorithms
@@ -310,6 +347,10 @@ for _, knownHash := range blocklist {
 - **ColorMoment** — Color-aware using Hu moments in YCrCb and HSV spaces.
 - **LBP** — Local Binary Patterns. Excellent for texture classification.
 
+### Deep Learning Algorithms
+
+- **DINOHash** — Frozen DINOv2 ViT-S/14+reg backbone fused with a 96-bit PCA-aligned head. Captures high-level semantic features; robust to crops, recolors, lossy re-encoding, and adversarial edits that defeat classical hashes. Pure-Go ViT inference, ~1 second per image. Ships its ~85 MB model weights in the sibling [`dinoweights`](../installation#dinohash-weights-module) module.
+
 ## Performance Considerations
 
 > [!TIP]
@@ -326,16 +367,21 @@ Fastest:     Average, Difference, Median
 Fast:        PHash, PDQ, WHash, BlockMean
 Moderate:    MarrHildreth, RASH, ColorMoment, CLD, EHD, LBP, HOGHash
 Slow:        GIST, BoVW, Zernike, RadialVariance
+Very slow:   DINOHash (~1 second per image, pure-Go ViT inference)
 ```
 
 ### Memory Usage
 
 ```
 Binary (8-64 bytes):    Average, Difference, Median, PHash, WHash
+Binary (12 bytes):      DINOHash (96 bits)
 Binary (32+ bytes):     BlockMean, PDQ, MarrHildreth, RASH
 UInt8 (80-256 bytes):   CLD, EHD, LBP, HOGHash, RadialVariance
 Float64 (128+ bytes):   ColorMoment, Zernike, GIST, BoVW
 ```
+
+> [!NOTE]
+> DINOHash hashes themselves are tiny (12 bytes). The cost is the embedded model weights (~85 MB) loaded once at construction via the sibling `dinoweights` module.
 
 ## Next Steps
 

@@ -103,6 +103,12 @@ gist, _ := imghash.NewGIST()
 hash1, _ = gist.Calculate(img1)
 hash2, _ = gist.Calculate(img2)
 dist, _ = gist.Compare(hash1, hash2) // Uses L2 distance
+
+// DINOHash uses Hamming distance on its 96-bit Binary hash
+dn, _ := imghash.NewDINOHash(imghash.WithSafetensorsBlob(dinoweights.Blob))
+hash1, _ = dn.Calculate(img1)
+hash2, _ = dn.Calculate(img2)
+dist, _ = dn.Compare(hash1, hash2) // Uses Hamming distance
 ```
 
 ## Custom Distance Functions

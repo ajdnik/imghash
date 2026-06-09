@@ -61,6 +61,7 @@ fmt.Printf("Hamming distance: %.0f bits\n", dist)
 * **Average, Difference, Median hashes** - Fast near-duplicate detection
 * **PHash** - Robust image similarity
 * **Large-scale search** - Optimized for speed with bit operations
+* **DINOHash** - 96-bit semantic perceptual hash with adversarial robustness
 
 > [!TIP]
 > Hamming distance of 0-10 typically indicates very similar images for 64-bit hashes.

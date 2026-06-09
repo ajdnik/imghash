@@ -15,13 +15,7 @@
 
 ## Documentation
 
-- [Wiki Home (Introduction)](https://github.com/ajdnik/imghash/wiki)
-- [Installation](https://github.com/ajdnik/imghash/wiki/installation)
-- [Quick Start](https://github.com/ajdnik/imghash/wiki/quickstart)
-- [Choosing the Right Algorithm](https://github.com/ajdnik/imghash/wiki/guides/choosing-algorithm)
-- [Comparing Hashes](https://github.com/ajdnik/imghash/wiki/guides/comparing-hashes)
-- [Practical Examples](https://github.com/ajdnik/imghash/wiki/guides/examples)
-- [Migration Guide](https://github.com/ajdnik/imghash/wiki/guides/migration)
+Full documentation lives on the [wiki](https://github.com/ajdnik/imghash/wiki). It covers installation, a quick start guide, a per-algorithm reference (options, defaults, references, examples) for every hasher shipped with the library, an API reference for the `Hasher` / `Comparer` interfaces and the `similarity` distance functions, conceptual guides on hash types and interpolation methods, and practical guides for choosing an algorithm, comparing hashes, real-world examples, and migrating from v1 to v2.
 
 ## Installing
 
@@ -73,43 +67,6 @@ func main() {
 }
 ```
 
-## Algorithms at a Glance
-
-| Algorithm | Hash type | Default metric |
-|-----------|-----------|----------------|
-| Average | `Binary` | Hamming |
-| Difference | `Binary` | Hamming |
-| Median | `Binary` | Hamming |
-| PHash | `Binary` | Weighted Hamming |
-| WHash | `Binary` | Hamming |
-| MarrHildreth | `Binary` | Hamming |
-| BlockMean | `Binary` | Hamming |
-| ColorHash | `Binary` | Hamming |
-| PDQ | `Binary` | Hamming |
-| RASH | `Binary` | Hamming |
-| ColorMoment | `Float64` | L2 (Euclidean) |
-| Zernike | `Float64` | L2 (Euclidean) |
-| GIST | `Float64` | Cosine |
-| BoVW (Histogram) | `Float64` | Cosine |
-| BoVW (MinHash) | `Float64` | Jaccard |
-| BoVW (SimHash) | `Binary` | Jaccard |
-| CLD | `UInt8` | L2 (Euclidean) |
-| EHD | `UInt8` | L1 (Manhattan) |
-| LBP | `UInt8` | Chi-Square |
-| HOGHash | `UInt8` | Cosine |
-| RadialVariance | `UInt8` | L1 (Manhattan) |
-| DINOHash | `Binary` | Hamming |
-
-Each algorithm has its own wiki page with options, defaults, references, and examples. DINOHash ships its model weights in a sibling module (`github.com/ajdnik/imghash/v2/dinoweights`); see [DINOHash](https://github.com/ajdnik/imghash/wiki/algorithms/dinohash) for usage.
-
-## Community
-
-- [Code of Conduct](CODE_OF_CONDUCT.md)
-- [Contributing Guide](CONTRIBUTING.md)
-- [Security Policy](SECURITY.md)
-- [Migration Guide](https://github.com/ajdnik/imghash/wiki/Migration-Guide)
-
 ## License
 
 Imghash is released under the MIT license. See [LICENSE](LICENSE).
-

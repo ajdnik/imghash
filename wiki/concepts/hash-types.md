@@ -112,6 +112,7 @@ Bits are numbered with the most significant bit (MSB) first within each byte.
 * **BlockMean** - Block-based averaging
 * **WHash** - Wavelet-based hash
 * **PDQ** - Facebook's robust hashing algorithm
+* **DINOHash** - DINOv2 ViT-S/14+reg deep perceptual hash (96 bits, adversarial-robust)
 
 > [!WARNING]
 > Binary hashes can only be compared using `Hamming`, `WeightedHamming`, or `Jaccard` distance metrics. Other metrics will return `ErrIncompatibleHash`.
