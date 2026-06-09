@@ -586,7 +586,7 @@ func (o dinoSafetensorsOption) applyDINOHash(d *DINOHash) {
 
 // WithSafetensorsBlob configures DINOHash to parse a safetensors fp32 blob
 // supplied as a raw byte slice. The canonical blob is published in the
-// sibling module github.com/ajdnik/imghash/v2/dinoweights as
+// sibling module github.com/ajdnik/imghash/dinoweights as
 // dinoweights.Blob, but any safetensors blob with the expected tensor names
 // and shapes works.
 //

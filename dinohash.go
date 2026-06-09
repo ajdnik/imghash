@@ -19,7 +19,7 @@ type Tensor = dinov2.Tensor
 
 // WeightsProvider supplies the named float32 tensors that constitute a
 // DINOHash model. The canonical source is the byte slice in the sibling
-// module github.com/ajdnik/imghash/v2/dinoweights, supplied via
+// module github.com/ajdnik/imghash/dinoweights, supplied via
 // WithSafetensorsBlob. Implement this interface to load weights from disk,
 // network, or a custom format.
 type WeightsProvider interface {
@@ -65,11 +65,11 @@ func (s safetensorsProvider) Tensors() (map[string]Tensor, error) {
 //
 // This package ships no model weights. Supply them via WithSafetensorsBlob
 // (most convenient) or WithDINOWeights (for custom providers). The default
-// blob lives in the sibling module github.com/ajdnik/imghash/v2/dinoweights:
+// blob lives in the sibling module github.com/ajdnik/imghash/dinoweights:
 //
 //	import (
 //	    "github.com/ajdnik/imghash/v2"
-//	    "github.com/ajdnik/imghash/v2/dinoweights"
+//	    "github.com/ajdnik/imghash/dinoweights"
 //	)
 //
 //	d, err := imghash.NewDINOHash(imghash.WithSafetensorsBlob(dinoweights.Blob))
