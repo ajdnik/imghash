@@ -261,6 +261,48 @@ From Meta [ThreatExchange PDQ](https://github.com/facebook/ThreatExchange/tree/m
 
 The input size is fixed at 64x64 per the algorithm specification.
 
+## DINOHash
+
+Produces a 96-bit binary hash from a frozen DINOv2 ViT-S/14 (with register tokens) backbone fused with a PCA-aligned linear head. Robust to crops, recolors, lossy re-encoding, and adversarial edits that defeat classical hashes (PDQ, PHash, etc.). Compares using Hamming distance.
+
+From "DINOHash: Robust Deep Perceptual Hashing using DINOv2 Features" ([arxiv.org/abs/2503.11195](https://arxiv.org/abs/2503.11195)). The fused 96-bit ONNX checkpoint published by [proteus-photos/dinohash-perceptual-hash](https://github.com/proteus-photos/dinohash-perceptual-hash) is converted to safetensors fp32 and shipped in a sibling Go module.
+
+Inference is hand-rolled in pure Go on top of `gonum` BLAS — no CGO, no ONNX runtime — which keeps the dependency footprint small. Single-image latency is around one second on a modern laptop. For high-throughput dedup pipelines, pair DINOHash with a faster pre-filter (PDQ).
+
+### Weights
+
+Model weights live in the sibling module `github.com/ajdnik/imghash/v2/dinoweights` so importers of `imghash` do not pay the ~85 MB embed cost unless they opt in. The weights module exports a single `Blob []byte` variable consumed via the `WithSafetensorsBlob` option:
+
+```go
+import (
+  "github.com/ajdnik/imghash/v2"
+  "github.com/ajdnik/imghash/v2/dinoweights"
+)
+
+d, err := imghash.NewDINOHash(imghash.WithSafetensorsBlob(dinoweights.Blob))
+if err != nil { panic(err) }
+
+hash, err := imghash.HashFile(d, "image.jpg")
+```
+
+For custom weight sources (alternate checkpoint, disk-loaded, networked), implement the `WeightsProvider` interface and pass via `WithDINOWeights`:
+
+```go
+type WeightsProvider interface {
+  Tensors() (map[string]Tensor, error)
+}
+```
+
+### Options
+
+| Option | Default | Notes |
+|--------|---------|-------|
+| `WithSafetensorsBlob(b)` | `nil` | Required unless `WithDINOWeights` is supplied. |
+| `WithDINOWeights(p)` | `nil` | Advanced: custom `WeightsProvider`. |
+| `WithDistance(fn)` | `Hamming` | Override comparison metric. |
+
+Input size, ImageNet normalization, hash length, and bicubic positional-embedding interpolation are anchored to the published reference; exposing them as options would let users silently produce hashes that diverge from canonical values. `NewDINOHash` returns immediately; the weights blob is parsed lazily on the first `Calculate` call, and `ErrNoWeights` is reported there when neither weights option was set.
+
 ## Binary Hash Size with Custom Options
 
 For binary hashers with configurable dimensions, bit count may not be a multiple of 8. In that case:

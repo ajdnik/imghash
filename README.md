@@ -15,8 +15,6 @@
 
 ## Documentation
 
-Detailed documentation has moved to the Wiki:
-
 - [Wiki Home](https://github.com/ajdnik/imghash/wiki)
 - [Algorithms](https://github.com/ajdnik/imghash/wiki/Algorithms)
 - [Similarity Metrics](https://github.com/ajdnik/imghash/wiki/Similarity-Metrics)
@@ -99,8 +97,9 @@ func main() {
 | LBP | `UInt8` | Chi-Square |
 | HOGHash | `UInt8` | Cosine |
 | RadialVariance | `UInt8` | L1 (Manhattan) |
+| DINOHash | `Binary` | Hamming |
 
-See [Algorithms](https://github.com/ajdnik/imghash/wiki/Algorithms) for options, defaults, references, and examples.
+See [Algorithms](https://github.com/ajdnik/imghash/wiki/Algorithms) for options, defaults, references, and examples. DINOHash ships its model weights in a sibling module (`github.com/ajdnik/imghash/v2/dinoweights`); see the wiki entry for usage.
 
 ## Community
 

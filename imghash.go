@@ -17,7 +17,7 @@ type DistanceFunc func(hashtype.Hash, hashtype.Hash) (similarity.Distance, error
 // Hasher computes a perceptual hash from an image.
 // It is implemented by all hash algorithms in this package:
 // Average, Difference, PHash, Median, BlockMean, MarrHildreth,
-// RadialVariance, ColorMoment, ColorHash, CLD, EHD, WHash, LBP, HOGHash, BoVW, PDQ, RASH, Zernike, and GIST.
+// RadialVariance, ColorMoment, ColorHash, CLD, EHD, WHash, LBP, HOGHash, BoVW, PDQ, RASH, Zernike, GIST, and DINOHash.
 type Hasher interface {
 	Calculate(image.Image) (hashtype.Hash, error)
 }
@@ -57,6 +57,7 @@ var (
 	_ HasherComparer = RASH{}
 	_ HasherComparer = Zernike{}
 	_ HasherComparer = GIST{}
+	_ HasherComparer = (*DINOHash)(nil)
 )
 
 // Re-export core types so most consumers only need to import "imghash".
@@ -124,4 +125,7 @@ var (
 	ErrInvalidKeypoints = errors.New("imghash: max keypoints must be greater than zero")
 	// ErrInvalidSignatureSize is returned when MinHash or SimHash size is zero.
 	ErrInvalidSignatureSize = errors.New("imghash: signature size must be greater than zero")
+	// ErrNoWeights is returned by DINOHash.Calculate when no weights source was
+	// supplied via WithSafetensorsBlob or WithDINOWeights.
+	ErrNoWeights = errors.New("imghash: no DINOHash weights configured; pass WithSafetensorsBlob or WithDINOWeights")
 )

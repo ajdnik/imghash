@@ -4,6 +4,13 @@
       "release-type": "go",
       "package-name": "imghash",
       "include-component-in-tag": false
+    },
+    "dinoweights": {
+      "release-type": "go",
+      "package-name": "dinoweights",
+      "component": "dinoweights",
+      "tag-separator": "/",
+      "include-component-in-tag": true
     }
   },
   "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json"

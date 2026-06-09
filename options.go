@@ -75,6 +75,9 @@ type GISTOption interface{ applyGIST(*GIST) }
 // BoVWOption configures the BoVW hash algorithm.
 type BoVWOption interface{ applyBoVW(*BoVW) }
 
+// DINOHashOption configures the DINOHash algorithm.
+type DINOHashOption interface{ applyDINOHash(*DINOHash) }
+
 // Option interfaces returned by With* constructors.
 // Concrete implementations are intentionally unexported.
 
@@ -99,6 +102,7 @@ type DistanceOption interface {
 	ZernikeOption
 	GISTOption
 	BoVWOption
+	DINOHashOption
 }
 
 type distanceOption struct{ fn DistanceFunc }
@@ -122,6 +126,7 @@ func (o distanceOption) applyRASH(r *RASH)                     { r.distFunc = o.
 func (o distanceOption) applyZernike(z *Zernike)               { z.distFunc = o.fn }
 func (o distanceOption) applyGIST(g *GIST)                     { g.distFunc = o.fn }
 func (o distanceOption) applyBoVW(b *BoVW)                     { b.distFunc = o.fn }
+func (o distanceOption) applyDINOHash(d *DINOHash)              { d.distFunc = o.fn }
 
 // --- concrete option implementations ---
 
@@ -556,4 +561,37 @@ func WithBinBits(bits uint) BinBitsOption {
 // Applies to all algorithms.
 func WithDistance(fn DistanceFunc) DistanceOption {
 	return distanceOption{fn}
+}
+
+// dinoWeightsOption applies a WeightsProvider to a DINOHash instance.
+type dinoWeightsOption struct{ provider WeightsProvider }
+
+func (o dinoWeightsOption) applyDINOHash(d *DINOHash) { d.weights = o.provider }
+
+// WithDINOWeights configures the source for DINOHash model tensors via a
+// WeightsProvider implementation. Use this when loading weights from disk,
+// network, or a custom format; for the default safetensors blob, prefer
+// WithSafetensorsBlob.
+// Applies to DINOHash.
+func WithDINOWeights(p WeightsProvider) DINOHashOption {
+	return dinoWeightsOption{provider: p}
+}
+
+// dinoSafetensorsOption wraps a raw safetensors blob as a WeightsProvider.
+type dinoSafetensorsOption struct{ blob []byte }
+
+func (o dinoSafetensorsOption) applyDINOHash(d *DINOHash) {
+	d.weights = safetensorsProvider(o.blob)
+}
+
+// WithSafetensorsBlob configures DINOHash to parse a safetensors fp32 blob
+// supplied as a raw byte slice. The canonical blob is published in the
+// sibling module github.com/ajdnik/imghash/v2/dinoweights as
+// dinoweights.Blob, but any safetensors blob with the expected tensor names
+// and shapes works.
+//
+// The blob is parsed lazily on the first Calculate call.
+// Applies to DINOHash.
+func WithSafetensorsBlob(b []byte) DINOHashOption {
+	return dinoSafetensorsOption{blob: b}
 }
