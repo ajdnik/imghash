@@ -48,26 +48,23 @@ func NewLBP(opts ...LBPOption) (LBP, error)
 
 ### Options
 
-- **`WithSize`** `func(width, height uint) SizeOption` — Sets the resize dimensions before hash computation. The image is resized to this size before processing.
-
+- **`WithSize`** `func(width, height uint) SizeOption`
+  Sets the resize dimensions before hash computation. The image is resized to this size before processing.
   **Default**: 256×256 pixels
 
-- **`WithInterpolation`** `func(interp Interpolation) InterpolationOption` — Sets the interpolation method used when resizing the image.
-
+- **`WithInterpolation`** `func(interp Interpolation) InterpolationOption`
+  Sets the interpolation method used when resizing the image.
   **Default**: `Bilinear`
-
   Available options: `NearestNeighbor`, `Bilinear`, `Bicubic`, `Lanczos`
 
-- **`WithGridSize`** `func(x, y uint) GridSizeOption` — Sets the number of grid cells used to divide the image for spatial histogram computation.
-
+- **`WithGridSize`** `func(x, y uint) GridSizeOption`
+  Sets the number of grid cells used to divide the image for spatial histogram computation.
   **Default**: 1×1 (single histogram for entire image)
-
   Larger grids capture more spatial information but produce longer hashes.
 
-- **`WithDistance`** `func(fn DistanceFunc) DistanceOption` — Overrides the default distance function used by the `Compare` method.
-
+- **`WithDistance`** `func(fn DistanceFunc) DistanceOption`
+  Overrides the default distance function used by the `Compare` method.
   **Default**: `similarity.ChiSquare`
-
   Available functions: `Hamming`, `L1`, `L2`, `Cosine`, `ChiSquare`, `PCC`, `Jaccard`
 
 ## Usage Example

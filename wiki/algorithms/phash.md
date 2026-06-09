@@ -195,7 +195,6 @@ if dist < 15 {
 ## References
 
 * [Implementation and Benchmarking of Perceptual Image Hash Functions - Zauner et al.](https://www.researchgate.net/publication/252340846_Rihamark_Perceptual_image_hash_benchmarking)
-* Source: `phash.go:15-18`
 
 > [!WARNING]
 > PHash is not rotation-invariant. For rotation-robust hashing, consider RASH or Block Mean with rotation variants.

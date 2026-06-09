@@ -17,9 +17,9 @@ type Hasher interface {
 - **`Calculate`** `func(image.Image) (hashtype.Hash, error)` — Computes a perceptual hash from the provided image.
   - **`img`** `image.Image` — The input image to hash. Accepts any type that implements the standard `image.Image` interface.
   - **`hash`** `hashtype.Hash` — The computed hash. The concrete type depends on the algorithm:
-  * Binary hash algorithms (Average, Difference, Median, PHash, etc.) return `hashtype.Binary`
-  * Histogram-based algorithms (CLD, EHD, etc.) return `hashtype.UInt8`
-  * Feature-based algorithms (ColorMoment, GIST, etc.) return `hashtype.Float64`
+    * Binary hash algorithms (Average, Difference, Median, PHash, etc.) return `hashtype.Binary`
+    * Histogram-based algorithms (CLD, EHD, etc.) return `hashtype.UInt8`
+    * Feature-based algorithms (ColorMoment, GIST, etc.) return `hashtype.Float64`
   - **`error`** `error` — Returns an error if the hash computation fails. Possible errors include invalid image dimensions or algorithm-specific failures.
 
 ## Implementing Algorithms

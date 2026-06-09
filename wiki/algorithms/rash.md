@@ -120,28 +120,6 @@ The RASH algorithm:
 > [!TIP]
 > The key insight: rotating the image only shuffles pixels within each ring, leaving the ring means unchanged. This makes RASH inherently rotation-invariant.
 
-## Ring Sampling Illustration
-
-```
-        Ring 0 (center)
-       /
-      /  Ring 1
-     /  /
-    /  /  Ring 2
-   /  /  /
-  ┌──────────┐
-  │    ∘     │  ← Image center
-  │   ∘∘∘    │
-  │  ∘∘∘∘∘   │  ← Concentric rings
-  │ ∘∘∘∘∘∘∘  │
-  │  ∘∘∘∘∘   │
-  │   ∘∘∘    │
-  │    ∘     │
-  └──────────┘
-```
-
-Each ring contains pixels at a similar distance from the center.
-
 ## Number of Rings
 
 The number of rings affects hash quality and rotation invariance:

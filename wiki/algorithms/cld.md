@@ -45,20 +45,18 @@ func NewCLD(opts ...CLDOption) (CLD, error)
 
 ### Options
 
-- **`WithSize`** `func(width, height uint) SizeOption` — Sets the resize dimensions before hash computation. The image is resized to this size before processing.
-
+- **`WithSize`** `func(width, height uint) SizeOption`
+  Sets the resize dimensions before hash computation. The image is resized to this size before processing.
   **Default**: 64×64 pixels
 
-- **`WithInterpolation`** `func(interp Interpolation) InterpolationOption` — Sets the interpolation method used when resizing the image.
-
+- **`WithInterpolation`** `func(interp Interpolation) InterpolationOption`
+  Sets the interpolation method used when resizing the image.
   **Default**: `Bilinear`
-
   Available options: `NearestNeighbor`, `Bilinear`, `Bicubic`, `Lanczos`
 
-- **`WithDistance`** `func(fn DistanceFunc) DistanceOption` — Overrides the default distance function used by the `Compare` method.
-
+- **`WithDistance`** `func(fn DistanceFunc) DistanceOption`
+  Overrides the default distance function used by the `Compare` method.
   **Default**: `similarity.L2` (Euclidean distance)
-
   Available functions: `Hamming`, `L1`, `L2`, `Cosine`, `ChiSquare`, `PCC`, `Jaccard`
 
 ## Usage Example

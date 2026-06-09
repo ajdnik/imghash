@@ -4,7 +4,7 @@
 
 ## Overview
 
-Imghash provides 19 different perceptual hashing algorithms, each optimized for different scenarios. This guide helps you select the right algorithm based on your requirements.
+Imghash provides different perceptual hashing algorithms, each optimized for different scenarios. This guide helps you select the right algorithm based on your requirements.
 
 ## Quick Recommendation
 

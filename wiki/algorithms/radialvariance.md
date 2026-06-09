@@ -45,22 +45,19 @@ func NewRadialVariance(opts ...RadialVarianceOption) (RadialVariance, error)
 
 ### Options
 
-- **`WithSigma`** `func(sigma float64) SigmaOption` — Sets the Gaussian kernel standard deviation for blur preprocessing.
-
+- **`WithSigma`** `func(sigma float64) SigmaOption`
+  Sets the Gaussian kernel standard deviation for blur preprocessing.
   **Default**: 1.0
-
   Higher values create more blur, reducing noise but potentially losing detail.
 
-- **`WithAngles`** `func(angles int) AnglesOption` — Sets the number of projection angles to consider.
-
+- **`WithAngles`** `func(angles int) AnglesOption`
+  Sets the number of projection angles to consider.
   **Default**: 180
-
   More angles provide finer angular resolution but increase computation time.
 
-- **`WithDistance`** `func(fn DistanceFunc) DistanceOption` — Overrides the default distance function used by the `Compare` method.
-
+- **`WithDistance`** `func(fn DistanceFunc) DistanceOption`
+  Overrides the default distance function used by the `Compare` method.
   **Default**: `similarity.L1` (Manhattan distance)
-
   Available functions: `Hamming`, `L1`, `L2`, `Cosine`, `ChiSquare`, `PCC`, `Jaccard`
 
 > [!IMPORTANT]

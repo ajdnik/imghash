@@ -176,14 +176,34 @@ All can be overridden with `WithDistance()`.
 
 ## Feature Detector Comparison
 
-- **BoVWORB** — * FAST corner detector * Faster computation * Good for textured images * Orientation-compensated BRIEF
-- **BoVWAKAZE** — * Multi-scale Hessian detector * More robust features * Better for blob-like structures * Scale-space analysis
+- **BoVWORB**
+  * FAST corner Detector
+  * Faster computation
+  * Good for textured images
+  * Orientation-compensated BRIEF
+- **BoVWAKAZE**
+  * Multi-scale Hessian Detector
+  * More robust features 
+  * Better for blob-like structures 
+  * Scale-space analysis
 
 ## Storage Type Comparison
 
-- **Histogram** — * Most accurate * Larger hash size * Cosine similarity * Best for quality
-- **MinHash** — * Compact Float64 * Approximate matching * Good speed/quality * Jaccard estimation
-- **SimHash** — * Binary hash * Smallest size * Fastest comparison * Good for large scale
+- **Histogram**
+  * Most accurate 
+  * Larger hash size 
+  * Cosine similarity 
+  * Best for quality
+- **MinHash**
+  * Compact Float64 
+  * Approximate matching 
+  * Good speed/quality 
+  * Jaccard estimation
+- **SimHash**
+  * Binary hash 
+  * Smallest size 
+  * Fastest comparison 
+  * Good for large scale
 
 ## Performance Tuning
 

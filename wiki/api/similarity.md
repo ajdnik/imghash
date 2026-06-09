@@ -245,9 +245,7 @@ func Jaccard(h1, h2 hashtype.Hash) (Distance, error)
 - **`h1`** `hashtype.Hash` — First hash. Can be Binary, UInt8, or Float64.
 - **`h2`** `hashtype.Hash` — Second hash. Must be same type as h1.
 - **`distance`** `Distance` — For Binary: 1 - (bitset intersection / bitset union)
-
   For UInt8/Float64: 1 - (matching positions / signature length)
-
 - **`error`** `error` — Returns `ErrIncompatibleHash` if types don't match, or `ErrNotSameLength` for UInt8/Float64 if lengths differ.
 
 #### Example

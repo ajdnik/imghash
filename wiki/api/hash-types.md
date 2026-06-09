@@ -23,9 +23,10 @@ type Hash interface {
 - **`String`** `func() string` — Returns a string representation of the hash.
   - **`string`** `string` — A formatted string representation of the hash data.
 - **`Len`** `func() int` — Returns the length of the hash.
-  - **`length`** `int` — * For `Binary`: number of bytes
-  * For `UInt8`: number of uint8 elements
-  * For `Float64`: number of float64 elements
+  - **`length`** `int`
+    * For `Binary`: number of bytes
+    * For `UInt8`: number of uint8 elements
+    * For `Float64`: number of float64 elements
 - **`ValueAt`** `func(idx int) float64` — Returns the value at the given index as a float64.
   - **`idx`** `int` — The zero-based index of the element to retrieve.
   - **`value`** `float64` — The element value converted to float64.

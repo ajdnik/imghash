@@ -12,11 +12,13 @@ type Comparer interface {
 }
 ```
 
-### Methods
+### Input
 
-- **`Compare`** `func(hashtype.Hash, hashtype.Hash) (similarity.Distance, error)` — Computes the distance between two hashes using an algorithm-appropriate metric.
 - **`h1`** `hashtype.Hash` — The first hash to compare.
 - **`h2`** `hashtype.Hash` — The second hash to compare.
+
+### Output
+
 - **`distance`** `similarity.Distance` — The computed distance between the two hashes. Lower values indicate more similar images.
   * For binary hashes: typically Hamming distance (number of differing bits)
   * For numeric hashes: typically Euclidean (L2) distance

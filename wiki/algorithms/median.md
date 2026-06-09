@@ -151,7 +151,6 @@ The overhead is minimal for small hash sizes (8×8 requires sorting only 64 valu
 ## References
 
 * [DupImageLib implementation](https://github.com/Quickshot/DupImageLib/blob/3e914588958c4c1871d750de86b30446b9c07a3e/DupImageLib/ImageHashes.cs#L99)
-* Source: `medianhash.go:12-14`
 
 > [!WARNING]
 > Like Average Hash, Median Hash is not robust to significant transformations like rotation, scaling, or cropping. Use DCT-based methods for more robust matching.
