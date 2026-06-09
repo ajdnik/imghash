@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2](https://github.com/ajdnik/imghash/compare/dinoweights/v1.1.1...dinoweights/v1.1.2) (2026-06-09)
+
+
+### Bug Fixes
+
+* **dinoweights:** drop from main module require to stop 85MB consumer download ([#69](https://github.com/ajdnik/imghash/issues/69)) ([5bc2186](https://github.com/ajdnik/imghash/commit/5bc218612bd263f79c882eea72d400038b28766f))
+
 ## [1.1.1](https://github.com/ajdnik/imghash/compare/dinoweights/v1.1.0...dinoweights/v1.1.1) (2026-06-09)
 
 
