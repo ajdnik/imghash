@@ -43,9 +43,12 @@ jobs:
 
           git clone "${WIKI_URL}" wiki-repo
 
-          # Keep the wiki source in this repo authoritative for top-level markdown pages.
-          find wiki-repo -maxdepth 1 -type f -name '*.md' -delete
-          cp wiki/*.md wiki-repo/
+          # Keep the wiki source in this repo authoritative across the full tree.
+          # Mirror every .md file (including subdirectories such as algorithms/,
+          # api/, concepts/, guides/) and prune anything left behind.
+          find wiki-repo -mindepth 1 -path wiki-repo/.git -prune -o -type f -name '*.md' -print -exec rm -f {} +
+          find wiki-repo -mindepth 1 -path wiki-repo/.git -prune -o -type d -empty -print -delete
+          (cd wiki && find . -type f -name '*.md' -print0 | tar --null -cf - -T -) | tar -xf - -C wiki-repo
 
           cd wiki-repo
 

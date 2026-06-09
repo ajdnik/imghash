@@ -15,14 +15,7 @@
 
 ## Documentation
 
-Detailed documentation has moved to the Wiki:
-
-- [Wiki Home](https://github.com/ajdnik/imghash/wiki)
-- [Algorithms](https://github.com/ajdnik/imghash/wiki/Algorithms)
-- [Similarity Metrics](https://github.com/ajdnik/imghash/wiki/Similarity-Metrics)
-- [Convenience Functions](https://github.com/ajdnik/imghash/wiki/Convenience-Functions)
-- [Interpolation Methods](https://github.com/ajdnik/imghash/wiki/Interpolation-Methods)
-- [Migration Guide](https://github.com/ajdnik/imghash/wiki/Migration-Guide)
+Full documentation lives on the [wiki](https://github.com/ajdnik/imghash/wiki). It covers installation, a quick start guide, a per-algorithm reference (options, defaults, references, examples) for every hasher shipped with the library, an API reference for the `Hasher` / `Comparer` interfaces and the `similarity` distance functions, conceptual guides on hash types and interpolation methods, and practical guides for choosing an algorithm, comparing hashes, real-world examples, and migrating from v1 to v2.
 
 ## Installing
 
@@ -74,42 +67,6 @@ func main() {
 }
 ```
 
-## Algorithms at a Glance
-
-| Algorithm | Hash type | Default metric |
-|-----------|-----------|----------------|
-| Average | `Binary` | Hamming |
-| Difference | `Binary` | Hamming |
-| Median | `Binary` | Hamming |
-| PHash | `Binary` | Weighted Hamming |
-| WHash | `Binary` | Hamming |
-| MarrHildreth | `Binary` | Hamming |
-| BlockMean | `Binary` | Hamming |
-| ColorHash | `Binary` | Hamming |
-| PDQ | `Binary` | Hamming |
-| RASH | `Binary` | Hamming |
-| ColorMoment | `Float64` | L2 (Euclidean) |
-| Zernike | `Float64` | L2 (Euclidean) |
-| GIST | `Float64` | Cosine |
-| BoVW (Histogram) | `Float64` | Cosine |
-| BoVW (MinHash) | `Float64` | Jaccard |
-| BoVW (SimHash) | `Binary` | Jaccard |
-| CLD | `UInt8` | L2 (Euclidean) |
-| EHD | `UInt8` | L1 (Manhattan) |
-| LBP | `UInt8` | Chi-Square |
-| HOGHash | `UInt8` | Cosine |
-| RadialVariance | `UInt8` | L1 (Manhattan) |
-
-See [Algorithms](https://github.com/ajdnik/imghash/wiki/Algorithms) for options, defaults, references, and examples.
-
-## Community
-
-- [Code of Conduct](CODE_OF_CONDUCT.md)
-- [Contributing Guide](CONTRIBUTING.md)
-- [Security Policy](SECURITY.md)
-- [Migration Guide](https://github.com/ajdnik/imghash/wiki/Migration-Guide)
-
 ## License
 
 Imghash is released under the MIT license. See [LICENSE](LICENSE).
-

@@ -1,0 +1,1 @@
+[Code of Conduct](https://github.com/ajdnik/imghash/blob/main/CODE_OF_CONDUCT.md) · [Contributing](https://github.com/ajdnik/imghash/blob/main/CONTRIBUTING.md) · [Security](https://github.com/ajdnik/imghash/blob/main/SECURITY.md) · [License](https://github.com/ajdnik/imghash/blob/main/LICENSE)
