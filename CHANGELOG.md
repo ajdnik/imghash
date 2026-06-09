@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.5.0](https://github.com/ajdnik/imghash/compare/v2.4.0...v2.5.0) (2026-06-09)
+
+
+### Features
+
+* DINOHash ([#64](https://github.com/ajdnik/imghash/issues/64)) ([379188a](https://github.com/ajdnik/imghash/commit/379188a39669aaa32450c47363f401854031f974))
+
 ## [2.4.0](https://github.com/ajdnik/imghash/compare/v2.3.2...v2.4.0) (2026-04-25)
 
 
