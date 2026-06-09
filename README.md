@@ -15,12 +15,13 @@
 
 ## Documentation
 
-- [Wiki Home](https://github.com/ajdnik/imghash/wiki)
-- [Algorithms](https://github.com/ajdnik/imghash/wiki/Algorithms)
-- [Similarity Metrics](https://github.com/ajdnik/imghash/wiki/Similarity-Metrics)
-- [Convenience Functions](https://github.com/ajdnik/imghash/wiki/Convenience-Functions)
-- [Interpolation Methods](https://github.com/ajdnik/imghash/wiki/Interpolation-Methods)
-- [Migration Guide](https://github.com/ajdnik/imghash/wiki/Migration-Guide)
+- [Wiki Home (Introduction)](https://github.com/ajdnik/imghash/wiki)
+- [Installation](https://github.com/ajdnik/imghash/wiki/installation)
+- [Quick Start](https://github.com/ajdnik/imghash/wiki/quickstart)
+- [Choosing the Right Algorithm](https://github.com/ajdnik/imghash/wiki/guides/choosing-algorithm)
+- [Comparing Hashes](https://github.com/ajdnik/imghash/wiki/guides/comparing-hashes)
+- [Practical Examples](https://github.com/ajdnik/imghash/wiki/guides/examples)
+- [Migration Guide](https://github.com/ajdnik/imghash/wiki/guides/migration)
 
 ## Installing
 
@@ -99,7 +100,7 @@ func main() {
 | RadialVariance | `UInt8` | L1 (Manhattan) |
 | DINOHash | `Binary` | Hamming |
 
-See [Algorithms](https://github.com/ajdnik/imghash/wiki/Algorithms) for options, defaults, references, and examples. DINOHash ships its model weights in a sibling module (`github.com/ajdnik/imghash/v2/dinoweights`); see the wiki entry for usage.
+Each algorithm has its own wiki page with options, defaults, references, and examples. DINOHash ships its model weights in a sibling module (`github.com/ajdnik/imghash/v2/dinoweights`); see [DINOHash](https://github.com/ajdnik/imghash/wiki/algorithms/dinohash) for usage.
 
 ## Community
 
