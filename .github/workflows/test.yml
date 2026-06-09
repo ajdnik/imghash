@@ -152,7 +152,7 @@ jobs:
           TEST_EXIT=$?
           set -e
 
-          MODULE=$(go list -m)
+          MODULE=$(GOWORK=off go list -m)
           grep '^\{' test-output.json > test-results.json 2>/dev/null || true
 
           TESTS_PASSED=$(jq -s '[.[] | select(.Test != null and .Action == "pass")] | length' test-results.json 2>/dev/null || echo 0)
