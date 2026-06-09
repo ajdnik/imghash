@@ -126,7 +126,7 @@ func (o distanceOption) applyRASH(r *RASH)                     { r.distFunc = o.
 func (o distanceOption) applyZernike(z *Zernike)               { z.distFunc = o.fn }
 func (o distanceOption) applyGIST(g *GIST)                     { g.distFunc = o.fn }
 func (o distanceOption) applyBoVW(b *BoVW)                     { b.distFunc = o.fn }
-func (o distanceOption) applyDINOHash(d *DINOHash)              { d.distFunc = o.fn }
+func (o distanceOption) applyDINOHash(d *DINOHash)             { d.distFunc = o.fn }
 
 // --- concrete option implementations ---
 

@@ -45,15 +45,15 @@ func addRowBias(x []float32, b []float32, rows, cols int) {
 func softmaxRow(x []float32, rows, cols int) {
 	for r := 0; r < rows; r++ {
 		row := x[r*cols : r*cols+cols]
-		max := row[0]
+		rowMax := row[0]
 		for _, v := range row[1:] {
-			if v > max {
-				max = v
+			if v > rowMax {
+				rowMax = v
 			}
 		}
 		var sum float32
 		for i, v := range row {
-			e := float32(math.Exp(float64(v - max)))
+			e := float32(math.Exp(float64(v - rowMax)))
 			row[i] = e
 			sum += e
 		}
