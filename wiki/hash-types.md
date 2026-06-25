@@ -215,5 +215,5 @@ func processHash(h imghash.Hash) {
 
 ## See Also
 
-* [Hasher Interface](api/hasher) - For computing hashes
-* [Similarity Functions](api/similarity) - For comparing hashes
+* [Hasher Interface](hasher) - For computing hashes
+* [Similarity Functions](similarity) - For comparing hashes

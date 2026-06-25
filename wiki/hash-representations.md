@@ -1,4 +1,4 @@
-# Hash Types
+# Hash Representations
 
 > Understanding Binary, UInt8, and Float64 hash representations in imghash
 
@@ -313,6 +313,6 @@ _, err = similarity.Hamming(binary, float)
 
 ## Related
 
-* [Similarity Metrics](concepts/similarity-metrics) - Learn how to compare different hash types
-* [Choosing an Algorithm](guides/choosing-algorithm) - Choose the right algorithm and hash type
-* [Hash Types API](api/hash-types) - Complete hashtype package documentation
+* [Similarity Metrics](similarity-metrics) - Learn how to compare different hash types
+* [Choosing an Algorithm](choosing-algorithm) - Choose the right algorithm and hash type
+* [Hash Types API](hash-types) - Complete hashtype package documentation

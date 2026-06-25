@@ -349,7 +349,7 @@ if pdqDist < 100 {
 
 ### Deep Learning Algorithms
 
-- **DINOHash** — Frozen DINOv2 ViT-S/14+reg backbone fused with a 96-bit PCA-aligned head. Captures high-level semantic features; robust to crops, recolors, lossy re-encoding, and adversarial edits that defeat classical hashes. Pure-Go ViT inference, ~1 second per image. Ships its ~85 MB model weights in the sibling [`dinoweights`](../installation#dinohash-weights-module) module.
+- **DINOHash** — Frozen DINOv2 ViT-S/14+reg backbone fused with a 96-bit PCA-aligned head. Captures high-level semantic features; robust to crops, recolors, lossy re-encoding, and adversarial edits that defeat classical hashes. Pure-Go ViT inference, ~1 second per image. Ships its ~85 MB model weights in the sibling [`dinoweights`](installation#dinohash-weights-module) module.
 
 ## Performance Considerations
 
@@ -385,5 +385,5 @@ Float64 (128+ bytes):   ColorMoment, Zernike, GIST, BoVW
 
 ## Next Steps
 
-- **[Comparing Hashes](guides/comparing-hashes)** — Learn how to compare hashes and interpret distance values
-- **[Practical Examples](guides/examples)** — See real-world examples and use cases
+- **[Comparing Hashes](comparing-hashes)** — Learn how to compare hashes and interpret distance values
+- **[Practical Examples](examples)** — See real-world examples and use cases

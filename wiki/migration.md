@@ -428,11 +428,11 @@ func findSimilar(query string, database []string) ([]string, error) {
 - **Error Handling** — Comprehensive error handling for production reliability
 - **Extensibility** — Functional options make it easy to add new configuration
 - **API Clarity** — Cleaner separation of concerns with dedicated packages
-- **DINOHash** — New deep perceptual hash backed by a frozen DINOv2 ViT-S/14+reg backbone. 96-bit Hamming hash robust to crops, recolors, lossy re-encoding, and adversarial edits that defeat classical hashes. Ships its ~85 MB model weights in the sibling `dinoweights` module so importers do not pay the embed cost unless they opt in. See the [DINOHash algorithm page](algorithms/dinohash) and the [installation guide](installation#dinohash-weights-module).
+- **DINOHash** — New deep perceptual hash backed by a frozen DINOv2 ViT-S/14+reg backbone. 96-bit Hamming hash robust to crops, recolors, lossy re-encoding, and adversarial edits that defeat classical hashes. Ships its ~85 MB model weights in the sibling `dinoweights` module so importers do not pay the embed cost unless they opt in. See the [DINOHash algorithm page](dinohash) and the [installation guide](installation#dinohash-weights-module).
 
 ## Getting Help
 
-- **[Examples](guides/examples)** — See v2 examples in action
+- **[Examples](examples)** — See v2 examples in action
 
 ## Automated Migration
 

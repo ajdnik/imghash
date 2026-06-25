@@ -946,5 +946,5 @@ func main() {
 
 ## Next Steps
 
-- **[API Reference](api/hasher)** — Explore the complete API documentation
-- **[Algorithm Guide](guides/choosing-algorithm)** — Learn how to choose the right algorithm
+- **[API Reference](hasher)** — Explore the complete API documentation
+- **[Algorithm Guide](choosing-algorithm)** — Learn how to choose the right algorithm

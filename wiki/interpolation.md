@@ -559,5 +559,5 @@ hash, _ := algo.Calculate(resized)
 
 ## Related
 
-* [Hash Types](concepts/hash-types) - Understanding hash representations
-* [Choosing an Algorithm](guides/choosing-algorithm) - Algorithm selection and configuration
+* [Hash Types](hash-representations) - Understanding hash representations
+* [Choosing an Algorithm](choosing-algorithm) - Algorithm selection and configuration

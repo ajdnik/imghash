@@ -43,9 +43,10 @@ jobs:
 
           git clone "${WIKI_URL}" wiki-repo
 
-          # Keep the wiki source in this repo authoritative across the full tree.
-          # Mirror every .md file (including subdirectories such as algorithms/,
-          # api/, concepts/, guides/) and prune anything left behind.
+          # Keep the wiki source in this repo authoritative.
+          # GitHub wikis are a flat namespace (page slug = filename, no
+          # subdirectories), so every page lives at the wiki root. Mirror every
+          # root-level .md file and prune anything left behind.
           find wiki-repo -mindepth 1 -path wiki-repo/.git -prune -o -type f -name '*.md' -print -exec rm -f {} +
           find wiki-repo -mindepth 1 -not -path 'wiki-repo/.git' -not -path 'wiki-repo/.git/*' -type d -empty -delete
           (cd wiki && find . -type f -name '*.md' -print0 | tar --null -cf - -T -) | tar -xf - -C wiki-repo

@@ -600,5 +600,5 @@ func main() {
 
 ## Next Steps
 
-- **[Practical Examples](guides/examples)** — See complete examples for common use cases
-- **[API Reference](api/similarity)** — Explore distance metric documentation
+- **[Practical Examples](examples)** — See complete examples for common use cases
+- **[API Reference](similarity)** — Explore distance metric documentation
