@@ -374,6 +374,6 @@ var ErrNotBinaryHash = hashtype.ErrIncompatibleHash
 
 ## See Also
 
-* [Comparer Interface](api/comparer) - Algorithm-specific comparison
-* [Convenience Functions](api/convenience) - Helper functions including Compare
-* [Hash Types](api/hash-types) - Hash type definitions
+* [Comparer Interface](comparer) - Algorithm-specific comparison
+* [Convenience Functions](convenience) - Helper functions including Compare
+* [Hash Types](hash-types) - Hash type definitions

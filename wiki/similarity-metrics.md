@@ -586,6 +586,6 @@ If comparing one hash against many, pre-compute its magnitude for Cosine distanc
 
 ## Related
 
-* [Hash Types](concepts/hash-types) - Understand Binary, UInt8, and Float64 representations
-* [Choosing an Algorithm](guides/choosing-algorithm) - Choose the right algorithm and metric combination
-* [Similarity API](api/similarity) - Complete similarity package documentation
+* [Hash Types](hash-representations) - Understand Binary, UInt8, and Float64 representations
+* [Choosing an Algorithm](choosing-algorithm) - Choose the right algorithm and metric combination
+* [Similarity API](similarity) - Complete similarity package documentation

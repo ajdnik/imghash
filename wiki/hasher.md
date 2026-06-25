@@ -116,6 +116,6 @@ hash3, _ := processImage(img, phasher)
 
 ## See Also
 
-* [Comparer Interface](api/comparer) - For comparing hashes
-* [Hash Types](api/hash-types) - Hash type definitions
-* [Convenience Functions](api/convenience) - Helper functions for common tasks
+* [Comparer Interface](comparer) - For comparing hashes
+* [Hash Types](hash-types) - Hash type definitions
+* [Convenience Functions](convenience) - Helper functions for common tasks

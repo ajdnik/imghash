@@ -164,7 +164,7 @@ type WeightsProvider interface {
 d, err := imghash.NewDINOHash(imghash.WithDINOWeights(myProvider))
 ```
 
-See the [DINOHash algorithm page](algorithms/dinohash) for the canonical tensor name layout.
+See the [DINOHash algorithm page](dinohash) for the canonical tensor name layout.
 
 ## Supported Image Formats
 

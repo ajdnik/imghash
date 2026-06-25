@@ -175,6 +175,6 @@ dist, err = imghash.Compare(hash1, hash2, similarity.L2)
 
 ## See Also
 
-* [Hasher Interface](api/hasher) - For computing hashes
-* [Similarity Functions](api/similarity) - Distance metric implementations
-* [Hash Types](api/hash-types) - Hash type definitions
+* [Hasher Interface](hasher) - For computing hashes
+* [Similarity Functions](similarity) - Distance metric implementations
+* [Hash Types](hash-types) - Hash type definitions

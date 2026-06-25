@@ -280,6 +280,6 @@ func findSimilar(hashes map[string]imghash.Hash, threshold float64) {
 
 ## See Also
 
-* [Hasher Interface](api/hasher) - Hash algorithm interface
-* [Comparer Interface](api/comparer) - Hash comparison interface
-* [Similarity Functions](api/similarity) - Distance metrics
+* [Hasher Interface](hasher) - Hash algorithm interface
+* [Comparer Interface](comparer) - Hash comparison interface
+* [Similarity Functions](similarity) - Distance metrics
