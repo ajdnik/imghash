@@ -313,11 +313,29 @@ jobs:
           FAILED=0
           FAILED_TARGETS=""
 
+          # The Go fuzzing coordinator has a race between the -fuzztime deadline
+          # firing and its worker context being cancelled, which surfaces as a
+          # bare "context deadline exceeded" failure with no crasher recorded.
+          # Retry those; a real crash always writes a failing input to testdata.
+          MAX_ATTEMPTS=3
+
           for target in $TARGETS; do
             echo "::group::Fuzzing $target for $FUZZ_TIME"
-            OUTPUT=$(go test -run='^$' -fuzz="^${target}$" -fuzztime="$FUZZ_TIME" 2>&1)
-            EXIT_CODE=$?
-            echo "$OUTPUT"
+            for attempt in $(seq 1 $MAX_ATTEMPTS); do
+              OUTPUT=$(go test -run='^$' -fuzz="^${target}$" -fuzztime="$FUZZ_TIME" 2>&1)
+              EXIT_CODE=$?
+              echo "$OUTPUT"
+              if [ $EXIT_CODE -eq 0 ]; then
+                break
+              fi
+              if echo "$OUTPUT" | grep -q 'Failing input written to'; then
+                break
+              fi
+              if ! echo "$OUTPUT" | grep -q 'context deadline exceeded'; then
+                break
+              fi
+              echo "Fuzzing infrastructure flake (attempt $attempt/$MAX_ATTEMPTS), retrying..."
+            done
             echo "::endgroup::"
 
             if [ $EXIT_CODE -eq 0 ]; then
