@@ -235,10 +235,8 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
-          go-version: "1.25"
+          go-version: "1.26"
       - name: Install gocovmerge
-        env:
-          GOTOOLCHAIN: auto
         run: go install github.com/wadey/gocovmerge@v0.0.0-20160331181800-b5bfa59ec0ad
       - name: Download Coverage Artifacts
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
