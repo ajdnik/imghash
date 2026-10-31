@@ -239,7 +239,7 @@ jobs:
       - name: Install gocovmerge
         run: go install github.com/wadey/gocovmerge@v0.0.0-20160331181800-b5bfa59ec0ad
       - name: Download Coverage Artifacts
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           pattern: coverage-*
           path: coverage-artifacts
@@ -387,7 +387,7 @@ jobs:
       - name: Install Goveralls
         run: go install github.com/mattn/goveralls@v0.0.12
       - name: Download Coverage Artifact
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: coverage
       - name: Publish to Coveralls
