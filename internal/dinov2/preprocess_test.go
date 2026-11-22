@@ -60,3 +60,26 @@ func TestImageToTensor_NCHWLayout(t *testing.T) {
 		t.Errorf("channel 2 head = %v, want %v (blue)", out[2*PixelCount], wantB)
 	}
 }
+
+func TestImageToTensor_GraySubimage(t *testing.T) {
+	img := image.NewGray(image.Rect(0, 0, 40, 30))
+	// A nonzero origin and padded stride catch incorrect pixel indexing.
+	sub := img.SubImage(image.Rect(5, 7, 25, 17)).(*image.Gray)
+	for y := 7; y < 17; y++ {
+		for x := 5; x < 25; x++ {
+			sub.SetGray(x, y, color.Gray{Y: 128})
+		}
+	}
+	got := ImageToTensor(sub)
+	if len(got) != Channels*PixelCount {
+		t.Fatalf("tensor length = %d, want %d", len(got), Channels*PixelCount)
+	}
+	for c := 0; c < Channels; c++ {
+		want := (float32(128)/255 - imagenetMean[c]) / imagenetStd[c]
+		for i := 0; i < PixelCount; i++ {
+			if math.Abs(float64(got[c*PixelCount+i]-want)) > 1e-5 {
+				t.Fatalf("channel %d pixel %d = %v, want %v", c, i, got[c*PixelCount+i], want)
+			}
+		}
+	}
+}
