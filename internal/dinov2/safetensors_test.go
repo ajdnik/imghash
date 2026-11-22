@@ -4,6 +4,8 @@ import (
 	"encoding/binary"
 	"encoding/json"
 	"math"
+	"slices"
+	"strings"
 	"testing"
 )
 
@@ -100,5 +102,50 @@ func TestParseSafetensors_RejectsNonF32(t *testing.T) {
 func TestParseSafetensors_TooSmall(t *testing.T) {
 	if _, err := ParseSafetensors([]byte{1, 2, 3}); err == nil {
 		t.Fatal("expected error for undersized blob")
+	}
+}
+
+func TestParseSafetensors_InvalidHeadersAndOffsets(t *testing.T) {
+	for _, tc := range []struct {
+		name, header, want string
+		dataBytes          int
+	}{
+		{"invalid_json", `{`, "header parse", 0},
+		{"invalid_entry", `{"weight":false}`, `tensor "weight" parse`, 0},
+		{"inverted_offsets", `{"weight":{"dtype":"F32","data_offsets":[4,0]}}`, "inverted data offsets", 4},
+		{"unaligned_length", `{"weight":{"dtype":"F32","data_offsets":[0,3]}}`, "not a multiple of 4", 3},
+		{"data_overrun", `{"weight":{"dtype":"F32","data_offsets":[0,8]}}`, "overruns blob", 4},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			blob := make([]byte, 8+len(tc.header)+tc.dataBytes)
+			binary.LittleEndian.PutUint64(blob[:8], uint64(len(tc.header)))
+			copy(blob[8:], tc.header)
+			got, err := ParseSafetensors(blob)
+			if got != nil || err == nil || !strings.Contains(err.Error(), tc.want) {
+				t.Fatalf("ParseSafetensors = %v, %v; want error containing %q", got, err, tc.want)
+			}
+		})
+	}
+	t.Run("header_overrun", func(t *testing.T) {
+		blob := make([]byte, 8)
+		binary.LittleEndian.PutUint64(blob, 100)
+		if _, err := ParseSafetensors(blob); err == nil || !strings.Contains(err.Error(), "header (100 bytes) overruns blob") {
+			t.Fatalf("error = %v, want header overrun", err)
+		}
+	})
+}
+
+func TestParseSafetensors_Metadata(t *testing.T) {
+	header := `{"__metadata__":{"format":"pt"},"weight":{"dtype":"F32","shape":[1],"data_offsets":[0,4]}}`
+	blob := make([]byte, 8+len(header)+4)
+	binary.LittleEndian.PutUint64(blob[:8], uint64(len(header)))
+	copy(blob[8:], header)
+	binary.LittleEndian.PutUint32(blob[8+len(header):], math.Float32bits(-1.25))
+	got, err := ParseSafetensors(blob)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(got) != 1 || !slices.Equal(got["weight"].Shape, []int{1}) || !slices.Equal(got["weight"].Data, []float32{-1.25}) {
+		t.Fatalf("parsed tensors = %v, want only weight with shape [1] and value -1.25", got)
 	}
 }

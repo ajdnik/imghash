@@ -8,7 +8,6 @@
   <a href="https://github.com/ajdnik/imghash/actions?query=workflow%3Aci"><img src="https://github.com/ajdnik/imghash/workflows/ci/badge.svg" alt="CI status"></a>
   <a href="https://coveralls.io/github/ajdnik/imghash?branch=main"><img src="https://badge.coveralls.io/repos/github/ajdnik/imghash/badge.svg?branch=main" alt="Coverage status"></a>
   <a href="https://pkg.go.dev/github.com/ajdnik/imghash/v2"><img src="https://pkg.go.dev/badge/github.com/ajdnik/imghash/v2.svg" alt="Go reference"></a>
-  <a href="https://goreportcard.com/report/github.com/ajdnik/imghash/v2"><img src="https://goreportcard.com/badge/github.com/ajdnik/imghash/v2" alt="Go report card"></a>
   <a href="https://github.com/ajdnik/imghash/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-lightgrey.svg" alt="MIT license"></a>
   <a href="https://www.bestpractices.dev/projects/12605"><img src="https://www.bestpractices.dev/projects/12605/badge?v=2"></a>
 </p>
